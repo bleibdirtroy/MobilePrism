@@ -1,6 +1,6 @@
-# photo
+# MobilePrism
 
-A new Flutter project.
+MobilePrism is a mobile Android an d IOS application for managing your PhotoPrism server.
 
 ## Getting Started
 
