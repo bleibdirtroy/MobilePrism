@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -18,23 +21,46 @@ class _HomeState extends State<Home> {
             SliverAppBar(
               centerTitle: true,
               title: const Text("MobilePrism"),
-              snap: true,
               floating: true,
               forceElevated: innerBoxIsScrolled,
             ),
           ];
         },
-        body: GridView.count(
-          crossAxisCount: 5,
-          mainAxisSpacing: 4,
-          crossAxisSpacing: 4,
-          children: [
-            for (int i = 0; i < 98; i++)
-              Image(
-                image: AssetImage("images/${i % 8 + 1}.jpg"),
-                fit: BoxFit.cover,
-              ),
-          ],
+        body: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: ListView.builder(
+            itemBuilder: ((context, index) {
+              return StickyHeader(
+                header: Container(
+                  //height: 50.0,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Juni',
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                ),
+                content: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: 18,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 5,
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
+                  ),
+                  itemBuilder: (contxt, indx) {
+                    return Image(
+                      image:
+                          AssetImage("images/${Random().nextInt(7) + 1}.jpg"),
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
+              );
+            }),
+          ),
         ),
       ),
     );
