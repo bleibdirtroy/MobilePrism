@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprism/screens/home.dart';
 import 'package:mobileprism/screens/login.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: const Login(),
+      home: Home(),
     );
   }
 }
