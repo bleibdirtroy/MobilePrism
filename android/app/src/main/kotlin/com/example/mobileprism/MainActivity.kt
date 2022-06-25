@@ -1,4 +1,4 @@
-package com.example.photo
+package com.example.mobileprism
 
 import io.flutter.embedding.android.FlutterActivity
 
