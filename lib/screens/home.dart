@@ -11,11 +11,20 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("MobilePrism"),
-      ),
-      body: Container(
-        child: GridView.count(
+      body: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              centerTitle: true,
+              title: const Text("MobilePrism"),
+              snap: true,
+              floating: true,
+              forceElevated: innerBoxIsScrolled,
+            ),
+          ];
+        },
+        body: GridView.count(
           crossAxisCount: 5,
           mainAxisSpacing: 4,
           crossAxisSpacing: 4,
