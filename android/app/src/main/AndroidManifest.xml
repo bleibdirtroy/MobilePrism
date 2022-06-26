@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.photo">
+    package="com.example.mobileprism">
    <application
-        android:label="photo"
+        android:label="mobileprism"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
