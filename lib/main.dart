@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprism/screens/home.dart';
-import 'package:mobileprism/screens/login.dart';
+import 'package:mobileprism/screens/home_view.dart';
+import 'package:mobileprism/screens/login_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,9 +18,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/login/': (context) => const LoginView(),
-        '/home/': (context) => HomeView(),
+        '/home/': (context) => const HomeView(),
       },
-      home: HomeView(),
+      home: const LoginView(),
     );
   }
 }

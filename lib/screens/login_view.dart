@@ -74,7 +74,9 @@ class _LoginViewState extends State<LoginView> {
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/home/');
+                      },
                       child: const Text('Sign in'),
                     ),
                   ),
