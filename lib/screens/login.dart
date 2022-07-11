@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class LoginView extends StatefulWidget {
+  const LoginView({Key? key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginState extends State<Login> {
-  final _hostnameController = TextEditingController();
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
+class _LoginViewState extends State<LoginView> {
+  late final TextEditingController _hostnameController;
+  late final TextEditingController _usernameController;
+  late final TextEditingController _passwordController;
+
+  @override
+  void initState() {
+    _hostnameController = TextEditingController();
+    _usernameController = TextEditingController();
+    _passwordController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _hostnameController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
