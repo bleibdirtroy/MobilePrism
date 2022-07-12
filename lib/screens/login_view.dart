@@ -50,17 +50,21 @@ class _LoginViewState extends State<LoginView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Connect to your PhotoPrism Server',
+                  Text('MobilePrism',
                       style: Theme.of(context).textTheme.headline4),
                   TextField(
                     textInputAction: TextInputAction.next,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    keyboardType: TextInputType.url,
                     decoration:
                         const InputDecoration(labelText: 'Photoprism URL'),
                     controller: _hostnameController,
                   ),
                   TextField(
+                    autocorrect: false,
                     decoration: const InputDecoration(
-                      labelText: 'Name',
+                      labelText: 'Username',
                     ),
                     textInputAction: TextInputAction.next,
                     controller: _usernameController,
@@ -73,11 +77,31 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/home/');
-                      },
-                      child: const Text('Sign in'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/home/');
+                          },
+                          child: const Text('Login'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const Dialog(
+                                  child: Text("Hilftext"),
+                                );
+                              },
+                            );
+                          },
+                          child: const Icon(
+                            Icons.help,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
