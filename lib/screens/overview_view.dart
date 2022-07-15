@@ -13,7 +13,8 @@ class _OverviewViewState extends State<OverviewView> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemBuilder: ((context, index) {
+      itemCount: 5,
+      itemBuilder: (context, index) {
         return StickyHeader(
           header: Container(
             height: 50.0,
@@ -43,7 +44,7 @@ class _OverviewViewState extends State<OverviewView> {
             },
           ),
         );
-      }),
+      },
     );
   }
 }

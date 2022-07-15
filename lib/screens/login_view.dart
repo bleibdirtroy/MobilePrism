@@ -37,7 +37,8 @@ class _LoginViewState extends State<LoginView> {
           image: DecorationImage(
             fit: BoxFit.cover,
             image: NetworkImage(
-                "https://cdn.photoprism.app/wallpaper/welcome.jpg"),
+              "https://cdn.photoprism.app/wallpaper/welcome.jpg",
+            ),
           ),
         ),
         child: Center(
@@ -50,8 +51,10 @@ class _LoginViewState extends State<LoginView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('MobilePrism',
-                      style: Theme.of(context).textTheme.headline4),
+                  Text(
+                    'MobilePrism',
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
                   TextField(
                     textInputAction: TextInputAction.next,
                     enableSuggestions: false,

@@ -1,3 +1,5 @@
+[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
+
 # MobilePrism
 
 MobilePrism is a mobile Android an d IOS application for managing your PhotoPrism server.
