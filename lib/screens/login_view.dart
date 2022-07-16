@@ -33,14 +33,7 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: NetworkImage(
-              "https://cdn.photoprism.app/wallpaper/welcome.jpg",
-            ),
-          ),
-        ),
+        color: Colors.black,
         child: Center(
           child: Card(
             color: Colors.white.withOpacity(0.4),
