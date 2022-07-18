@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprism/constants/routes.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -11,7 +12,7 @@ class SettingsView extends StatelessWidget {
           children: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/login/');
+                Navigator.of(context).pushReplacementNamed(loginRoute);
               },
               child: const Text("Back to Login"),
             ),

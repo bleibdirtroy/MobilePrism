@@ -1,20 +1,22 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
-class OverviewView extends StatefulWidget {
-  const OverviewView({Key? key}) : super(key: key);
+class TimelineView extends StatefulWidget {
+  const TimelineView({Key? key}) : super(key: key);
 
   @override
-  State<OverviewView> createState() => _OverviewViewState();
+  State<TimelineView> createState() => _TimelineViewState();
 }
 
-class _OverviewViewState extends State<OverviewView> {
+class _TimelineViewState extends State<TimelineView> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: 5,
-      itemBuilder: (context, index) {
+      itemBuilder: (context, monthIndex) {
         return StickyHeader(
           header: Container(
             height: 50.0,
@@ -36,10 +38,15 @@ class _OverviewViewState extends State<OverviewView> {
               mainAxisSpacing: 4,
               crossAxisSpacing: 4,
             ),
-            itemBuilder: (contxt, indx) {
-              return const Image(
-                image: AssetImage("images/1.jpg"),
-                fit: BoxFit.cover,
+            itemBuilder: (contxt, imageIndex) {
+              return InkWell(
+                onTap: () {
+                  log("image $monthIndex / $imageIndex Tab");
+                },
+                child: const Image(
+                  image: AssetImage("images/1.jpg"),
+                  fit: BoxFit.cover,
+                ),
               );
             },
           ),

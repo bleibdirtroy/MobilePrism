@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/screens/albums_view.dart';
 import 'package:mobileprism/screens/map_view.dart';
-import 'package:mobileprism/screens/overview_view.dart';
 import 'package:mobileprism/screens/settings_view.dart';
+import 'package:mobileprism/screens/timeline_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -15,7 +15,7 @@ class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
-    OverviewView(),
+    TimelineView(),
     AlbumsView(),
     MapView(),
     SettingsView(),
@@ -30,10 +30,9 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('MobilePrism'),
+      body: SafeArea(
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[

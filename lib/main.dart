@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/screens/home_view.dart';
 import 'package:mobileprism/screens/login_view.dart';
 
@@ -14,11 +15,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Mobile Prism',
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        scaffoldBackgroundColor: const Color(0x00000000),
+        textTheme: const TextTheme(
+          bodySmall: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white),
+          bodyLarge: TextStyle(color: Colors.white),
+          headlineSmall: TextStyle(color: Colors.white),
+          headlineMedium: TextStyle(color: Colors.white),
+          headlineLarge: TextStyle(color: Colors.white),
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: Colors.black,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white,
+        ),
       ),
       routes: {
-        '/login/': (context) => const LoginView(),
-        '/home/': (context) => const HomeView(),
+        loginRoute: (context) => const LoginView(),
+        homeRoute: (context) => const HomeView(),
       },
       home: const LoginView(),
     );

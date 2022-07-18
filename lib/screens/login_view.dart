@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprism/constants/routes.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -38,7 +39,9 @@ class _LoginViewState extends State<LoginView> {
           child: Card(
             color: Colors.white.withOpacity(0.4),
             child: Container(
-              constraints: BoxConstraints.loose(const Size(600, 600)),
+              constraints: BoxConstraints.loose(
+                const Size(600, 600),
+              ),
               padding: const EdgeInsets.all(8),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -53,8 +56,9 @@ class _LoginViewState extends State<LoginView> {
                     enableSuggestions: false,
                     autocorrect: false,
                     keyboardType: TextInputType.url,
-                    decoration:
-                        const InputDecoration(labelText: 'Photoprism URL'),
+                    decoration: const InputDecoration(
+                      labelText: 'Photoprism URL',
+                    ),
                     controller: _hostnameController,
                   ),
                   TextField(
@@ -67,7 +71,9 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   TextField(
                     textInputAction: TextInputAction.done,
-                    decoration: const InputDecoration(labelText: 'Password'),
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                    ),
                     obscureText: true,
                     controller: _passwordController,
                   ),
@@ -77,8 +83,12 @@ class _LoginViewState extends State<LoginView> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
+                          key: const Key("loginbutton"),
                           onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/home/');
+                            Navigator.pushReplacementNamed(
+                              context,
+                              homeRoute,
+                            );
                           },
                           child: const Text('Login'),
                         ),
