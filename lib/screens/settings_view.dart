@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprism/constants/routes.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobileprism/constants/application.dart';
+import 'package:mobileprism/constants/routes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatelessWidget {
@@ -12,23 +13,11 @@ class SettingsView extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed(loginRoute);
-            },
-            child: const Text("Back to Login"),
-          ),
-          const Divider(color: Colors.white),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LicensePage(),
-                ),
-              );
-            },
-            child: const Text("Licenses"),
+          const Text("Settings"),
+          ListTile(
+            leading: const Icon(Icons.key),
+            title: const Text("Back to Login"),
+            onTap: () => Navigator.of(context).pushReplacementNamed(loginRoute),
           ),
           const Divider(color: Colors.white),
           const Text("About us"),
@@ -38,7 +27,29 @@ class SettingsView extends StatelessWidget {
             onTap: () => launchUrl(
               Uri.parse("https://github.com/bleibdirtroy/MobilePrism"),
             ),
-          )
+          ),
+          ListTile(
+            leading: const Icon(Icons.article),
+            title: const Text("Licenses"),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LicensePage(
+                  applicationName: applicationName,
+                  applicationVersion: applicationVersion,
+                ),
+              ),
+            ),
+          ),
+          const Divider(color: Colors.white),
+          const Text("About PhotoPrsim"),
+          ListTile(
+            leading: const Icon(Icons.public),
+            title: const Text("Website"),
+            onTap: () => launchUrl(
+              Uri.parse("https://photoprism.app/"),
+            ),
+          ),
         ],
       ),
     );

@@ -24,6 +24,8 @@ class MyApp extends StatelessWidget {
           headlineMedium: TextStyle(color: Colors.white),
           headlineLarge: TextStyle(color: Colors.white),
         ),
+        cardColor: Colors.black,
+        appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
         listTileTheme: const ListTileThemeData(
           iconColor: Colors.white,
           textColor: Colors.white,
