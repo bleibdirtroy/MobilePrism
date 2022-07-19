@@ -23,10 +23,15 @@ class _TimelineViewState extends State<TimelineView> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             alignment: Alignment.centerLeft,
             child: Text(
-              DateFormat.MMMM().format(
-                DateTime.now(),
-              ),
-              style: Theme.of(context).textTheme.headline4,
+              DateFormat.MMMM()
+                  .format(
+                    DateTime.now(),
+                  )
+                  .toUpperCase(),
+              style: Theme.of(context)
+                  .textTheme
+                  .headline4!
+                  .apply(fontFamily: "Questrial"),
             ),
           ),
           content: GridView.builder(
@@ -44,7 +49,7 @@ class _TimelineViewState extends State<TimelineView> {
                   log("image $monthIndex / $imageIndex Tab");
                 },
                 child: const Image(
-                  image: AssetImage("images/1.jpg"),
+                  image: AssetImage("assets/images/1.jpg"),
                   fit: BoxFit.cover,
                 ),
               );

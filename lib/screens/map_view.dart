@@ -44,7 +44,7 @@ class MapView extends StatelessWidget {
                       ],
                     ),
                     child: const CircleAvatar(
-                      backgroundImage: AssetImage('images/1.jpg'),
+                      backgroundImage: AssetImage('assets/images/1.jpg'),
                     ),
                   ),
                 ),
