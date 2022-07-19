@@ -32,9 +32,11 @@ dependencies:
     sdk: flutter
   flutter_map: ^2.0.0
   flutter_native_splash: ^2.2.4
+  font_awesome_flutter: ^10.1.0
   intl: ^0.17.0
   latlong2: ^0.8.1
   sticky_headers: ^0.3.0+2
+  url_launcher: ^6.1.5
 
 dev_dependencies:
   flutter_test:
@@ -80,10 +82,10 @@ flutter:
     - family: Questrial
       fonts:
         - asset: assets/fonts/Questrial-Regular.ttf
-  #  - family: Trajan Pro
-  #    fonts:
-  #      - asset: fonts/TrajanPro.ttf
-  #      - asset: fonts/TrajanPro_Bold.ttf
-  #        weight: 700
+    #  - family: Trajan Pro
+    #    fonts:
+    #      - asset: fonts/TrajanPro.ttf
+    #      - asset: fonts/TrajanPro_Bold.ttf
+    #        weight: 700
     # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

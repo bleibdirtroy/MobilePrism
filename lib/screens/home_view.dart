@@ -38,7 +38,7 @@ class _HomeViewState extends State<HomeView> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.browse_gallery),
-            label: 'Home',
+            label: 'Timeline',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.burst_mode),

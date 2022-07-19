@@ -24,6 +24,10 @@ class MyApp extends StatelessWidget {
           headlineMedium: TextStyle(color: Colors.white),
           headlineLarge: TextStyle(color: Colors.white),
         ),
+        listTileTheme: const ListTileThemeData(
+          iconColor: Colors.white,
+          textColor: Colors.white,
+        ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Colors.black,
           selectedItemColor: Colors.white,
