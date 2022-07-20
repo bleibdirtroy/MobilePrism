@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobileprism/constants/spacing.dart';
@@ -48,9 +46,11 @@ class _TimelineViewState extends State<TimelineView> {
             itemBuilder: (contxt, imageIndex) {
               return InkWell(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ImageView(),
-                  ));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ImageView(),
+                    ),
+                  );
                 },
                 child: Image(
                   image: AssetImage("assets/images/${monthIndex + 1}.jpg"),

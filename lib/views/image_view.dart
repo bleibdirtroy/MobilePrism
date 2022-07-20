@@ -43,7 +43,6 @@ class _ImageViewState extends State<ImageView>
           maxScale: PhotoViewComputedScale.covered * 8,
           imageProvider: const AssetImage("assets/images/large.jpg"),
           onTapUp: (context, details, controllerValue) {
-            print("HI");
             setState(() {
               _visible = !_visible;
             });
