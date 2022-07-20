@@ -5,6 +5,6 @@ class ImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Ciao");
+    return const Text("Ciao");
   }
 }
