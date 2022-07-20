@@ -36,7 +36,7 @@ class MapView extends StatelessWidget {
                 height: 40,
                 builder: (context) => InkWell(
                   onTap: () {
-                    log("marker tapped");
+                    log("marker touched");
                   },
                   child: Container(
                     decoration: const BoxDecoration(

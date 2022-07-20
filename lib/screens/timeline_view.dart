@@ -46,7 +46,7 @@ class _TimelineViewState extends State<TimelineView> {
             itemBuilder: (contxt, imageIndex) {
               return InkWell(
                 onTap: () {
-                  log("image $monthIndex / $imageIndex Tab");
+                  log("image $monthIndex / $imageIndex touched");
                 },
                 child: Image(
                   image: AssetImage("assets/images/${monthIndex + 1}.jpg"),
