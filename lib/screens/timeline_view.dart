@@ -15,7 +15,7 @@ class _TimelineViewState extends State<TimelineView> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 5,
+      itemCount: 7,
       itemBuilder: (context, monthIndex) {
         return StickyHeader(
           header: Container(
@@ -23,7 +23,11 @@ class _TimelineViewState extends State<TimelineView> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             alignment: Alignment.centerLeft,
             child: Text(
-              DateFormat('MMMM').format(DateTime(0, monthIndex)).toUpperCase(),
+              DateFormat('MMMM')
+                  // 12 - is just used to display the months in reverese order.
+                  // This is not needed later!
+                  .format(DateTime(0, 12 - monthIndex))
+                  .toUpperCase(),
               style: Theme.of(context)
                   .textTheme
                   .headline4!
@@ -44,8 +48,8 @@ class _TimelineViewState extends State<TimelineView> {
                 onTap: () {
                   log("image $monthIndex / $imageIndex Tab");
                 },
-                child: const Image(
-                  image: AssetImage("assets/images/1.jpg"),
+                child: Image(
+                  image: AssetImage("assets/images/${monthIndex + 1}.jpg"),
                   fit: BoxFit.cover,
                 ),
               );
