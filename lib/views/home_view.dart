@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprism/screens/albums_view.dart';
-import 'package:mobileprism/screens/map_view.dart';
-import 'package:mobileprism/screens/settings_view.dart';
-import 'package:mobileprism/screens/timeline_view.dart';
+import 'package:mobileprism/views/albums_view.dart';
+import 'package:mobileprism/views/map_view.dart';
+import 'package:mobileprism/views/settings_view.dart';
+import 'package:mobileprism/views/timeline_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);

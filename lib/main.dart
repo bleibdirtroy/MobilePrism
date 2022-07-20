@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/routes.dart';
-import 'package:mobileprism/screens/home_view.dart';
-import 'package:mobileprism/screens/login_view.dart';
+import 'package:mobileprism/views/home_view.dart';
+import 'package:mobileprism/views/login_view.dart';
 
 void main() {
   runApp(const MyApp());
