@@ -36,82 +36,84 @@ class _LoginViewState extends State<LoginView> {
       body: Container(
         color: Colors.black,
         child: Center(
-          child: Card(
-            color: Colors.white.withOpacity(0.4),
-            child: Container(
-              constraints: BoxConstraints.loose(
-                const Size(600, 600),
-              ),
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'MobilePrism',
-                    style: Theme.of(context).textTheme.headline4,
+          child: Container(
+            constraints: BoxConstraints.loose(
+              const Size(600, 600),
+            ),
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  "assets/images/logo.png",
+                  width: 200,
+                  fit: BoxFit.fitWidth,
+                ),
+                Text(
+                  'MobilePrism',
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+                TextField(
+                  textInputAction: TextInputAction.next,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  keyboardType: TextInputType.url,
+                  decoration: const InputDecoration(
+                    labelText: 'Photoprism URL',
                   ),
-                  TextField(
-                    textInputAction: TextInputAction.next,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.url,
-                    decoration: const InputDecoration(
-                      labelText: 'Photoprism URL',
-                    ),
-                    controller: _hostnameController,
+                  controller: _hostnameController,
+                ),
+                TextField(
+                  autocorrect: false,
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
                   ),
-                  TextField(
-                    autocorrect: false,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                    ),
-                    textInputAction: TextInputAction.next,
-                    controller: _usernameController,
+                  textInputAction: TextInputAction.next,
+                  controller: _usernameController,
+                ),
+                TextField(
+                  textInputAction: TextInputAction.done,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
                   ),
-                  TextField(
-                    textInputAction: TextInputAction.done,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                    ),
-                    obscureText: true,
-                    controller: _passwordController,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          key: const Key("loginbutton"),
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              homeRoute,
-                            );
-                          },
-                          child: const Text('Login'),
+                  obscureText: true,
+                  controller: _passwordController,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        key: const Key("loginbutton"),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            homeRoute,
+                          );
+                        },
+                        child: const Text('Login'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return const Dialog(
+                                child: Text("Hilftext"),
+                              );
+                            },
+                          );
+                        },
+                        child: const Icon(
+                          Icons.help,
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return const Dialog(
-                                  child: Text("Hilftext"),
-                                );
-                              },
-                            );
-                          },
-                          child: const Icon(
-                            Icons.help,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
