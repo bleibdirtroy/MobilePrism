@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobileprism/constants/spacing.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class TimelineView extends StatefulWidget {
@@ -40,8 +41,8 @@ class _TimelineViewState extends State<TimelineView> {
             itemCount: 18,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 5,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
+              mainAxisSpacing: mainAxisSpacing,
+              crossAxisSpacing: crossAxisSpacing,
             ),
             itemBuilder: (contxt, imageIndex) {
               return InkWell(
