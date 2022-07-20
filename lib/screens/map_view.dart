@@ -22,6 +22,11 @@ class MapView extends StatelessWidget {
             urlTemplate: "https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png",
             userAgentPackageName: packageName,
             subdomains: ["a", "b", "c"],
+            tileBuilder: (context, tileWidget, tile) => darkModeTileBuilder(
+              context,
+              tileWidget,
+              tile,
+            ),
           ),
           MarkerLayerOptions(
             markers: [
@@ -31,7 +36,7 @@ class MapView extends StatelessWidget {
                 height: 40,
                 builder: (context) => InkWell(
                   onTap: () {
-                    log("Ich wurde getapt");
+                    log("marker tapped");
                   },
                   child: Container(
                     decoration: const BoxDecoration(
