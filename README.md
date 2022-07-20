@@ -2,7 +2,7 @@
 
 # MobilePrism
 
-MobilePrism is a mobile Android an d IOS application for managing your PhotoPrism server.
+MobilePrism is a mobile Android and IOS application for managing your PhotoPrism server.
 
 ## Getting Started
 
