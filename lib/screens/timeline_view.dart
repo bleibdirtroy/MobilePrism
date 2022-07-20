@@ -23,11 +23,7 @@ class _TimelineViewState extends State<TimelineView> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             alignment: Alignment.centerLeft,
             child: Text(
-              DateFormat.MMMM()
-                  .format(
-                    DateTime.now(),
-                  )
-                  .toUpperCase(),
+              DateFormat('MMMM').format(DateTime(0, monthIndex)).toUpperCase(),
               style: Theme.of(context)
                   .textTheme
                   .headline4!
