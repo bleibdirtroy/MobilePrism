@@ -30,6 +30,7 @@ class _ImageViewState extends State<ImageView>
   @override
   void dispose() {
     _animationController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -41,22 +42,29 @@ class _ImageViewState extends State<ImageView>
         visible: _visible,
         child: AppBar(),
       ),
-      body: PhotoViewGallery.builder(
-        scrollPhysics: const BouncingScrollPhysics(),
-        pageController: _pageController,
-        itemCount: numberOfPictures,
-        builder: (context, index) {
-          return PhotoViewGalleryPageOptions(
-            minScale: PhotoViewComputedScale.contained,
-            maxScale: PhotoViewComputedScale.covered * 8,
-            imageProvider: const AssetImage("assets/images/large.jpg"),
-            onTapUp: (context, details, controllerValue) {
-              setState(() {
-                _visible = !_visible;
-              });
-            },
-          );
+      body: Dismissible(
+        direction: DismissDirection.down,
+        onDismissed: (direction) {
+          Navigator.of(context).pop();
         },
+        key: const Key('key'),
+        child: PhotoViewGallery.builder(
+          scrollPhysics: const BouncingScrollPhysics(),
+          pageController: _pageController,
+          itemCount: numberOfPictures,
+          builder: (context, index) {
+            return PhotoViewGalleryPageOptions(
+              minScale: PhotoViewComputedScale.contained,
+              maxScale: PhotoViewComputedScale.covered * 8,
+              imageProvider: const AssetImage("assets/images/large.jpg"),
+              onTapUp: (context, details, controllerValue) {
+                setState(() {
+                  _visible = !_visible;
+                });
+              },
+            );
+          },
+        ),
       ),
     );
   }
