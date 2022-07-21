@@ -17,7 +17,6 @@ class _ImageViewState extends State<ImageView>
   late final AnimationController _animationController;
   late final PageController _pageController;
 
-
   @override
   void initState() {
     _pageController = PageController(initialPage: 1);
