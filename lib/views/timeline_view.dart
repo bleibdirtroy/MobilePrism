@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobileprism/constants/spacing.dart';
+import 'package:mobileprism/views/image_view.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class TimelineView extends StatefulWidget {
@@ -47,7 +46,11 @@ class _TimelineViewState extends State<TimelineView> {
             itemBuilder: (contxt, imageIndex) {
               return InkWell(
                 onTap: () {
-                  log("image $monthIndex / $imageIndex touched");
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ImageView(),
+                    ),
+                  );
                 },
                 child: Image(
                   image: AssetImage("assets/images/${monthIndex + 1}.jpg"),
