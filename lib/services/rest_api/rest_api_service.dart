@@ -206,6 +206,9 @@ class RestApiService {
       case PhotoFormat.tile500:
         format = "tile_500";
         break;
+      case PhotoFormat.tile100:
+        format = "tile_100";
+        break;
     }
     return format;
   }
