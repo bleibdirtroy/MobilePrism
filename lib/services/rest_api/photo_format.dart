@@ -1,1 +1,1 @@
-enum PhotoFormat { fit1280, fit720, tile500, tile100 }
+enum PhotoFormat { fit_1280, fit_720, tile_500, tile_100 }
