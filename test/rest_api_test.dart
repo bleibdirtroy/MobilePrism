@@ -39,5 +39,34 @@ void main() {
       expect(uri.query, contains("offset=3"));
       expect(uri.query, contains("quality=1"));
     });
+
+    test("Test if album response from server returns important values",
+        () async {
+      final RestApiService restApiService =
+          RestApiService("https://demo-de.photoprism.app/api/v1/");
+      final String response = await restApiService.getAlbums(
+        albumType: AlbumType.album,
+        count: 1,
+      );
+      expect(response, contains("UID"));
+      expect(response, contains("Thumb"));
+      expect(response, contains("Title"));
+      expect(response, contains("PhotoCount"));
+      expect(response, contains("CreatedAt"));
+      expect(response, contains("UpdatedAt"));
+    });
+    test("Test if map response from server returns important values", () async {
+      final RestApiService restApiService =
+          RestApiService("https://demo-de.photoprism.app/api/v1/");
+      final String response = await restApiService.getMap(
+        public: true,
+        count: 1,
+      );
+      expect(response, contains("coordinates"));
+      expect(response, contains("type"));
+      expect(response, contains("Hash"));
+      expect(response, contains("Title"));
+      expect(response, contains("TakenAt"));
+    });
   });
 }

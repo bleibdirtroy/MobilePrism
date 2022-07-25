@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/services/rest_api/album_type.dart';
 import 'package:mobileprism/services/rest_api/order_type.dart';
 
@@ -8,12 +9,49 @@ const offsetQueryParameter = "offset";
 const orderQueryParameter = "order";
 const publicQueryParameter = "public";
 const qualityQueryParameter = "quality";
+const headers = {"User-Agent": "$applicationName/$applicationVersion"};
 
 class RestApiService {
   final String photoPrismUrl;
   final client = http.Client();
 
   RestApiService(this.photoPrismUrl);
+
+  Future<String> getAlbums({
+    required AlbumType albumType,
+    required int count,
+    int? offset,
+    OrderType? orderType,
+  }) async {
+    final response = await http.get(
+      buildAlbumURL(
+        albumType: albumType,
+        count: count,
+        offset: offset,
+        orderType: orderType,
+      ),
+      headers: headers,
+    );
+    return response.body;
+  }
+
+  Future<String> getMap({
+    int? count,
+    int? offset,
+    bool? public,
+    int? quality,
+  }) async {
+    final response = await http.get(
+      buildMapURL(
+        count: count,
+        offset: offset,
+        public: public,
+        quality: quality,
+      ),
+      headers: headers,
+    );
+    return response.body;
+  }
 
   Uri buildAlbumURL({
     required AlbumType albumType,
