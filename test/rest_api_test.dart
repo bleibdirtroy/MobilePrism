@@ -39,6 +39,26 @@ void main() {
       expect(uri.query, contains("offset=3"));
       expect(uri.query, contains("quality=1"));
     });
+    test("Test if the query parameters for photos are set correctly", () {
+      const String albumUid = "thisIsMyAlbumUid";
+      final RestApiService restApiService =
+          RestApiService("https://demo-de.photoprism.app/api/v1/");
+      final Uri uri = restApiService.buildPhotosUrl(
+        count: 1,
+        albumUid: albumUid,
+        merged: true,
+        orderType: OrderType.oldest,
+        offset: 2,
+      );
+
+      expect(uri.origin, contains("https://demo-de.photoprism.app"));
+      expect(uri.path, contains("/api/v1/photos"));
+      expect(uri.query, contains("merged=true"));
+      expect(uri.query, contains("offset=2"));
+      expect(uri.query, contains("count=1"));
+      expect(uri.query, contains("album=$albumUid"));
+      expect(uri.query, contains("order=oldest"));
+    });
 
     test("Test if album response from server returns important values",
         () async {
@@ -67,6 +87,19 @@ void main() {
       expect(response, contains("Hash"));
       expect(response, contains("Title"));
       expect(response, contains("TakenAt"));
+    });
+    test("Test if photos response from server returns important values",
+        () async {
+      final RestApiService restApiService =
+          RestApiService("https://demo-de.photoprism.app/api/v1/");
+      final String response = await restApiService.getPhotos(
+        count: 1,
+      );
+      expect(response, contains("Hash"));
+      expect(response, contains("Year"));
+      expect(response, contains("Month"));
+      expect(response, contains("Day"));
+      expect(response, contains("Title"));
     });
   });
 }

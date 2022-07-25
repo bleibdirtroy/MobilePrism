@@ -10,6 +10,8 @@ const offsetQueryParameter = "offset";
 const orderQueryParameter = "order";
 const publicQueryParameter = "public";
 const qualityQueryParameter = "quality";
+const albumQueryParameter = "album";
+const mergedQueryParameter = "merged";
 const headers = {"User-Agent": "$applicationName/$applicationVersion"};
 
 class RestApiService {
@@ -71,6 +73,26 @@ class RestApiService {
     return response.body;
   }
 
+  Future<String> getPhotos({
+    required int count,
+    String? albumUid,
+    int? offset,
+    bool? merged,
+    OrderType? orderType,
+  }) async {
+    final response = await http.get(
+      buildPhotosUrl(
+        count: count,
+        albumUid: albumUid,
+        merged: merged,
+        offset: offset,
+        orderType: orderType,
+      ),
+      headers: headers,
+    );
+    return response.body;
+  }
+
   Uri buildAlbumURL({
     required AlbumType albumType,
     required int count,
@@ -110,6 +132,27 @@ class RestApiService {
     return Uri.parse("${photoPrismUrl}geo?$query");
   }
 
+  Uri buildPhotosUrl({
+    required int count,
+    String? albumUid,
+    int? offset,
+    bool? merged,
+    OrderType? orderType,
+  }) {
+    final String order = _getOrderType(orderType);
+    final String query = Uri(
+      queryParameters: {
+        countQueryParameter: count.toString(),
+        albumQueryParameter: albumUid?.toString() ?? "",
+        offsetQueryParameter: offset?.toString() ?? "",
+        mergedQueryParameter: merged?.toString() ?? "",
+        orderQueryParameter: order,
+      },
+    ).query;
+
+    return Uri.parse("${photoPrismUrl}photos?$query");
+  }
+
   String _getOrderType(OrderType? orderType) {
     final String order;
     switch (orderType) {
@@ -118,6 +161,9 @@ class RestApiService {
         break;
       case OrderType.place:
         order = "place";
+        break;
+      case OrderType.oldest:
+        order = "oldest";
         break;
       default:
         order = "";
