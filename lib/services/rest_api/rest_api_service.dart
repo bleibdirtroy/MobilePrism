@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/services/rest_api/album_type.dart';
 import 'package:mobileprism/services/rest_api/order_type.dart';
+import 'package:mobileprism/services/rest_api/photo_format.dart';
 
 const typeQueryParameter = "type";
 const countQueryParameter = "count";
@@ -16,6 +17,23 @@ class RestApiService {
   final client = http.Client();
 
   RestApiService(this.photoPrismUrl);
+
+  Uri buildPhotoUrl({
+    required String hash,
+    required PhotoFormat photoFormat,
+  }) {
+    final String format = _getPhotoFormat(photoFormat);
+
+    return Uri.parse("${photoPrismUrl}t/$hash/public/$format");
+  }
+
+  Uri buildAlbumTitlePhotoUrl({
+    required String uid,
+    required PhotoFormat photoFormat,
+  }) {
+    final String format = _getPhotoFormat(photoFormat);
+    return Uri.parse("${photoPrismUrl}albums/$uid/public/$format");
+  }
 
   Future<String> getAlbums({
     required AlbumType albumType,
@@ -128,5 +146,21 @@ class RestApiService {
         break;
     }
     return type;
+  }
+
+  String _getPhotoFormat(PhotoFormat photoFormat) {
+    final String format;
+    switch (photoFormat) {
+      case PhotoFormat.fit1280:
+        format = "fit_1280";
+        break;
+      case PhotoFormat.fit720:
+        format = "fit_720";
+        break;
+      case PhotoFormat.tile500:
+        format = "tile_500";
+        break;
+    }
+    return format;
   }
 }
