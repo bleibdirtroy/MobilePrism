@@ -1,4 +1,4 @@
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http show Client, get;
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/services/rest_api/album_type.dart';
 import 'package:mobileprism/services/rest_api/order_type.dart';
