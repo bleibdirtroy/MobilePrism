@@ -20,23 +20,6 @@ class RestApiService {
 
   RestApiService(this.photoPrismUrl);
 
-  Uri buildPhotoUrl({
-    required String hash,
-    required PhotoFormat photoFormat,
-  }) {
-    final String format = photoFormat.toShortString();
-
-    return Uri.parse("${photoPrismUrl}t/$hash/public/$format");
-  }
-
-  Uri buildAlbumTitlePhotoUrl({
-    required String uid,
-    required PhotoFormat photoFormat,
-  }) {
-    final String format = photoFormat.toShortString();
-    return Uri.parse("${photoPrismUrl}albums/$uid/public/$format");
-  }
-
   Future<String> getAlbums({
     required AlbumType albumType,
     required int count,
@@ -91,6 +74,23 @@ class RestApiService {
       headers: headers,
     );
     return response.body;
+  }
+
+  Uri buildPhotoUrl({
+    required String hash,
+    required PhotoFormat photoFormat,
+  }) {
+    final String format = photoFormat.toShortString();
+
+    return Uri.parse("${photoPrismUrl}t/$hash/public/$format");
+  }
+
+  Uri buildAlbumTitlePhotoUrl({
+    required String uid,
+    required PhotoFormat photoFormat,
+  }) {
+    final String format = photoFormat.toShortString();
+    return Uri.parse("${photoPrismUrl}albums/$uid/public/$format");
   }
 
   Uri buildAlbumURL({
