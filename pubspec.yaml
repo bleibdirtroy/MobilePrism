@@ -33,6 +33,7 @@ dependencies:
   flutter_map: ^2.0.0
   flutter_native_splash: ^2.2.4
   font_awesome_flutter: ^10.1.0
+  http: ^0.13.4
   intl: ^0.17.0
   latlong2: ^0.8.1
   photo_view: ^0.14.0
