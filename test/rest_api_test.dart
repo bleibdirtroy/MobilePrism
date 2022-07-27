@@ -59,6 +59,22 @@ void main() {
       expect(uri.query, contains("album=$albumUid"));
       expect(uri.query, contains("order=oldest"));
     });
+    test(
+        "Test if the query parameters for photos of month and year are set correctly",
+        () {
+      final RestApiService restApiService =
+          RestApiService("https://demo-de.photoprism.app/api/v1/");
+      final Uri uri = restApiService.buildPhotosUrl(
+        count: 1,
+        month: 12,
+        year: 2017,
+      );
+
+      expect(uri.origin, contains("https://demo-de.photoprism.app"));
+      expect(uri.path, contains("/api/v1/photos"));
+      expect(uri.query, contains("count=1"));
+      expect(uri.query, contains("filter=year:2017+month:12"));
+    });
 
     test("Test if album response from server returns important values",
         () async {
