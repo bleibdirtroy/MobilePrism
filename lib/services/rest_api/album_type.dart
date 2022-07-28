@@ -1,1 +1,1 @@
-enum AlbumType { calendar, album, folder, moments, state }
+enum AlbumType { month, album, folder, moments, state }

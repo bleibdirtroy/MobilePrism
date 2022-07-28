@@ -111,7 +111,7 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("${photoPrismUrl}albums?$query");
+    return Uri.parse("$photoPrismUrl$photoprismApiPath/albums?$query");
   }
 
   Uri buildMapURL({
@@ -129,7 +129,7 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("${photoPrismUrl}geo?$query");
+    return Uri.parse("$photoPrismUrl$photoprismApiPath/geo?$query");
   }
 
   Uri buildPhotosUrl({
@@ -155,7 +155,7 @@ class RestApiService {
       final String filter = "year:$year+month:$month";
       query = "$query&filter=$filter";
     }
-    return Uri.parse("${photoPrismUrl}photos?$query");
+    return Uri.parse("$photoPrismUrl$photoprismApiPath/photos?$query");
   }
 }
 
