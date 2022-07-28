@@ -22,7 +22,10 @@ void main() {
       expect(uri.query, contains("offset=3"));
       expect(uri.query, contains("order=newest"));
     });
-    test("Test if the query parameters for album are set correctly for calendar", () {
+
+    test(
+        "Test if the query parameters for album are set correctly for calendar",
+        () {
       final RestApiService restApiService =
           RestApiService("https://demo-de.photoprism.app");
       final Uri uri = restApiService.buildAlbumURL(
