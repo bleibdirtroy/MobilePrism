@@ -12,6 +12,7 @@ const publicQueryParameter = "public";
 const qualityQueryParameter = "quality";
 const albumQueryParameter = "album";
 const mergedQueryParameter = "merged";
+const filterQueryParameter = "filter";
 const headers = {"User-Agent": "$applicationName/$applicationVersion"};
 
 class RestApiService {
@@ -62,6 +63,8 @@ class RestApiService {
     int? offset,
     bool? merged,
     OrderType? orderType,
+    int? month,
+    int? year,
   }) async {
     final response = await http.get(
       buildPhotosUrl(
@@ -108,7 +111,7 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("${photoPrismUrl}albums?$query");
+    return Uri.parse("$photoPrismUrl$photoprismApiPath/albums?$query");
   }
 
   Uri buildMapURL({
@@ -126,7 +129,7 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("${photoPrismUrl}geo?$query");
+    return Uri.parse("$photoPrismUrl$photoprismApiPath/geo?$query");
   }
 
   Uri buildPhotosUrl({
@@ -135,8 +138,10 @@ class RestApiService {
     int? offset,
     bool? merged,
     OrderType? orderType,
+    int? month,
+    int? year,
   }) {
-    final String query = Uri(
+    String query = Uri(
       queryParameters: {
         countQueryParameter: count.toString(),
         albumQueryParameter: albumUid?.toString() ?? "",
@@ -146,7 +151,11 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("${photoPrismUrl}photos?$query");
+    if (month != null && year != null) {
+      final String filter = "year:$year+month:$month";
+      query = "$query&filter=$filter";
+    }
+    return Uri.parse("$photoPrismUrl$photoprismApiPath/photos?$query");
   }
 }
 
