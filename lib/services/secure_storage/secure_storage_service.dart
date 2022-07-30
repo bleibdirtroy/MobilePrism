@@ -1,43 +1,14 @@
-import 'dart:convert';
-
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-class StorageIsNotOpen implements Exception {}
-
-class ItemNotFoundInStorage implements Exception {}
+import 'package:mobileprism/services/secure_storage/secure_storage_provider.dart';
 
 class SecureStorageService {
-  FlutterSecureStorage? _storage;
+  final SecureStorageProvider _provider;
 
-  FlutterSecureStorage _getStorage() {
-    final storage = _storage;
-    if (_storage == null) {
-      throw StorageIsNotOpen();
-    } else {
-      return storage!;
-    }
-  }
+  SecureStorageService(this._provider);
 
-  void openStorage() {
-    _storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
-  }
+  void openStorage() => _provider.openStorage();
 
-  Future<void> storeData(String key, Object value) async {
-    final storage = _getStorage();
-    await storage.write(key: key, value: jsonEncode(value));
-  }
+  Future<void> storeData(String key, Object value) =>
+      _provider.storeData(key, value);
 
-  Future<T> readData<T>(String key) async {
-    final storage = _getStorage();
-    if (await storage.containsKey(key: key)) {
-      final String item = await storage.read(key: key) ?? "";
-      return jsonDecode(item) as T;
-    } else {
-      throw ItemNotFoundInStorage();
-    }
-  }
-
-  AndroidOptions _getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: true,
-      );
+  Future<T> readData<T>(String key) => _provider.readData(key);
 }
