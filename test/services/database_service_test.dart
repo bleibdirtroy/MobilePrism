@@ -3,7 +3,7 @@ import 'package:mobileprism/services/database_service.dart';
 
 void main() {
   testWidgets('database service ...', (tester) async {
-    print("OpeningDb");
-    print((await isOpen()));
+    // print("OpeningDb");
+    // print((await isOpen()));
   });
 }
