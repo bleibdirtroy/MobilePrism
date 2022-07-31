@@ -1,5 +1,4 @@
 import 'package:mobileprism/services/storage/secure_storage_provider.dart';
-import 'package:mobileprism/services/storage/storage_exceptions.dart';
 import 'package:mobileprism/services/storage/storage_provider.dart';
 
 class AuthService {
