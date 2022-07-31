@@ -4,10 +4,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobileprism/services/storage/storage_exceptions.dart';
 import 'package:mobileprism/services/storage/storage_provider.dart';
 
-class SecureStorageService implements StorageProvider {
+class SecureStorageProvider implements StorageProvider {
   FlutterSecureStorage? _storage;
 
-  SecureStorageService() {
+  SecureStorageProvider() {
     _storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
   }
 
@@ -20,7 +20,7 @@ class SecureStorageService implements StorageProvider {
   }
 
   @override
-  Future<void> storeData(String key, Object value) async {
+  Future<void> storeData(String key, dynamic value) async {
     final storage = _isStorageInitialized();
     if (!await storage.containsKey(key: key, aOptions: _getAndroidOptions())) {
       await storage.write(key: key, value: jsonEncode(value));
@@ -62,15 +62,15 @@ class SecureStorageService implements StorageProvider {
   }
 
   @override
-  Future<void> deleteAllData() async {
-    final storage = _isStorageInitialized();
-    await storage.deleteAll(aOptions: _getAndroidOptions());
-  }
-
-  @override
   Future<void> deleteData(String key) async {
     final storage = _isStorageInitialized();
     await storage.delete(key: key);
+  }
+
+  @override
+  Future<void> deleteAllData() async {
+    final storage = _isStorageInitialized();
+    await storage.deleteAll(aOptions: _getAndroidOptions());
   }
 
   AndroidOptions _getAndroidOptions() => const AndroidOptions(

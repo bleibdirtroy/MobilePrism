@@ -1,4 +1,4 @@
-import 'package:mobileprism/services/storage/secure_storage_service.dart';
+import 'package:mobileprism/services/storage/secure_storage_provider.dart';
 import 'package:mobileprism/services/storage/storage_provider.dart';
 
 class AuthService {
@@ -6,7 +6,7 @@ class AuthService {
 
   AuthService(this._storageProvider);
 
-  factory AuthService.secureStorage() => AuthService(SecureStorageService());
+  factory AuthService.secureStorage() => AuthService(SecureStorageProvider());
 
   Future<void> storeUserCredentials(
     String hostname,
