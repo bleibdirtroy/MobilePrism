@@ -4,9 +4,13 @@ import 'package:mobileprism/services/database_service.dart';
 import 'package:mobileprism/views/home_view.dart';
 import 'package:mobileprism/views/login_view.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  final bool dbIsOpen = await setupAndOpenDb();
+  if (dbIsOpen) {
+    runApp(const MyApp());
+  }
+  
 }
 
 class MyApp extends StatelessWidget {

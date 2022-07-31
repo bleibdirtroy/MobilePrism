@@ -4,7 +4,8 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-final Future<Database> _database = _initDb();
+late final Database _database;
+bool _isOpen = false;
 
 Future<Database> _initDb() async {
   try{
@@ -30,11 +31,27 @@ Future<Database> _initDb() async {
   }
 }
 
-Future<bool> isOpen () async{
-  return (await _database).isOpen;
+Future<bool> setupAndOpenDb () async{
+  if (!_isOpen){
+    _database = await _initDb();
+    _isOpen = _database.isOpen;
+  }
+  return _isOpen;
 }
 
-Future<void> executeQuery(String query) async {
-  final db = await _database;
-  db.execute(query,);
+
+class DatabaseService {
+  late final Database _databaseRef;
+
+  DatabaseService({Database? testDb}){
+    if (testDb != null){
+      _databaseRef = testDb;
+    } else {
+      _databaseRef = _database;
+    }
+  }
+
+  Future<void> executeQuery(String query) async {
+    _databaseRef.execute(query,);
+  }
 }
