@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/routes.dart';
-import 'package:mobileprism/services/storage/secure_storage_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -13,12 +12,6 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  final SecureStorageService _secureStorageService = SecureStorageService();
-
-  Future<void> deleteStorage() async {
-    await _secureStorageService.deleteAllData();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,8 +23,6 @@ class _SettingsViewState extends State<SettingsView> {
             leading: const Icon(Icons.key),
             title: const Text("Back to Login"),
             onTap: () async {
-              await deleteStorage();
-              if (!mounted) return;
               Navigator.of(context).pushReplacementNamed(loginRoute);
             },
           ),
