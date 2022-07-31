@@ -15,8 +15,9 @@ void main() {
       expect(await authService.readHostname(), hostname);
       expect(await authService.readUsername(), username);
       expect(await authService.readPassword(), password);
-      
+
       expect(await authService.isUserdataStored(), true);
+
       try {
         await authService.storeUserCredentials(hostname, username, password);
       } catch (e) {
