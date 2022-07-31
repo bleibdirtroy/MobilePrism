@@ -10,7 +10,7 @@ void main() {
   group("Test AuthService", () {
     test("Store credentials", () async {
       final AuthService authService = AuthService(MockStorageProvider());
-      await authService.storeUserCredentials(hostname, username, password);
+      await authService.storeUserData(hostname, username, password);
 
       expect(await authService.getHostname(), hostname);
       expect(await authService.getUsername(), username);
@@ -19,7 +19,7 @@ void main() {
       expect(await authService.isUserdataStored(), true);
 
       try {
-        await authService.storeUserCredentials(hostname, username, password);
+        await authService.storeUserData(hostname, username, password);
       } catch (e) {
         expect(e, isA<KeyAlreadyExistsInStorage>());
       }
@@ -27,10 +27,10 @@ void main() {
 
     test("Delete credentials", () async {
       final AuthService authService = AuthService(MockStorageProvider());
-      await authService.storeUserCredentials(hostname, username, password);
+      await authService.storeUserData(hostname, username, password);
       expect(await authService.isUserdataStored(), true);
       //expect(await authService.readUsername(), username);
-      await authService.deleteUserCredentials();
+      await authService.deleteUserData();
       expect(await authService.isUserdataStored(), false);
       try {
         await authService.getHostname();

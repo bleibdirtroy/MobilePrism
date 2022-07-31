@@ -50,7 +50,7 @@ class _SettingsViewState extends State<SettingsView> {
             leading: const Icon(Icons.key),
             title: const Text("Back to Login"),
             onTap: () async {
-              await _authService.deleteUserCredentials();
+              await _authService.deleteUserData();
               if (!mounted) return;
               Navigator.of(context).pushReplacementNamed(loginRoute);
             },

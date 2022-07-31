@@ -9,7 +9,7 @@ class AuthService {
 
   factory AuthService.secureStorage() => AuthService(SecureStorageProvider());
 
-  Future<void> storeUserCredentials(
+  Future<void> storeUserData(
     String hostname,
     String username,
     String password,
@@ -31,7 +31,7 @@ class AuthService {
     return _storageProvider.readData(passwordKey);
   }
 
-  Future<void> deleteUserCredentials() async {
+  Future<void> deleteUserData() async {
     await _storageProvider.deleteData(hostnameKey);
     await _storageProvider.deleteData(usernameKey);
     await _storageProvider.deleteData(passwordKey);
@@ -43,8 +43,8 @@ class AuthService {
         await _storageProvider.existsKey(passwordKey);
   }
 
-  Future<void> defaultCredentials() async {
-    return storeUserCredentials(photoprimDefaultServer, "", "");
+  Future<void> defaultPhotoprismServer() async {
+    return storeUserData(photoprimDefaultServer, "", "");
   }
 }
 

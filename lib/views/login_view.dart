@@ -90,7 +90,7 @@ class _LoginViewState extends State<LoginView> {
                       ElevatedButton(
                         key: const Key("loginbutton"),
                         onPressed: () async {
-                          await _authService.storeUserCredentials(
+                          await _authService.storeUserData(
                             _hostnameController.text,
                             _usernameController.text,
                             _passwordController.text,
