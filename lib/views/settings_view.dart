@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
+import 'package:mobileprism/services/storage/storage_exceptions.dart';
+import 'package:mobileprism/widgets/error_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -18,9 +20,16 @@ class _SettingsViewState extends State<SettingsView> {
   String username = "";
 
   Future<void> loadCredentials() async {
-    hostname = await _authService.getHostname();
-    username = await _authService.getUsername();
-    setState(() {});
+    try {
+      hostname = await _authService.getHostname();
+      username = await _authService.getUsername();
+      setState(() {});
+    } on KeyNotFoundInStorage {
+      await showErrorDialog(
+        context,
+        "Hostname and username not found",
+      );
+    }
   }
 
   @override

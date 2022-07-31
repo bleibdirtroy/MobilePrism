@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
+import 'package:mobileprism/services/storage/storage_exceptions.dart';
+import 'package:mobileprism/widgets/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -90,11 +92,18 @@ class _LoginViewState extends State<LoginView> {
                       ElevatedButton(
                         key: const Key("loginbutton"),
                         onPressed: () async {
-                          await _authService.storeUserData(
-                            _hostnameController.text,
-                            _usernameController.text,
-                            _passwordController.text,
-                          );
+                          try {
+                            await _authService.storeUserData(
+                              _hostnameController.text,
+                              _usernameController.text,
+                              _passwordController.text,
+                            );
+                          } on KeyAlreadyExistsInStorage {
+                            await showErrorDialog(
+                              context,
+                              "Userdata already stored",
+                            );
+                          }
                           if (!mounted) return;
                           Navigator.pushReplacementNamed(
                             context,
