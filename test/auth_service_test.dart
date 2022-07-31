@@ -12,9 +12,9 @@ void main() {
       final AuthService authService = AuthService(MockStorageProvider());
       await authService.storeUserCredentials(hostname, username, password);
 
-      expect(await authService.readHostname(), hostname);
-      expect(await authService.readUsername(), username);
-      expect(await authService.readPassword(), password);
+      expect(await authService.getHostname(), hostname);
+      expect(await authService.getUsername(), username);
+      expect(await authService.getPassword(), password);
 
       expect(await authService.isUserdataStored(), true);
 
@@ -33,17 +33,17 @@ void main() {
       await authService.deleteUserCredentials();
       expect(await authService.isUserdataStored(), false);
       try {
-        await authService.readHostname();
+        await authService.getHostname();
       } catch (e) {
         expect(e, isA<KeyNotFoundInStorage>());
       }
       try {
-        await authService.readUsername();
+        await authService.getUsername();
       } catch (e) {
         expect(e, isA<KeyNotFoundInStorage>());
       }
       try {
-        await authService.readPassword();
+        await authService.getPassword();
       } catch (e) {
         expect(e, isA<KeyNotFoundInStorage>());
       }

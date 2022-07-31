@@ -1,3 +1,4 @@
+import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/services/storage/secure_storage_provider.dart';
 import 'package:mobileprism/services/storage/storage_provider.dart';
 
@@ -18,15 +19,15 @@ class AuthService {
     await _storageProvider.storeData(passwordKey, password);
   }
 
-  Future<String> readHostname() {
+  Future<String> getHostname() {
     return _storageProvider.readData(hostnameKey);
   }
 
-  Future<String> readUsername() {
+  Future<String> getUsername() {
     return _storageProvider.readData(usernameKey);
   }
 
-  Future<String> readPassword() {
+  Future<String> getPassword() {
     return _storageProvider.readData(passwordKey);
   }
 
@@ -40,6 +41,10 @@ class AuthService {
     return await _storageProvider.existsKey(hostnameKey) &&
         await _storageProvider.existsKey(usernameKey) &&
         await _storageProvider.existsKey(passwordKey);
+  }
+
+  Future<void> defaultCredentials() async {
+    return storeUserCredentials(photoprimDefaultServer, "", "");
   }
 }
 

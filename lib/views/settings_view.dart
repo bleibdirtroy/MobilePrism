@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/routes.dart';
+import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -12,6 +13,22 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  final AuthService _authService = AuthService.secureStorage();
+  String hostname = "";
+  String username = "";
+
+  Future<void> loadCredentials() async {
+    hostname = await _authService.getHostname();
+    username = await _authService.getUsername();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    loadCredentials();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,9 +37,21 @@ class _SettingsViewState extends State<SettingsView> {
         children: [
           const Text("Settings"),
           ListTile(
+            leading: const Icon(Icons.language),
+            title: const Text("Hostname"),
+            subtitle: Text(hostname),
+          ),
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text("Username"),
+            subtitle: Text(username),
+          ),
+          ListTile(
             leading: const Icon(Icons.key),
             title: const Text("Back to Login"),
             onTap: () async {
+              await _authService.deleteUserCredentials();
+              if (!mounted) return;
               Navigator.of(context).pushReplacementNamed(loginRoute);
             },
           ),
