@@ -36,7 +36,7 @@ class AuthService {
     await _storageProvider.deleteData(passwordKey);
   }
 
-  Future<bool> isUserLoggedIn() async {
+  Future<bool> isUserdataStored() async {
     return await _storageProvider.existsKey(hostnameKey) &&
         await _storageProvider.existsKey(usernameKey) &&
         await _storageProvider.existsKey(passwordKey);
