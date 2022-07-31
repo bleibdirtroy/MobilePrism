@@ -2,10 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/routes.dart';
+import 'package:mobileprism/services/storage/secure_storage_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  final SecureStorageService _secureStorageService = SecureStorageService();
+
+  Future<void> deleteStorage() async {
+    await _secureStorageService.deleteAllData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +29,11 @@ class SettingsView extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.key),
             title: const Text("Back to Login"),
-            onTap: () => Navigator.of(context).pushReplacementNamed(loginRoute),
+            onTap: () async {
+              await deleteStorage();
+              if (!mounted) return;
+              Navigator.of(context).pushReplacementNamed(loginRoute);
+            },
           ),
           const Divider(color: Colors.white),
           const Text("About us"),

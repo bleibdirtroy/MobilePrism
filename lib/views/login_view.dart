@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/routes.dart';
-import 'package:mobileprism/services/secure_storage/secure_storage_service.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -10,7 +9,6 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final SecureStorageService _secureStorageService = SecureStorageService();
   late final TextEditingController _hostnameController;
   late final TextEditingController _usernameController;
   late final TextEditingController _passwordController;
@@ -29,12 +27,6 @@ class _LoginViewState extends State<LoginView> {
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  Future<void> _storeCredentials() async {
-    await _secureStorageService.storeData("hostname", _hostnameController.text);
-    await _secureStorageService.storeData("username", _usernameController.text);
-    await _secureStorageService.storeData("password", _passwordController.text);
   }
 
   @override
@@ -96,7 +88,6 @@ class _LoginViewState extends State<LoginView> {
                       ElevatedButton(
                         key: const Key("loginbutton"),
                         onPressed: () async {
-                          await _storeCredentials();
                           if (!mounted) return;
                           Navigator.pushReplacementNamed(
                             context,
