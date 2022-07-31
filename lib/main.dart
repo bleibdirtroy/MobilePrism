@@ -5,17 +5,10 @@ import 'package:mobileprism/views/home_view.dart';
 import 'package:mobileprism/views/login_view.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
+class MyApp extends StatelessWidget {
   final AuthService _authService = AuthService.secureStorage();
 
   @override
