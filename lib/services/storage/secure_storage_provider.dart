@@ -1,5 +1,3 @@
-import 'dart:convert' show jsonDecode, jsonEncode;
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobileprism/services/storage/storage_exceptions.dart';
 import 'package:mobileprism/services/storage/storage_provider.dart';
@@ -20,22 +18,26 @@ class SecureStorageProvider implements StorageProvider {
   }
 
   @override
-  Future<void> storeData(String key, dynamic value) async {
+  Future<void> storeData(String key, String value) async {
     final storage = _isStorageInitialized();
     if (!await storage.containsKey(key: key, aOptions: _getAndroidOptions())) {
-      await storage.write(key: key, value: jsonEncode(value));
+      await storage.write(
+        key: key,
+        value: value,
+        aOptions: _getAndroidOptions(),
+      );
     } else {
       throw KeyAlreadyExistsInStorage();
     }
   }
 
   @override
-  Future<void> updateData(String key, Object value) async {
+  Future<void> updateData(String key, String value) async {
     final storage = _isStorageInitialized();
     if (await storage.containsKey(key: key, aOptions: _getAndroidOptions())) {
       await storage.write(
         key: key,
-        value: jsonEncode(value),
+        value: value,
         aOptions: _getAndroidOptions(),
       );
     } else {
@@ -44,12 +46,12 @@ class SecureStorageProvider implements StorageProvider {
   }
 
   @override
-  Future<T> readData<T>(String key) async {
+  Future<String> readData(String key) async {
     final storage = _isStorageInitialized();
     if (await storage.containsKey(key: key, aOptions: _getAndroidOptions())) {
       final String item =
           await storage.read(key: key, aOptions: _getAndroidOptions()) ?? "";
-      return jsonDecode(item) as T;
+      return item;
     } else {
       throw KeyNotFoundInStorage();
     }
@@ -58,13 +60,13 @@ class SecureStorageProvider implements StorageProvider {
   @override
   Future<bool> existsKey(String key) {
     final storage = _isStorageInitialized();
-    return storage.containsKey(key: key);
+    return storage.containsKey(key: key, aOptions: _getAndroidOptions());
   }
 
   @override
   Future<void> deleteData(String key) async {
     final storage = _isStorageInitialized();
-    await storage.delete(key: key);
+    await storage.delete(key: key, aOptions: _getAndroidOptions());
   }
 
   @override

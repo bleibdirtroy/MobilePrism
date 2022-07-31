@@ -1,4 +1,5 @@
 import 'package:mobileprism/services/storage/secure_storage_provider.dart';
+import 'package:mobileprism/services/storage/storage_exceptions.dart';
 import 'package:mobileprism/services/storage/storage_provider.dart';
 
 class AuthService {
@@ -19,11 +20,15 @@ class AuthService {
   }
 
   Future<String> readHostname() {
-    return _storageProvider.readData<String>(hostnameKey);
+    return _storageProvider.readData(hostnameKey);
   }
 
   Future<String> readUsername() {
-    return _storageProvider.readData<String>(usernameKey);
+    return _storageProvider.readData(usernameKey);
+  }
+
+  Future<String> readPassword() {
+    return _storageProvider.readData(passwordKey);
   }
 
   Future<void> deleteUserCredentials() async {
