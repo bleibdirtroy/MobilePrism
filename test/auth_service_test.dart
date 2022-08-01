@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/storage/storage_exceptions.dart';
 import 'package:mobileprism/services/storage/storage_provider.dart';
