@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/storage/storage_exceptions.dart';
 import 'package:mobileprism/services/storage/storage_provider.dart';
@@ -8,7 +9,7 @@ const String username = "bleibdirtroy";
 const String password = "mySecretPassword";
 void main() {
   group("Test AuthService", () {
-    test("Store credentials", () async {
+    test("Store user data", () async {
       final AuthService authService = AuthService(MockStorageProvider());
       await authService.storeUserData(hostname, username, password);
 
@@ -25,7 +26,7 @@ void main() {
       }
     });
 
-    test("Delete credentials", () async {
+    test("Delete user data", () async {
       final AuthService authService = AuthService(MockStorageProvider());
       await authService.storeUserData(hostname, username, password);
       expect(await authService.isUserdataStored(), true);
