@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/routes.dart';
-import 'package:mobileprism/services/database_service.dart';
 import 'package:mobileprism/views/home_view.dart';
 import 'package:mobileprism/views/login_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final bool dbIsOpen = await setupAndOpenDb();
-  if (dbIsOpen) {
-    runApp(const MyApp());
-  }
-  
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
