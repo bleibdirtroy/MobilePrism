@@ -1,10 +1,14 @@
 import 'dart:async';
 
+// import 'package:mobileprism/services/database/album_data_entry.dart';
+// import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 late final Database? _database;
+
+class DbNotOpenException implements Exception {}
 
 Future<Database> _initDb() async {
   try {
@@ -34,7 +38,8 @@ Future<Database> _initDb() async {
     );
   } on MissingPlatformDirectoryException {
     throw MissingPlatformDirectoryException(
-        "Could not get platform directory to create database");
+      "Could not get platform directory to create database",
+    );
   }
 }
 
@@ -48,23 +53,55 @@ Future<Database> _openDb() async {
 }
 
 class DatabaseService {
-  late final Future<Database> _databaseRef;
+  late final Database? _db;
 
-  DatabaseService() {
-    _databaseRef = _openDb();
+  DatabaseService();
+
+  DatabaseService.test(this._db);
+
+  Future<bool> openDB() async {
+    _db = await _openDb();
+    return _db!.isOpen;
   }
 
-  DatabaseService.test(this._databaseRef);
+  // Database _getOpenDb() {
+  //   if (_db != null && _db!.isOpen) {
+  //     return _db!;
+  //   } else {
+  //     throw DbNotOpenException();
+  //   }
+  // }
 
-  Future<bool> isOpen() async {
-    final db = await _databaseRef;
-    return db.isOpen;
-  }
+  // Future<void> _delete(String id, String table) async {
+  //   final db = _getOpenDb();
+  // }
 
-  Future<void> executeQuery(String query) async {
-    final db = await _databaseRef;
-    db.execute(
-      query,
-    );
-  }
+  // Future<void> _insert(String table) async {
+  //   final db = _getOpenDb();
+  // }
+
+  // Future<void> _update(String id, String table) async {
+  //   final db = _getOpenDb();
+  // }
+
+  // Future<void> _read(String id, String table) async {
+  //   final db = _getOpenDb();
+  // }
+
+  // Future<PhotoDataEntry> getPhoto(String photoId);
+
+  // Future<List<Map<int, int>> getTimlineAlbums();
+
+  // Future<List<PhotoDataEntry>> getPhotosByDateRange(int start, int end);
+
+  // Future<List<PhotoDataEntry>> getAlbumPhotos(String albumId);
+
+  // Future<List<AlbumDataEntry>> getAlbums();
+
+  // Future<List<PhotoDataEntry>> getAllPhotos();
+
+  // Future<void> insertPhotos(List<PhotoDataEntry> photoDataEntrys);
+
+  // Future<void> insertAlbums(List<PhotoDataEntry> photoDataEntrys);
+
 }
