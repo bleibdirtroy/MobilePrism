@@ -6,7 +6,8 @@ class SecureStorageProvider implements StorageProvider {
   FlutterSecureStorage? _storage;
 
   SecureStorageProvider() {
-    _storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
+    _storage = FlutterSecureStorage(
+        aOptions: _getAndroidOptions(), iOptions: _getIOSOptions());
   }
 
   FlutterSecureStorage _isStorageInitialized() {
@@ -20,11 +21,16 @@ class SecureStorageProvider implements StorageProvider {
   @override
   Future<void> storeData(String key, String value) async {
     final storage = _isStorageInitialized();
-    if (!await storage.containsKey(key: key, aOptions: _getAndroidOptions())) {
+    print("storeData");
+    print("key: $key");
+    print("value: $value \n");
+    if (!await storage.containsKey(
+        key: key, aOptions: _getAndroidOptions(), iOptions: _getIOSOptions())) {
       await storage.write(
         key: key,
         value: value,
         aOptions: _getAndroidOptions(),
+        iOptions: _getIOSOptions(),
       );
     } else {
       throw KeyAlreadyExistsInStorage();
@@ -34,11 +40,16 @@ class SecureStorageProvider implements StorageProvider {
   @override
   Future<void> updateData(String key, String value) async {
     final storage = _isStorageInitialized();
-    if (await storage.containsKey(key: key, aOptions: _getAndroidOptions())) {
+    print("updateData");
+    print("key: $key");
+    print("value: $value \n");
+    if (await storage.containsKey(
+        key: key, aOptions: _getAndroidOptions(), iOptions: _getIOSOptions())) {
       await storage.write(
         key: key,
         value: value,
         aOptions: _getAndroidOptions(),
+        iOptions: _getIOSOptions(),
       );
     } else {
       throw KeyNotFoundInStorage();
@@ -48,9 +59,16 @@ class SecureStorageProvider implements StorageProvider {
   @override
   Future<String> readData(String key) async {
     final storage = _isStorageInitialized();
-    if (await storage.containsKey(key: key, aOptions: _getAndroidOptions())) {
-      final String item =
-          await storage.read(key: key, aOptions: _getAndroidOptions()) ?? "";
+    print("readData");
+    print("key: $key");
+    if (await storage.containsKey(
+        key: key, aOptions: _getAndroidOptions(), iOptions: _getIOSOptions())) {
+      final String item = await storage.read(
+              key: key,
+              aOptions: _getAndroidOptions(),
+              iOptions: _getIOSOptions()) ??
+          "";
+      print("item: $item");
       return item;
     } else {
       throw KeyNotFoundInStorage();
@@ -58,24 +76,39 @@ class SecureStorageProvider implements StorageProvider {
   }
 
   @override
-  Future<bool> existsKey(String key) {
+  Future<bool> existsKey(String key) async {
     final storage = _isStorageInitialized();
-    return storage.containsKey(key: key, aOptions: _getAndroidOptions());
+    print("existsKey");
+    print("key: $key");
+    final exists = await storage.containsKey(
+        key: key, aOptions: _getAndroidOptions(), iOptions: _getIOSOptions());
+    print("exists: $exists");
+    return exists;
   }
 
   @override
   Future<void> deleteData(String key) async {
     final storage = _isStorageInitialized();
-    await storage.delete(key: key, aOptions: _getAndroidOptions());
+    print("deleteData");
+    print("key: $key");
+    await storage.delete(
+        key: key, aOptions: _getAndroidOptions(), iOptions: _getIOSOptions());
   }
 
   @override
   Future<void> deleteAllData() async {
     final storage = _isStorageInitialized();
-    await storage.deleteAll(aOptions: _getAndroidOptions());
+    print("deleteAllData");
+    print("deleteAll");
+    await storage.deleteAll(
+        aOptions: _getAndroidOptions(), iOptions: _getIOSOptions());
   }
 
   AndroidOptions _getAndroidOptions() => const AndroidOptions(
         encryptedSharedPreferences: true,
+      );
+
+  IOSOptions _getIOSOptions() => const IOSOptions(
+        accessibility: IOSAccessibility.first_unlock,
       );
 }

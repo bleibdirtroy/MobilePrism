@@ -48,6 +48,6 @@ class AuthService {
   }
 }
 
-const hostnameKey = "hostname";
-const usernameKey = "username";
-const passwordKey = "password";
+const hostnameKey = "ajhfbjs";
+const usernameKey = "adjhbcvjadsc";
+const passwordKey = "dksahcbhjdbc";
