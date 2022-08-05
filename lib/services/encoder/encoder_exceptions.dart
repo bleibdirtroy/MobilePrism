@@ -1,0 +1,1 @@
+class ResponseNotParsableException implements Exception {}

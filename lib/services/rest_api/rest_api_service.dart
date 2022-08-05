@@ -13,6 +13,8 @@ const qualityQueryParameter = "quality";
 const albumQueryParameter = "album";
 const mergedQueryParameter = "merged";
 const filterQueryParameter = "filter";
+const hashQueryParameter = "hash";
+const uidQueryParameter = "uid";
 const headers = {"User-Agent": "$applicationName/$applicationVersion"};
 
 class RestApiService {
@@ -54,6 +56,16 @@ class RestApiService {
       ),
       headers: headers,
     );
+    return response.body;
+  }
+
+  Future<String> getPhoto({
+    String? uid,
+    String? hash,
+  }) async {
+    final response = await http
+        .get(buildPhotosUrl(count: 1, hash: hash, uid: uid), headers: headers);
+
     return response.body;
   }
 
@@ -140,6 +152,8 @@ class RestApiService {
     OrderType? orderType,
     int? month,
     int? year,
+    String? hash,
+    String? uid,
   }) {
     String query = Uri(
       queryParameters: {
@@ -148,6 +162,8 @@ class RestApiService {
         offsetQueryParameter: offset?.toString() ?? "",
         mergedQueryParameter: merged?.toString() ?? "",
         orderQueryParameter: orderType?.toShortString() ?? "",
+        hashQueryParameter: hash ?? "",
+        uidQueryParameter: uid ?? "",
       },
     ).query;
 
