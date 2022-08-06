@@ -7,3 +7,9 @@ enum PhotoFormat {
   tile_500,
   tile_100,
 }
+
+extension ParseToString on Enum {
+  String toShortString() {
+    return toString().split('.').last;
+  }
+}

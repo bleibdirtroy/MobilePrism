@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:mobileprism/services/database/database_service.dart';
+import 'package:mobileprism/services/rest_api/photo_format.dart';
 
 class PhotoDataEntry {
   late final String uid;
@@ -11,7 +10,7 @@ class PhotoDataEntry {
   late final String? imageQuality;
   late final double? lat;
   late final double? long;
-  late final Int64? timestamp;
+  late final int? timestamp;
 
   PhotoDataEntry({
     required this.uid,
@@ -39,6 +38,7 @@ class PhotoDataEntry {
       } else {
         width = null;
       }
+      width = data["width"] is int ? data["width"]! as int : null;
 
       if (data["height"] is int) {
         height = data["height"]! as int;
@@ -71,7 +71,7 @@ class PhotoDataEntry {
       }
 
       if (data["timestamp"] is num) {
-        timestamp = data["timestamp"]! as Int64;
+        timestamp = int.parse(data["timestamp"]!.toString());
       } else {
         timestamp = null;
       }
@@ -93,4 +93,16 @@ class PhotoDataEntry {
       "timestamp": timestamp
     };
   }
+
+  PhotoDataEntry.fromJson(Map<String, dynamic> json)
+      : uid = json["UID"].toString(),
+        panorama = json["Panorama"] == "true",
+        width = int.parse(json["Width"].toString()),
+        height = int.parse(json["Height"].toString()),
+        imageHash = json["Hash"].toString(),
+        imageQuality = PhotoFormat.fit_7680.toShortString(),
+        lat = double.parse(json["Lat"].toString()),
+        long = double.parse(json["Lng"].toString()),
+        timestamp =
+            DateTime.parse(json["TakenAt"].toString()).millisecondsSinceEpoch;
 }

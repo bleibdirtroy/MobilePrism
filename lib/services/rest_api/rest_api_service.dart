@@ -174,9 +174,3 @@ class RestApiService {
     return Uri.parse("$photoPrismUrl$photoprismApiPath/photos?$query");
   }
 }
-
-extension ParseToString on Enum {
-  String toShortString() {
-    return toString().split('.').last;
-  }
-}
