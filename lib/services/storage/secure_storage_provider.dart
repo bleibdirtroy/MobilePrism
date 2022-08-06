@@ -109,6 +109,7 @@ class SecureStorageProvider implements StorageProvider {
       );
 
   IOSOptions _getIOSOptions() => const IOSOptions(
+        accountName: "mobileprism",
         accessibility: IOSAccessibility.first_unlock,
       );
 }
