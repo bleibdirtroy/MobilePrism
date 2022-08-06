@@ -27,6 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  collection: ^1.16.0
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
@@ -37,7 +38,10 @@ dependencies:
   http: ^0.13.4
   intl: ^0.17.0
   latlong2: ^0.8.1
+  path: ^1.8.1
+  path_provider: ^2.0.11
   photo_view: ^0.14.0
+  sqflite: ^2.0.3
   sticky_headers: ^0.3.0+2
   url_launcher: ^6.1.5
 
