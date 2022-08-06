@@ -28,10 +28,9 @@ class SqlFilter {
 
   @override
   String toString() {
-    if (comparator == null){
+    if (comparator == null) {
       return '("$column" $operator ?)';
-    }
-    else {
+    } else {
       return ' $comparator ("$column" $operator ?)';
     }
   }
@@ -144,17 +143,22 @@ class DatabaseService {
   //   );
   // }
 
-  Future<List<Object?>> _batchInsert (String table, List<Map<String, dynamic>> dataList) async {
+  Future<List<Object?>> _batchInsert(
+    String table,
+    List<Map<String, dynamic>> dataList,
+  ) async {
     final db = _getOpenDb();
     final batch = db.batch();
-    for (final data in dataList){
+    for (final data in dataList) {
       batch.insert(photoDataTableName, data);
     }
     return batch.commit();
   }
 
-  Future<List<Map<String, Object?>>> _read(String table,
-      {List<SqlFilter>? filters}) async {
+  Future<List<Map<String, Object?>>> _read(
+    String table, {
+    List<SqlFilter>? filters,
+  }) async {
     final db = _getOpenDb();
     if (filters != null) {
       final filterString = assembleFilterString(filters);
@@ -175,8 +179,9 @@ class DatabaseService {
         await _read(photoDataTableName, filters: filter);
     if (res.length == 1) {
       return res.map((e) => PhotoDataEntry.fromMap(e)).first;
-    } 
-    else {throw DuplicateKeyException();}
+    } else {
+      throw DuplicateKeyException();
+    }
   }
 
   Future<Map<int, Set<int>>> getTimlineAlbums() async {
@@ -196,30 +201,35 @@ class DatabaseService {
   }
 
   Future<List<PhotoDataEntry>> getPhotosByDateRange(int start, int end) async {
-    final List<SqlFilter> filters = [SqlFilter('timestamp', '>=', start as String), 
-      SqlFilter('timestamp', '=<', end as String, comparator: "AND")];
-    final List<Map<String, Object?>> res = await _read(photoDataTableName, filters: filters);
+    final List<SqlFilter> filters = [
+      SqlFilter('timestamp', '>=', start as String),
+      SqlFilter('timestamp', '=<', end as String, comparator: "AND")
+    ];
+    final List<Map<String, Object?>> res =
+        await _read(photoDataTableName, filters: filters);
     return res.map((e) => PhotoDataEntry.fromMap(e)).toList();
   }
 
   Future<List<PhotoDataEntry>> getAlbumPhotos(String albumId) async {
     final List<SqlFilter> albumFilter = [SqlFilter('uid', '>=', albumId)];
-    final List<Map<String, Object?>> albumRes = await _read(albumDataTableName, filters: albumFilter);
-    final albumDataList = albumRes.map((e) => AlbumDataEntry.fromMap(e)).toList();
-    if (albumDataList.length ==  1){
+    final List<Map<String, Object?>> albumRes =
+        await _read(albumDataTableName, filters: albumFilter);
+    final albumDataList =
+        albumRes.map((e) => AlbumDataEntry.fromMap(e)).toList();
+    if (albumDataList.length == 1) {
       final albumEntry = albumDataList.first;
-      if (albumEntry.photoUids != null){
+      if (albumEntry.photoUids != null) {
         final List<String> photoUids = albumEntry.photoUids!;
         final String listString = "(${photoUids.reduce((v, e) => "$v, $e")})";
         final photoFilter = [SqlFilter("uid", "IN", listString)];
         final photoRes = await _read(photoDataTableName, filters: photoFilter);
         return photoRes.map((e) => PhotoDataEntry.fromMap(e)).toList();
-      }
-      else {
+      } else {
         throw FieldsMissingException();
       }
+    } else {
+      throw DuplicateKeyException();
     }
-    else {throw DuplicateKeyException();}
   }
 
   Future<List<AlbumDataEntry>> getAlbums() async {
@@ -232,12 +242,14 @@ class DatabaseService {
     return res.map((e) => PhotoDataEntry.fromMap(e)).toList();
   }
 
-  Future<List<Object?>> insertPhotos(List<PhotoDataEntry> photoDataEntrys) async {
+  Future<List<Object?>> insertPhotos(
+    List<PhotoDataEntry> photoDataEntrys,
+  ) async {
     final dataList = photoDataEntrys.map((e) => e.toMap()).toList();
     return _batchInsert(photoDataTableName, dataList);
   }
 
-  Future<List<Object?>> insertAlbums(List<AlbumDataEntry> albumDataEntrys){
+  Future<List<Object?>> insertAlbums(List<AlbumDataEntry> albumDataEntrys) {
     final dataList = albumDataEntrys.map((e) => e.toMap()).toList();
     return _batchInsert(albumDataTableName, dataList);
   }

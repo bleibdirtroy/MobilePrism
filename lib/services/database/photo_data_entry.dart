@@ -80,7 +80,7 @@ class PhotoDataEntry {
     }
   }
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     return {
       "uid": uid,
       "panorama": panorama,
@@ -89,9 +89,8 @@ class PhotoDataEntry {
       "imageHash": imageHash,
       "image_quality": imageQuality,
       "lat": lat,
-      "long": long, 
+      "long": long,
       "timestamp": timestamp
     };
   }
-
 }
