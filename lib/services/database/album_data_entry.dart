@@ -30,7 +30,7 @@ class AlbumDataEntry {
     }
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap(){
     return {
       "uid": uid,
       "photo_uids": photoUids,
