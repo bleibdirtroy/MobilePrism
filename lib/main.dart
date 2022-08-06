@@ -4,8 +4,7 @@ import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/views/home_view.dart';
 import 'package:mobileprism/views/login_view.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() {
   runApp(MyApp());
 }
 
