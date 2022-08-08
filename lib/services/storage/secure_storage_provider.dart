@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobileprism/services/storage/storage_exceptions.dart';
 import 'package:mobileprism/services/storage/storage_provider.dart';
@@ -7,7 +9,9 @@ class SecureStorageProvider implements StorageProvider {
 
   SecureStorageProvider() {
     _storage = FlutterSecureStorage(
-        aOptions: _getAndroidOptions(), iOptions: _getIOSOptions());
+      aOptions: _getAndroidOptions(),
+      iOptions: _getIOSOptions(),
+    );
   }
 
   FlutterSecureStorage _isStorageInitialized() {
@@ -21,11 +25,14 @@ class SecureStorageProvider implements StorageProvider {
   @override
   Future<void> storeData(String key, String value) async {
     final storage = _isStorageInitialized();
-    print("storeData");
-    print("key: $key");
-    print("value: $value \n");
+    log("storeData");
+    log("key: $key");
+    log("value: $value \n");
     if (!await storage.containsKey(
-        key: key, aOptions: _getAndroidOptions(), iOptions: _getIOSOptions())) {
+      key: key,
+      aOptions: _getAndroidOptions(),
+      iOptions: _getIOSOptions(),
+    )) {
       await storage.write(
         key: key,
         value: value,
@@ -40,11 +47,14 @@ class SecureStorageProvider implements StorageProvider {
   @override
   Future<void> updateData(String key, String value) async {
     final storage = _isStorageInitialized();
-    print("updateData");
-    print("key: $key");
-    print("value: $value \n");
+    log("updateData");
+    log("key: $key");
+    log("value: $value \n");
     if (await storage.containsKey(
-        key: key, aOptions: _getAndroidOptions(), iOptions: _getIOSOptions())) {
+      key: key,
+      aOptions: _getAndroidOptions(),
+      iOptions: _getIOSOptions(),
+    )) {
       await storage.write(
         key: key,
         value: value,
@@ -59,16 +69,20 @@ class SecureStorageProvider implements StorageProvider {
   @override
   Future<String> readData(String key) async {
     final storage = _isStorageInitialized();
-    print("readData");
-    print("key: $key");
+    log("readData");
+    log("key: $key");
     if (await storage.containsKey(
-        key: key, aOptions: _getAndroidOptions(), iOptions: _getIOSOptions())) {
+      key: key,
+      aOptions: _getAndroidOptions(),
+      iOptions: _getIOSOptions(),
+    )) {
       final String item = await storage.read(
-              key: key,
-              aOptions: _getAndroidOptions(),
-              iOptions: _getIOSOptions()) ??
+            key: key,
+            aOptions: _getAndroidOptions(),
+            iOptions: _getIOSOptions(),
+          ) ??
           "";
-      print("item: $item");
+      log("item: $item");
       return item;
     } else {
       throw KeyNotFoundInStorage();
@@ -78,30 +92,38 @@ class SecureStorageProvider implements StorageProvider {
   @override
   Future<bool> existsKey(String key) async {
     final storage = _isStorageInitialized();
-    print("existsKey");
-    print("key: $key");
+    log("existsKey");
+    log("key: $key");
     final exists = await storage.containsKey(
-        key: key, aOptions: _getAndroidOptions(), iOptions: _getIOSOptions());
-    print("exists: $exists");
+      key: key,
+      aOptions: _getAndroidOptions(),
+      iOptions: _getIOSOptions(),
+    );
+    log("exists: $exists");
     return exists;
   }
 
   @override
   Future<void> deleteData(String key) async {
     final storage = _isStorageInitialized();
-    print("deleteData");
-    print("key: $key");
+    log("deleteData");
+    log("key: $key");
     await storage.delete(
-        key: key, aOptions: _getAndroidOptions(), iOptions: _getIOSOptions());
+      key: key,
+      aOptions: _getAndroidOptions(),
+      iOptions: _getIOSOptions(),
+    );
   }
 
   @override
   Future<void> deleteAllData() async {
     final storage = _isStorageInitialized();
-    print("deleteAllData");
-    print("deleteAll");
+    log("deleteAllData");
+    log("deleteAll");
     await storage.deleteAll(
-        aOptions: _getAndroidOptions(), iOptions: _getIOSOptions());
+      aOptions: _getAndroidOptions(),
+      iOptions: _getIOSOptions(),
+    );
   }
 
   AndroidOptions _getAndroidOptions() => const AndroidOptions(
