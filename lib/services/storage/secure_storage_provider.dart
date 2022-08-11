@@ -5,13 +5,10 @@ import 'package:mobileprism/services/storage/storage_exceptions.dart';
 import 'package:mobileprism/services/storage/storage_provider.dart';
 
 class SecureStorageProvider implements StorageProvider {
-  FlutterSecureStorage? _storage;
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   SecureStorageProvider() {
-    _storage = FlutterSecureStorage(
-      aOptions: _getAndroidOptions(),
-      iOptions: _getIOSOptions(),
-    );
+    //_storage = const FlutterSecureStorage();
   }
 
   FlutterSecureStorage _isStorageInitialized() {
