@@ -7,30 +7,19 @@ import 'package:mobileprism/services/storage/storage_provider.dart';
 class SecureStorageProvider implements StorageProvider {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  SecureStorageProvider() {
-    //_storage = const FlutterSecureStorage();
-  }
-
-  FlutterSecureStorage _isStorageInitialized() {
-    if (_storage == null) {
-      throw StorageIsNotInitialized();
-    } else {
-      return _storage!;
-    }
-  }
+  SecureStorageProvider();
 
   @override
   Future<void> storeData(String key, String value) async {
-    final storage = _isStorageInitialized();
     log("storeData");
     log("key: $key");
     log("value: $value \n");
-    if (!await storage.containsKey(
+    if (!await _storage.containsKey(
       key: key,
       aOptions: _getAndroidOptions(),
       iOptions: _getIOSOptions(),
     )) {
-      await storage.write(
+      await _storage.write(
         key: key,
         value: value,
         aOptions: _getAndroidOptions(),
@@ -43,16 +32,15 @@ class SecureStorageProvider implements StorageProvider {
 
   @override
   Future<void> updateData(String key, String value) async {
-    final storage = _isStorageInitialized();
     log("updateData");
     log("key: $key");
     log("value: $value \n");
-    if (await storage.containsKey(
+    if (await _storage.containsKey(
       key: key,
       aOptions: _getAndroidOptions(),
       iOptions: _getIOSOptions(),
     )) {
-      await storage.write(
+      await _storage.write(
         key: key,
         value: value,
         aOptions: _getAndroidOptions(),
@@ -65,15 +53,14 @@ class SecureStorageProvider implements StorageProvider {
 
   @override
   Future<String> readData(String key) async {
-    final storage = _isStorageInitialized();
     log("readData");
     log("key: $key");
-    if (await storage.containsKey(
+    if (await _storage.containsKey(
       key: key,
       aOptions: _getAndroidOptions(),
       iOptions: _getIOSOptions(),
     )) {
-      final String item = await storage.read(
+      final String item = await _storage.read(
             key: key,
             aOptions: _getAndroidOptions(),
             iOptions: _getIOSOptions(),
@@ -88,10 +75,9 @@ class SecureStorageProvider implements StorageProvider {
 
   @override
   Future<bool> existsKey(String key) async {
-    final storage = _isStorageInitialized();
     log("existsKey");
     log("key: $key");
-    final exists = await storage.containsKey(
+    final exists = await _storage.containsKey(
       key: key,
       aOptions: _getAndroidOptions(),
       iOptions: _getIOSOptions(),
@@ -102,10 +88,9 @@ class SecureStorageProvider implements StorageProvider {
 
   @override
   Future<void> deleteData(String key) async {
-    final storage = _isStorageInitialized();
     log("deleteData");
     log("key: $key");
-    await storage.delete(
+    await _storage.delete(
       key: key,
       aOptions: _getAndroidOptions(),
       iOptions: _getIOSOptions(),
@@ -114,10 +99,9 @@ class SecureStorageProvider implements StorageProvider {
 
   @override
   Future<void> deleteAllData() async {
-    final storage = _isStorageInitialized();
     log("deleteAllData");
     log("deleteAll");
-    await storage.deleteAll(
+    await _storage.deleteAll(
       aOptions: _getAndroidOptions(),
       iOptions: _getIOSOptions(),
     );
