@@ -9,6 +9,24 @@ import 'package:sqflite/sqflite.dart';
 
 const String photoDataTableName = "photo_data";
 const String albumDataTableName = "album_data";
+const String keyCrosstableName = "key_crosstable";
+const String photoTableCreationStrg = 
+  '''
+      CREATE TABLE IF NOT EXISTS $photoDataTableName(uid TEXT PRIMARY KEY, 
+      panorama INTEGER, width INTEGER, height INTEGER,
+      image_hash TEXT, image_quality TEXT, lat REAL, long REAL, 
+      timestamp INETEGER)
+    ''';
+const String albumTableCreationStrg = 
+  '''
+    CREATE TABLE IF NOT EXISTS $albumDataTableName(uid TEXT PRIMARY KEY, 
+    photo_uids TEXT, title TEXT, thumb_uid TEXT)
+  ''';
+const String keyCrosstableCreationStrg = 
+  '''
+    CREATE TABLE IF NOT EXISTS $keyCrosstableName(photo_key Text, album_key Text)
+  ''';
+// const String databaseConfigString = 'PRAGMA foreign_keys = ON';
 
 late final Database? _database;
 
@@ -42,13 +60,13 @@ Future<Database> _initDb() async {
     return openDatabase(
       join(dbPath, 'meta_data_db.db'),
       onCreate: (db, version) async {
-        createPhotoDataTable(db);
-        createAlbumDataTable(db);
+        await _createPhotoDataTable(db);
+        await _createAlbumDataTable(db);
       },
       version: 1,
-      onConfigure: (db) async {
-        await db.execute('PRAGMA foreign_keys = ON');
-      },
+      // onConfigure: (db) async {
+      //   await db.execute(databaseConfigString);
+      // },
     );
   } on MissingPlatformDirectoryException {
     throw MissingPlatformDirectoryException(
@@ -57,23 +75,15 @@ Future<Database> _initDb() async {
   }
 }
 
-Future<void> createPhotoDataTable(Database db) async {
+Future<void> _createPhotoDataTable(Database db) async {
   await db.execute(
-    '''
-    CREATE TABLE IF NOT EXISTS $photoDataTableName(uid TEXT PRIMARY KEY, 
-    panorama INTEGER, width INTEGER, heigth INTEGER,
-    image_hash TEXT, image_quality TEXT, lat REAL, long REAL, 
-    timestamp INETEGER)
-  ''',
+    photoTableCreationStrg,
   );
 }
 
-Future<void> createAlbumDataTable(Database db) async {
+Future<void> _createAlbumDataTable(Database db) async {
   await db.execute(
-    '''
-      CREATE TABLE IF NOT EXISTS $albumDataTableName(uid TEXT PRIMARY KEY, 
-      photo_uids TEXT, title TEXT, FOREIGN KEY(thumb_uid) REFERENCES photo_data(uid))
-    ''',
+    albumTableCreationStrg,
   );
 }
 
@@ -99,11 +109,7 @@ class DatabaseService {
   }
 
   bool isOpen() {
-    if (_db != null && _db!.isOpen) {
-      return true;
-    } else {
-      return false;
-    }
+    return _db != null && _db!.isOpen;
   }
 
   Database _getOpenDb() {
@@ -150,7 +156,7 @@ class DatabaseService {
     final db = _getOpenDb();
     final batch = db.batch();
     for (final data in dataList) {
-      batch.insert(photoDataTableName, data);
+      batch.insert(table, data, conflictAlgorithm: ConflictAlgorithm.replace);
     }
     return batch.commit();
   }

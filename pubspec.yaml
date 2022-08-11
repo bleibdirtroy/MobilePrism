@@ -54,6 +54,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   lint: ^1.0.0
+  sqflite_common: ^2.2.1+1
+  sqflite_common_ffi: ^2.1.1+1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
