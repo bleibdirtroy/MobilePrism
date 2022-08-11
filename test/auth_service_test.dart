@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
-import 'package:mobileprism/services/storage/storage_exceptions.dart';
-import 'package:mobileprism/services/storage/storage_provider.dart';
+import 'package:mobileprism/services/key_value_storage/storage_exceptions.dart';
+import 'package:mobileprism/services/key_value_storage/storage_provider.dart';
 
 const String hostname = "127.0.0.1";
 const String username = "bleibdirtroy";

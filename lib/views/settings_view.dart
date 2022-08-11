@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
-import 'package:mobileprism/services/storage/storage_exceptions.dart';
+import 'package:mobileprism/services/key_value_storage/storage_exceptions.dart';
 import 'package:mobileprism/widgets/error_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 

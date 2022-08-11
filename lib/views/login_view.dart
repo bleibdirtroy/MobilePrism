@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
-import 'package:mobileprism/services/storage/storage_exceptions.dart';
+import 'package:mobileprism/services/key_value_storage/storage_exceptions.dart';
 import 'package:mobileprism/widgets/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -16,6 +16,7 @@ class _LoginViewState extends State<LoginView> {
   late final TextEditingController _hostnameController;
   late final TextEditingController _usernameController;
   late final TextEditingController _passwordController;
+  bool isHostnameEmpty = false;
 
   @override
   void initState() {
@@ -31,6 +32,12 @@ class _LoginViewState extends State<LoginView> {
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _checkHostname() {
+    _hostnameController.text.isEmpty
+        ? isHostnameEmpty = true
+        : isHostnameEmpty = false;
   }
 
   @override
@@ -63,8 +70,9 @@ class _LoginViewState extends State<LoginView> {
                   enableSuggestions: false,
                   autocorrect: false,
                   keyboardType: TextInputType.url,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Photoprism URL',
+                    errorText: isHostnameEmpty ? "URL is missing" : null,
                   ),
                   controller: _hostnameController,
                 ),
@@ -92,18 +100,16 @@ class _LoginViewState extends State<LoginView> {
                       ElevatedButton(
                         key: const Key("loginbutton"),
                         onPressed: () async {
-                          try {
-                            await _authService.storeUserData(
-                              _hostnameController.text,
-                              _usernameController.text,
-                              _passwordController.text,
-                            );
-                          } on KeyAlreadyExistsInStorage {
-                            await showErrorDialog(
-                              context,
-                              "Userdata already stored",
-                            );
+                          _checkHostname();
+                          if (isHostnameEmpty) {
+                            setState(() {});
+                            return;
                           }
+                          await _authService.storeUserData(
+                            _hostnameController.text,
+                            _usernameController.text,
+                            _passwordController.text,
+                          );
                           if (!mounted) return;
                           Navigator.pushReplacementNamed(
                             context,

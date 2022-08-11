@@ -1,6 +1,6 @@
 import 'package:mobileprism/constants/application.dart';
-import 'package:mobileprism/services/storage/secure_storage_provider.dart';
-import 'package:mobileprism/services/storage/storage_provider.dart';
+import 'package:mobileprism/services/key_value_storage/secure_storage_provider.dart';
+import 'package:mobileprism/services/key_value_storage/storage_provider.dart';
 
 class AuthService {
   final StorageProvider _storageProvider;
@@ -14,9 +14,17 @@ class AuthService {
     String username,
     String password,
   ) async {
-    await _storageProvider.storeData(hostnameKey, hostname);
-    await _storageProvider.storeData(usernameKey, username);
-    await _storageProvider.storeData(passwordKey, password);
+    await _storageProvider.existsKey(hostnameKey)
+        ? await _storageProvider.updateData(hostnameKey, hostname)
+        : await _storageProvider.storeData(hostnameKey, hostname);
+
+    await _storageProvider.existsKey(usernameKey)
+        ? await _storageProvider.updateData(usernameKey, username)
+        : await _storageProvider.storeData(usernameKey, username);
+
+    await _storageProvider.existsKey(passwordKey)
+        ? await _storageProvider.updateData(passwordKey, password)
+        : await _storageProvider.storeData(passwordKey, password);
   }
 
   Future<String> getHostname() {
