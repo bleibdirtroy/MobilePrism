@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobileprism/services/storage/storage_exceptions.dart';
@@ -77,13 +78,18 @@ class SecureStorageProvider implements StorageProvider {
   Future<bool> existsKey(String key) async {
     log("existsKey");
     log("key: $key");
-    final exists = await _storage.containsKey(
-      key: key,
-      aOptions: _getAndroidOptions(),
-      iOptions: _getIOSOptions(),
-    );
-    log("exists: $exists");
-    return exists;
+    if (Platform.isAndroid) {
+      final exists = await _storage.containsKey(
+        key: key,
+        aOptions: _getAndroidOptions(),
+        iOptions: _getIOSOptions(),
+      );
+      log("exists: $exists");
+      return exists;
+    } else {
+      final exists = await _storage.read(key: key) == "";
+      return !exists;
+    }
   }
 
   @override
