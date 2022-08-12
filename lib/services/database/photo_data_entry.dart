@@ -105,4 +105,9 @@ class PhotoDataEntry {
         long = double.parse(json["Lng"].toString()),
         timestamp =
             DateTime.parse(json["TakenAt"].toString()).millisecondsSinceEpoch;
+
+  @override
+  String toString() {
+    return "Photo: uid: $uid";
+  }
 }

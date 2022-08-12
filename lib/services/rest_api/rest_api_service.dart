@@ -85,6 +85,8 @@ class RestApiService {
         merged: merged,
         offset: offset,
         orderType: orderType,
+        month: month,
+        year: year,
       ),
       headers: headers,
     );

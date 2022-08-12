@@ -2,13 +2,14 @@ import 'package:mobileprism/services/database/database_service.dart';
 
 class AlbumDataEntry {
   late final String uid;
-  late final List<String>? photoUids;
+  late final List<String> photoUids;
   late final String title;
   late final String thumbUid;
+  late final String thumb;
 
   AlbumDataEntry({
     required this.uid,
-    this.photoUids,
+    required this.photoUids,
     required this.title,
     required this.thumbUid,
   });
@@ -23,7 +24,7 @@ class AlbumDataEntry {
       if (data["photo_uids"] is List<String>) {
         photoUids = data["photo_uids"]! as List<String>;
       } else {
-        photoUids = null;
+        photoUids = List<String>.empty(growable: true);
       }
     } else {
       throw FieldsMissingException();
