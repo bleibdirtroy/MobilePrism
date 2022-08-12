@@ -1,15 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/key_value_storage/storage_exceptions.dart';
 import 'package:mobileprism/services/key_value_storage/storage_provider.dart';
 
 const String hostname = "127.0.0.1";
 const String username = "bleibdirtroy";
+const String username2 = "bleibdirtroy2";
 const String password = "mySecretPassword";
 void main() {
-  group("Test AuthService", () {
+  group("Test AuthService on Android", () {
     test("Store user data", () async {
-      final AuthService authService = AuthService(MockStorageProvider());
+      final AuthService authService =
+          AuthService(MockStorageProvider.android());
       await authService.storeUserData(hostname, username, password);
 
       expect(await authService.getHostname(), hostname);
@@ -18,9 +21,31 @@ void main() {
 
       expect(await authService.isUserdataStored(), true);
     });
+    test("Override stored data", () async {
+      final AuthService authService =
+          AuthService(MockStorageProvider.android());
+      await authService.storeUserData(hostname, username, password);
+      await authService.storeUserData(hostname, username2, password);
+
+      expect(await authService.getHostname(), hostname);
+      expect(await authService.getUsername(), username2);
+      expect(await authService.getPassword(), password);
+
+      expect(await authService.isUserdataStored(), true);
+    });
+    test("Use public hostname", () async {
+      final AuthService authService = AuthService(MockStorageProvider.iOS());
+
+      await authService.defaultPhotoprismServer();
+
+      expect(await authService.getHostname(), photoprimDefaultServer);
+
+      expect(await authService.isUserdataStored(), true);
+    });
 
     test("Delete user data", () async {
-      final AuthService authService = AuthService(MockStorageProvider());
+      final AuthService authService =
+          AuthService(MockStorageProvider.android());
       await authService.storeUserData(hostname, username, password);
       expect(await authService.isUserdataStored(), true);
 
@@ -28,16 +53,80 @@ void main() {
       expect(await authService.isUserdataStored(), false);
       try {
         await authService.getHostname();
+        fail("exception not thrown");
       } catch (e) {
         expect(e, isA<KeyNotFoundInStorage>());
       }
       try {
         await authService.getUsername();
+        fail("exception not thrown");
       } catch (e) {
         expect(e, isA<KeyNotFoundInStorage>());
       }
       try {
         await authService.getPassword();
+        fail("exception not thrown");
+      } catch (e) {
+        expect(e, isA<KeyNotFoundInStorage>());
+      }
+    });
+  });
+  group("Test AuthService on iOS", () {
+    test("Store user data", () async {
+      final AuthService authService = AuthService(MockStorageProvider.iOS());
+
+      await authService.storeUserData(hostname, username, password);
+
+      expect(await authService.getHostname(), hostname);
+      expect(await authService.getUsername(), username);
+      expect(await authService.getPassword(), password);
+
+      expect(await authService.isUserdataStored(), true);
+    });
+    test("Use public hostname", () async {
+      final AuthService authService = AuthService(MockStorageProvider.iOS());
+
+      await authService.defaultPhotoprismServer();
+
+      expect(await authService.getHostname(), photoprimDefaultServer);
+
+      expect(await authService.isUserdataStored(), true);
+    });
+
+    test("Override stored data", () async {
+      final AuthService authService = AuthService(MockStorageProvider.iOS());
+      await authService.storeUserData(hostname, username, password);
+      await authService.storeUserData(hostname, username2, password);
+
+      expect(await authService.getHostname(), hostname);
+      expect(await authService.getUsername(), username2);
+      expect(await authService.getPassword(), password);
+
+      expect(await authService.isUserdataStored(), true);
+    });
+
+    test("Delete user data", () async {
+      final AuthService authService = AuthService(MockStorageProvider.iOS());
+      await authService.storeUserData(hostname, username, password);
+      expect(await authService.isUserdataStored(), true);
+
+      await authService.deleteUserData();
+      expect(await authService.isUserdataStored(), false);
+      try {
+        await authService.getHostname();
+        fail("exception not thrown");
+      } catch (e) {
+        expect(e, isA<KeyNotFoundInStorage>());
+      }
+      try {
+        await authService.getUsername();
+        fail("exception not thrown");
+      } catch (e) {
+        expect(e, isA<KeyNotFoundInStorage>());
+      }
+      try {
+        await authService.getPassword();
+        fail("exception not thrown");
       } catch (e) {
         expect(e, isA<KeyNotFoundInStorage>());
       }
@@ -46,47 +135,40 @@ void main() {
 }
 
 class MockStorageProvider implements StorageProvider {
-  bool existsHostnameKey = false;
-  bool existsUsernameKey = false;
-  bool existsPasswordKey = false;
+  final Map<String, dynamic> _storage;
+
+  MockStorageProvider(this._storage);
+
+  factory MockStorageProvider.iOS() => MockStorageProvider({
+        "hostname": null,
+        "username": null,
+        "password": null,
+      });
+
+  factory MockStorageProvider.android() => MockStorageProvider({});
 
   @override
   Future<void> deleteAllData() {
-    existsHostnameKey = existsUsernameKey = existsPasswordKey = false;
+    _storage.clear();
     return Future.value();
   }
 
   @override
   Future<void> deleteData(String key) {
-    if (key == 'hostname') {
-      existsHostnameKey = false;
-    } else if (key == 'username') {
-      existsUsernameKey = false;
-    } else if (key == 'password') {
-      existsPasswordKey = false;
-    }
+    _storage.remove(key);
     return Future.value();
   }
 
   @override
   Future<bool> existsKey(String key) {
-    if ((key == 'hostname' && existsHostnameKey) ||
-        (key == 'username' && existsUsernameKey) ||
-        (key == 'password' && existsPasswordKey)) {
-      return Future.value(true);
-    } else {
-      return Future.value(false);
-    }
+    final existsKey = _storage.containsKey(key);
+    return Future.value(existsKey);
   }
 
   @override
   Future<String> readData(String key) {
-    if (key == 'hostname' && existsHostnameKey) {
-      return Future.value(hostname);
-    } else if (key == 'username' && existsUsernameKey) {
-      return Future.value(username);
-    } else if (key == 'password' && existsPasswordKey) {
-      return Future.value(password);
+    if (_storage.containsKey(key)) {
+      return Future.value(_storage[key].toString());
     } else {
       throw KeyNotFoundInStorage();
     }
@@ -94,28 +176,21 @@ class MockStorageProvider implements StorageProvider {
 
   @override
   Future<void> storeData(String key, String value) {
-    if (key == "hostname" && !existsHostnameKey) {
-      existsHostnameKey = true;
+    if (!_storage.containsKey(key)) {
+      _storage[key] = value;
       return Future.value();
-    } else if (key == "username" && !existsUsernameKey) {
-      existsUsernameKey = true;
-      return Future.value();
-    } else if (key == "password" && !existsPasswordKey) {
-      existsPasswordKey = true;
-      return Future.value();
+    } else {
+      throw KeyAlreadyExistsInStorage();
     }
-    throw KeyAlreadyExistsInStorage();
   }
 
   @override
   Future<void> updateData(String key, String value) {
-    if (key == "hostname" && existsHostnameKey) {
-      existsHostnameKey = true;
-    } else if (key == "username" && existsUsernameKey) {
-      existsUsernameKey = true;
-    } else if (key == "password" && existsPasswordKey) {
-      existsPasswordKey = true;
+    if (_storage.containsKey(key)) {
+      _storage[key] = value;
+      return Future.value();
+    } else {
+      throw KeyNotFoundInStorage();
     }
-    return Future.value();
   }
 }
