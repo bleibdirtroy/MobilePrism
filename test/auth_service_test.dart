@@ -175,7 +175,13 @@ class MockStorageProvider implements StorageProvider {
   }
 
   @override
-  Future<void> storeData(String key, String value) {
+  Future<void> upsertData(String key, String value) {
+    _storage[key] = value;
+    return Future.value();
+  }
+
+  @override
+  Future<void> insertData(String key, String value) {
     if (!_storage.containsKey(key)) {
       _storage[key] = value;
       return Future.value();

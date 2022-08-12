@@ -14,17 +14,9 @@ class AuthService {
     String username,
     String password,
   ) async {
-    await _storageProvider.existsKey(hostnameKey)
-        ? await _storageProvider.updateData(hostnameKey, hostname)
-        : await _storageProvider.storeData(hostnameKey, hostname);
-
-    await _storageProvider.existsKey(usernameKey)
-        ? await _storageProvider.updateData(usernameKey, username)
-        : await _storageProvider.storeData(usernameKey, username);
-
-    await _storageProvider.existsKey(passwordKey)
-        ? await _storageProvider.updateData(passwordKey, password)
-        : await _storageProvider.storeData(passwordKey, password);
+    await _storageProvider.upsertData(hostnameKey, hostname);
+    await _storageProvider.upsertData(usernameKey, username);
+    await _storageProvider.upsertData(passwordKey, password);
   }
 
   Future<String> getHostname() {

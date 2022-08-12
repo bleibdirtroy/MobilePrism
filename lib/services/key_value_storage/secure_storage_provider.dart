@@ -11,15 +11,11 @@ class SecureStorageProvider implements StorageProvider {
   SecureStorageProvider();
 
   @override
-  Future<void> storeData(String key, String value) async {
+  Future<void> insertData(String key, String value) async {
     log("storeData");
     log("key: $key");
     log("value: $value \n");
-    if (!await _storage.containsKey(
-      key: key,
-      aOptions: _getAndroidOptions(),
-      iOptions: _getIOSOptions(),
-    )) {
+    if (!await existsKey(key)) {
       await _storage.write(
         key: key,
         value: value,
@@ -36,11 +32,7 @@ class SecureStorageProvider implements StorageProvider {
     log("updateData");
     log("key: $key");
     log("value: $value \n");
-    if (await _storage.containsKey(
-      key: key,
-      aOptions: _getAndroidOptions(),
-      iOptions: _getIOSOptions(),
-    )) {
+    if (await existsKey(key)) {
       await _storage.write(
         key: key,
         value: value,
@@ -53,14 +45,20 @@ class SecureStorageProvider implements StorageProvider {
   }
 
   @override
+  Future<void> upsertData(String key, String value) async {
+    await _storage.write(
+      key: key,
+      value: value,
+      aOptions: _getAndroidOptions(),
+      iOptions: _getIOSOptions(),
+    );
+  }
+
+  @override
   Future<String> readData(String key) async {
     log("readData");
     log("key: $key");
-    if (await _storage.containsKey(
-      key: key,
-      aOptions: _getAndroidOptions(),
-      iOptions: _getIOSOptions(),
-    )) {
+    if (await existsKey(key)) {
       final String item = await _storage.read(
             key: key,
             aOptions: _getAndroidOptions(),
@@ -103,11 +101,15 @@ class SecureStorageProvider implements StorageProvider {
   Future<void> deleteData(String key) async {
     log("deleteData");
     log("key: $key");
-    await _storage.delete(
-      key: key,
-      aOptions: _getAndroidOptions(),
-      iOptions: _getIOSOptions(),
-    );
+    if (await existsKey(key)) {
+      await _storage.delete(
+        key: key,
+        aOptions: _getAndroidOptions(),
+        iOptions: _getIOSOptions(),
+      );
+    } else {
+      throw KeyNotFoundInStorage();
+    }
   }
 
   @override
