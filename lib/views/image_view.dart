@@ -56,11 +56,7 @@ class _ImageViewState extends State<ImageView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SlidingAppBar(
-        controller: _animationController,
-        visible: _visible,
-        child: AppBar(),
-      ),
+      appBar: _visible ? AppBar() : null,
       body: Dismissible(
         direction: DismissDirection.down,
         onDismissed: (direction) {
