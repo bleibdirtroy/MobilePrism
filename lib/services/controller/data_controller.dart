@@ -60,8 +60,8 @@ class DataController {
     return photoEncoder.stringToPhotoData(photosString);
   }
 
-  Future<SplayTreeMap<int, SplayTreeSet<int>>> getAvailableYearsAndMonths() async {
-    final SplayTreeMap<int, SplayTreeSet<int>> yearsAndMonths = SplayTreeMap();
+  Future<Map<int, SplayTreeSet<int>>> getAvailableYearsAndMonths() async {
+    final Map<int, SplayTreeSet<int>> yearsAndMonths = {};
     final albumsString = await restApiService.getAlbums(
       albumType: AlbumType.month,
       count: 9999999,

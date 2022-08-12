@@ -99,7 +99,9 @@ class RestApiService {
   }) {
     final String format = photoFormat.toShortString();
 
-    return Uri.parse("${photoPrismUrl}t/$hash/public/$format");
+    return Uri.parse(
+      "$photoPrismUrl${photoprismApiPath}t/$hash/public/$format",
+    );
   }
 
   Uri buildAlbumTitlePhotoUrl({
@@ -107,7 +109,8 @@ class RestApiService {
     required PhotoFormat photoFormat,
   }) {
     final String format = photoFormat.toShortString();
-    return Uri.parse("${photoPrismUrl}albums/$uid/public/$format");
+    return Uri.parse(
+        "$photoPrismUrl${photoprismApiPath}albums/$uid/public/$format");
   }
 
   Uri buildAlbumURL({
@@ -125,7 +128,7 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("$photoPrismUrl$photoprismApiPath/albums?$query");
+    return Uri.parse("$photoPrismUrl${photoprismApiPath}albums?$query");
   }
 
   Uri buildMapURL({
@@ -143,7 +146,7 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("$photoPrismUrl$photoprismApiPath/geo?$query");
+    return Uri.parse("$photoPrismUrl${photoprismApiPath}geo?$query");
   }
 
   Uri buildPhotosUrl({
@@ -173,6 +176,6 @@ class RestApiService {
       final String filter = "year:$year+month:$month";
       query = "$query&filter=$filter";
     }
-    return Uri.parse("$photoPrismUrl$photoprismApiPath/photos?$query");
+    return Uri.parse("$photoPrismUrl${photoprismApiPath}photos?$query");
   }
 }
