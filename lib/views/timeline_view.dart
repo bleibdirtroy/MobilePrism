@@ -80,7 +80,6 @@ class _TimelineViewState extends State<TimelineView> {
                         AsyncSnapshot<List<PhotoDataEntry>> snapshot,
                       ) {
                         if (snapshot.hasData) {
-                          print(year);
                           final photos = snapshot.data!;
                           return GridView.builder(
                             shrinkWrap: true,
@@ -97,7 +96,11 @@ class _TimelineViewState extends State<TimelineView> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => const ImageView(),
+                                      builder: (context) => ImageView(
+                                        index: imageIndex,
+                                        month: months.elementAt(monthIndex),
+                                        year: years.elementAt(yearIndex),
+                                      ),
                                     ),
                                   );
                                 },
