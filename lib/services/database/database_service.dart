@@ -2,6 +2,7 @@ import 'dart:async';
 
 import "package:collection/collection.dart";
 import 'package:mobileprism/services/database/album_data_entry.dart';
+import 'package:mobileprism/services/database/cross_table_entry.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,21 +11,18 @@ import 'package:sqflite/sqflite.dart';
 const String photoDataTableName = "photo_data";
 const String albumDataTableName = "album_data";
 const String keyCrosstableName = "key_crosstable";
-const String photoTableCreationStrg = 
-  '''
+const String photoTableCreationStrg = '''
       CREATE TABLE IF NOT EXISTS $photoDataTableName(uid TEXT PRIMARY KEY, 
       panorama INTEGER, width INTEGER, height INTEGER,
       image_hash TEXT, image_quality TEXT, lat REAL, long REAL, 
       timestamp INETEGER)
     ''';
-const String albumTableCreationStrg = 
-  '''
+const String albumTableCreationStrg = '''
     CREATE TABLE IF NOT EXISTS $albumDataTableName(uid TEXT PRIMARY KEY, 
     photo_uids TEXT, title TEXT, thumb_uid TEXT)
   ''';
-const String keyCrosstableCreationStrg = 
-  '''
-    CREATE TABLE IF NOT EXISTS $keyCrosstableName(photo_key Text, album_key Text)
+const String keyCrosstableCreationStrg = '''
+    CREATE TABLE IF NOT EXISTS $keyCrosstableName(photo_uid Text, album_uid Text)
   ''';
 // const String databaseConfigString = 'PRAGMA foreign_keys = ON';
 
@@ -35,6 +33,8 @@ class DbNotOpenException implements Exception {}
 class FieldsMissingException implements Exception {}
 
 class DuplicateKeyException implements Exception {}
+
+class KeyNotFoundException implements Exception {}
 
 class SqlFilter {
   final String column;
@@ -47,9 +47,9 @@ class SqlFilter {
   @override
   String toString() {
     if (comparator == null) {
-      return '("$column" $operator ?)';
+      return '("$column" $operator $value)';
     } else {
-      return ' $comparator ("$column" $operator ?)';
+      return ' $comparator ("$column" $operator $value)';
     }
   }
 }
@@ -167,24 +167,25 @@ class DatabaseService {
   }) async {
     final db = _getOpenDb();
     if (filters != null) {
-      final filterString = assembleFilterString(filters);
-      final filterValues = filters.map((e) => e.operator).toList();
-      return db.query(table, where: filterString, whereArgs: filterValues);
+      return db.rawQuery('SELECT * FROM $table WHERE ${filters.join()}');
+      // return db.query(table, where: filterString, whereArgs: filterValues);
     } else {
       return db.query(table);
     }
   }
 
-  String assembleFilterString(List<SqlFilter> filters) {
-    return filters.map((e) => e.toString()).reduce((v, e) => "$v $e");
-  }
+  // String assembleFilterString(List<SqlFilter> filters) {
+  //   return filters.map((e) => e.toString()).reduce((v, e) => "$v $e");
+  // }
 
   Future<PhotoDataEntry> getPhoto(String id) async {
-    final filter = List.filled(1, SqlFilter('uid', '=', id));
+    final filter = List.filled(1, SqlFilter('uid', '=', '"$id"'));
     final List<Map<String, Object?>> res =
         await _read(photoDataTableName, filters: filter);
     if (res.length == 1) {
       return res.map((e) => PhotoDataEntry.fromMap(e)).first;
+    } else if (res.isEmpty) {
+      throw KeyNotFoundException();
     } else {
       throw DuplicateKeyException();
     }
@@ -193,49 +194,41 @@ class DatabaseService {
   Future<Map<int, Set<int>>> getTimlineAlbums() async {
     final List<Map<String, Object?>> res = await _read(photoDataTableName);
     final Iterable<MapEntry<int, int>> yearMonthTuples = res
-        .map(
-          (e) => {
-            if (e["timestamp"] != null) {e["timestamp"]! as int} else {null}
-          },
-        )
+        .map((e) => PhotoDataEntry.fromMap(e).timestamp)
         .whereType<int>()
         .map((e) => DateTime.fromMillisecondsSinceEpoch(e * 1000))
         .map((e) => MapEntry(e.year, e.month));
 
     return groupBy(yearMonthTuples, (MapEntry<int, int> e) => e.key)
-        .map((key, value) => MapEntry(key, value.map((e) => e.key).toSet()));
+        .map((key, value) => MapEntry(key, value.map((e) => e.value).toSet()));
   }
 
+  // [start] / [end]: milliseconds since epoch
   Future<List<PhotoDataEntry>> getPhotosByDateRange(int start, int end) async {
+    final String startInSecondsStr = (start ~/ 1000).toString();
+    final String endInSecondsStr = (end ~/ 1000).toString();
     final List<SqlFilter> filters = [
-      SqlFilter('timestamp', '>=', start as String),
-      SqlFilter('timestamp', '=<', end as String, comparator: "AND")
+      SqlFilter('timestamp', '>=', startInSecondsStr),
+      SqlFilter('timestamp', '<=', endInSecondsStr, comparator: "AND")
     ];
     final List<Map<String, Object?>> res =
         await _read(photoDataTableName, filters: filters);
     return res.map((e) => PhotoDataEntry.fromMap(e)).toList();
   }
 
-  Future<List<PhotoDataEntry>> getAlbumPhotos(String albumId) async {
-    final List<SqlFilter> albumFilter = [SqlFilter('uid', '>=', albumId)];
-    final List<Map<String, Object?>> albumRes =
-        await _read(albumDataTableName, filters: albumFilter);
-    final albumDataList =
-        albumRes.map((e) => AlbumDataEntry.fromMap(e)).toList();
-    if (albumDataList.length == 1) {
-      final albumEntry = albumDataList.first;
-      if (albumEntry.photoUids != null) {
-        final List<String> photoUids = albumEntry.photoUids!;
-        final String listString = "(${photoUids.reduce((v, e) => "$v, $e")})";
-        final photoFilter = [SqlFilter("uid", "IN", listString)];
-        final photoRes = await _read(photoDataTableName, filters: photoFilter);
-        return photoRes.map((e) => PhotoDataEntry.fromMap(e)).toList();
-      } else {
-        throw FieldsMissingException();
-      }
-    } else {
-      throw DuplicateKeyException();
-    }
+  Future<List<PhotoDataEntry>> getAlbumPhotos(String albumUid) async {
+    final SqlFilter crossTableFilter = SqlFilter('album_uid', '==', albumUid);
+    final List<Map<String, Object?>> corssTableRes =
+        await _read(keyCrosstableName, filters: [crossTableFilter]);
+    final photoUids =
+        corssTableRes.map((e) => CrossTableEntry.fromMap(e).photoUid);
+    final photoFilters = photoUids
+        .map((e) => SqlFilter('uid', '==', e, comparator: "OR"))
+        .toList();
+    photoFilters[0] = SqlFilter(photoFilters[0].column,
+        photoFilters[0].operator, photoFilters[0].value);
+    final photoRes = await _read(photoDataTableName, filters: photoFilters);
+    return photoRes.map((e) => PhotoDataEntry.fromMap(e)).toList();
   }
 
   Future<List<AlbumDataEntry>> getAlbums() async {
@@ -258,5 +251,15 @@ class DatabaseService {
   Future<List<Object?>> insertAlbums(List<AlbumDataEntry> albumDataEntrys) {
     final dataList = albumDataEntrys.map((e) => e.toMap()).toList();
     return _batchInsert(albumDataTableName, dataList);
+  }
+
+  Future<List<Object?>> addPhotoUidsToAlbum(
+    String albumUid,
+    List<String> photoUids,
+  ) {
+    final dataList = photoUids
+        .map((e) => CrossTableEntry(albumUid: albumUid, photoUid: e).toMap())
+        .toList();
+    return _batchInsert(keyCrosstableName, dataList);
   }
 }
