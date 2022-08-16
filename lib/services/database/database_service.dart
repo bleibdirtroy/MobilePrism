@@ -120,35 +120,6 @@ class DatabaseService {
     }
   }
 
-  // Future<int> _delete(String table, String id) async {
-  //   final db = _getOpenDb();
-  //   return db.delete(
-  //     table,
-  //     where: '"uid" = ?',
-  //     whereArgs: [id],
-  //   );
-  // }
-
-  // Future<int> _insert(String table, Map<String, dynamic> data) async {
-  //   final db = _getOpenDb();
-  //   return db.insert(
-  //     table,
-  //     data,
-  //     conflictAlgorithm: ConflictAlgorithm.replace,
-  //   );
-  // }
-
-  // Future<int> _update(
-  //     String table, String id, Map<String, dynamic> data) async {
-  //   final db = _getOpenDb();
-  //   return db.update(
-  //     table,
-  //     data,
-  //     where: '"uid" = ?',
-  //     whereArgs: [id],
-  //   );
-  // }
-
   Future<List<Object?>> _batchInsert(
     String table,
     List<Map<String, dynamic>> dataList,
@@ -226,7 +197,7 @@ class DatabaseService {
         .map((e) => SqlFilter('uid', '==', e, comparator: "OR"))
         .toList();
     photoFilters[0] = SqlFilter(photoFilters[0].column,
-        photoFilters[0].operator, photoFilters[0].value);
+        photoFilters[0].operator, photoFilters[0].value,);
     final photoRes = await _read(photoDataTableName, filters: photoFilters);
     return photoRes.map((e) => PhotoDataEntry.fromMap(e)).toList();
   }

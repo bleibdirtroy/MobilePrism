@@ -1,11 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobileprism/services/database/database_service.dart';
-import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../../resources/test_data.dart';
+import '../../resources/db_test_data.dart';
 
 void main() async {
   sqfliteFfiInit();
@@ -58,7 +57,7 @@ void main() async {
     expect(res.uid, "1");
 
     expect(() => dbService.getPhoto("3"),
-        throwsA(const TypeMatcher<KeyNotFoundException>()));
+        throwsA(const TypeMatcher<KeyNotFoundException>()),);
   });
 
   test('Test reading all photos', () async {
@@ -89,13 +88,16 @@ void main() async {
     expect(res.map((e) => e.uid).contains("1"), true);
     expect(res.map((e) => e.uid).contains("2"), true);
   });
-  
+
   test('Test get timeline albums', () async {
     await deleteAllEntries();
     await dbService.insertPhotos([testPhoto1, testPhoto2, testPhoto3]);
-    
+
     final res = await dbService.getTimlineAlbums();
-    final Map<int, Set<int>> expectedRes = {2022: {4, 8}, 2019: {6}};
+    final Map<int, Set<int>> expectedRes = {
+      2022: {4, 8},
+      2019: {6}
+    };
     expect(const DeepCollectionEquality().equals(res, expectedRes), true);
     expect(res.containsKey(2019), true);
   });
@@ -106,7 +108,8 @@ void main() async {
     final dateNow = DateTime.now();
     final dateOld = DateTime(2020);
 
-    final res = await dbService.getPhotosByDateRange(dateOld.millisecondsSinceEpoch, dateNow.millisecondsSinceEpoch);
+    final res = await dbService.getPhotosByDateRange(
+        dateOld.millisecondsSinceEpoch, dateNow.millisecondsSinceEpoch,);
     expect(res.map((e) => e.uid).contains("1"), true);
     expect(res.map((e) => e.uid).contains("2"), true);
   });
