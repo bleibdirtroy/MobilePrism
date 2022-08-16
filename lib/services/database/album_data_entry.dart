@@ -9,7 +9,7 @@ class AlbumDataEntry {
     required this.thumbUid,
   });
 
-  AlbumDataEntry.fromMap(Map<String, Object?> data) {
+  AlbumDataEntry.fromMap(Map<String, dynamic> data) {
     uid = data["uid"]! as String;
     title = data["title"]! as String;
     thumbUid = data["thumb_uid"]! as String;

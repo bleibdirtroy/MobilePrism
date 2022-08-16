@@ -132,7 +132,7 @@ class DatabaseService {
     return batch.commit();
   }
 
-  Future<List<Map<String, Object?>>> _read(
+  Future<List<Map<String, dynamic>>> _read(
     String table, {
     List<SqlFilter>? filters,
   }) async {
@@ -151,7 +151,7 @@ class DatabaseService {
 
   Future<PhotoDataEntry> getPhoto(String id) async {
     final filter = List.filled(1, SqlFilter('uid', '=', '"$id"'));
-    final List<Map<String, Object?>> res =
+    final List<Map<String, dynamic>> res =
         await _read(photoDataTableName, filters: filter);
     if (res.length == 1) {
       return res.map((e) => PhotoDataEntry.fromMap(e)).first;
@@ -163,7 +163,7 @@ class DatabaseService {
   }
 
   Future<Map<int, Set<int>>> getTimlineAlbums() async {
-    final List<Map<String, Object?>> res = await _read(photoDataTableName);
+    final List<Map<String, dynamic>> res = await _read(photoDataTableName);
     final Iterable<MapEntry<int, int>> yearMonthTuples = res
         .map((e) => PhotoDataEntry.fromMap(e).timestamp)
         .whereType<int>()
@@ -182,33 +182,36 @@ class DatabaseService {
       SqlFilter('timestamp', '>=', startInSecondsStr),
       SqlFilter('timestamp', '<=', endInSecondsStr, comparator: "AND")
     ];
-    final List<Map<String, Object?>> res =
+    final List<Map<String, dynamic>> res =
         await _read(photoDataTableName, filters: filters);
     return res.map((e) => PhotoDataEntry.fromMap(e)).toList();
   }
 
   Future<List<PhotoDataEntry>> getAlbumPhotos(String albumUid) async {
     final SqlFilter crossTableFilter = SqlFilter('album_uid', '==', albumUid);
-    final List<Map<String, Object?>> corssTableRes =
+    final List<Map<String, dynamic>> corssTableRes =
         await _read(keyCrosstableName, filters: [crossTableFilter]);
     final photoUids =
         corssTableRes.map((e) => CrossTableEntry.fromMap(e).photoUid);
     final photoFilters = photoUids
         .map((e) => SqlFilter('uid', '==', e, comparator: "OR"))
         .toList();
-    photoFilters[0] = SqlFilter(photoFilters[0].column,
-        photoFilters[0].operator, photoFilters[0].value,);
+    photoFilters[0] = SqlFilter(
+      photoFilters[0].column,
+      photoFilters[0].operator,
+      photoFilters[0].value,
+    );
     final photoRes = await _read(photoDataTableName, filters: photoFilters);
     return photoRes.map((e) => PhotoDataEntry.fromMap(e)).toList();
   }
 
   Future<List<AlbumDataEntry>> getAlbums() async {
-    final List<Map<String, Object?>> res = await _read(albumDataTableName);
+    final List<Map<String, dynamic>> res = await _read(albumDataTableName);
     return res.map((e) => AlbumDataEntry.fromMap(e)).toList();
   }
 
   Future<List<PhotoDataEntry>> getAllPhotos() async {
-    final List<Map<String, Object?>> res = await _read(photoDataTableName);
+    final List<Map<String, dynamic>> res = await _read(photoDataTableName);
     return res.map((e) => PhotoDataEntry.fromMap(e)).toList();
   }
 

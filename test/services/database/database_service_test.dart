@@ -56,8 +56,10 @@ void main() async {
     final res = await dbService.getPhoto("1");
     expect(res.uid, "1");
 
-    expect(() => dbService.getPhoto("3"),
-        throwsA(const TypeMatcher<KeyNotFoundException>()),);
+    expect(
+      () => dbService.getPhoto("3"),
+      throwsA(const TypeMatcher<KeyNotFoundException>()),
+    );
   });
 
   test('Test reading all photos', () async {
@@ -109,7 +111,9 @@ void main() async {
     final dateOld = DateTime(2020);
 
     final res = await dbService.getPhotosByDateRange(
-        dateOld.millisecondsSinceEpoch, dateNow.millisecondsSinceEpoch,);
+      dateOld.millisecondsSinceEpoch,
+      dateNow.millisecondsSinceEpoch,
+    );
     expect(res.map((e) => e.uid).contains("1"), true);
     expect(res.map((e) => e.uid).contains("2"), true);
   });

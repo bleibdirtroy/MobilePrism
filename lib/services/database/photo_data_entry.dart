@@ -22,7 +22,7 @@ class PhotoDataEntry {
     this.timestamp,
   });
 
-  PhotoDataEntry.fromMap(Map<String, Object?> data) {
+  PhotoDataEntry.fromMap(Map<String, dynamic> data) {
     uid = data["uid"]! as String;
     panorama = data["panorama"] is int ? !(data["panorama"]! == 0) : null;
     width = data["width"] is int ? data["width"]! as int : null;
