@@ -9,12 +9,12 @@ class AlbumDataEntry {
     required this.thumbUid,
   });
 
-  AlbumDataEntry.fromMap(Map<String, dynamic> data) {
-    uid = data["uid"]! as String;
-    title = data["title"]! as String;
-    thumbUid = data["thumb_uid"]! as String;
+  AlbumDataEntry.fromDbEntry(Map<String, dynamic> data) {
+    uid = data["uid"] as String;
+    title = data["title"] as String;
+    thumbUid = data["thumb_uid"] as String;
   }
 
-  Map<String, dynamic> toMap() =>
+  Map<String, dynamic> toDbEntry() =>
       {"uid": uid, "title": title, "thumb_uid": thumbUid};
 }

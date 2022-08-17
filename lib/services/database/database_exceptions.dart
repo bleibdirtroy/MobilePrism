@@ -1,0 +1,7 @@
+class DbNotOpenException implements Exception {}
+
+class FieldsMissingException implements Exception {}
+
+class DuplicateKeyException implements Exception {}
+
+class KeyNotFoundException implements Exception {}

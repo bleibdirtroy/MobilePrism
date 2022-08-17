@@ -7,12 +7,12 @@ class CrossTableEntry {
     required this.photoUid,
   });
 
-  CrossTableEntry.fromMap(Map<String, dynamic> data) {
-    photoUid = data["photo_uid"]! as String;
-    albumUid = data["album_uid"]! as String;
+  CrossTableEntry.fromDbEntry(Map<String, dynamic> data) {
+    photoUid = data["photo_uid"] as String;
+    albumUid = data["album_uid"] as String;
   }
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toDbEntry() => {
         "photo_uid": photoUid,
         "album_uid": albumUid,
       };

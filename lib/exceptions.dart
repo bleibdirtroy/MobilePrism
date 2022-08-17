@@ -1,0 +1,1 @@
+class UnsupportedPlatformException implements Exception {}

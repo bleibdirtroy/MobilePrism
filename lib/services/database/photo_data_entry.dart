@@ -22,8 +22,8 @@ class PhotoDataEntry {
     this.timestamp,
   });
 
-  PhotoDataEntry.fromMap(Map<String, dynamic> data) {
-    uid = data["uid"]! as String;
+  PhotoDataEntry.fromDbEntry(Map<String, dynamic> data) {
+    uid = data["uid"] as String;
     panorama = data["panorama"] is int ? !(data["panorama"]! == 0) : null;
     width = data["width"] is int ? data["width"]! as int : null;
     imageHash =
@@ -36,7 +36,7 @@ class PhotoDataEntry {
     timestamp = data["timestamp"] is num ? data["timestamp"]! as int : null;
   }
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toDbEntry() => {
         "uid": uid,
         "panorama": panorama != null ? (panorama! ? 1 : 0) : null,
         "width": width,
