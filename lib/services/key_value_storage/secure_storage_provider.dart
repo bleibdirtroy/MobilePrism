@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:mobileprism/exceptions.dart';
 import 'package:mobileprism/services/key_value_storage/storage_exceptions.dart';
 import 'package:mobileprism/services/key_value_storage/storage_provider.dart';
 
@@ -91,7 +92,7 @@ class SecureStorageProvider implements StorageProvider {
           ) !=
           null;
     } else {
-      throw UnsupportedDevice();
+      throw UnsupportedPlatformException();
     }
     log("exists: $existsKey");
     return existsKey;

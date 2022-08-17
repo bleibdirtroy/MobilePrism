@@ -5,6 +5,7 @@ import 'package:mobileprism/views/home_view.dart';
 import 'package:mobileprism/views/login_view.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
