@@ -7,6 +7,8 @@ import 'package:mobileprism/services/encoder/photo_encoder.dart';
 import 'package:mobileprism/services/rest_api/album_type.dart';
 import 'package:mobileprism/services/rest_api/rest_api_service.dart';
 
+const allImages = 9999999;
+
 class DataController {
   final albumEncoder = AlbumEncoder();
   final photoEncoder = PhotoEncoder();
@@ -17,7 +19,7 @@ class DataController {
   Future<void> getAlbums() async {
     final albumsString = await restApiService.getAlbums(
       albumType: AlbumType.album,
-      count: 9999999,
+      count: allImages,
     );
     final albumsMap = albumEncoder.stringToAlbumsMap(albumsString);
     final albums = albumEncoder.stringToAlbumData(albumsString);
@@ -41,7 +43,7 @@ class DataController {
     AlbumDataEntry albumDataEntry,
   ) async {
     final photosString = await restApiService.getPhotos(
-      count: 9999999,
+      count: allImages,
       albumUid: albumDataEntry.uid,
     );
     return photoEncoder.stringToPhotoData(photosString);
@@ -52,7 +54,7 @@ class DataController {
     int year,
   ) async {
     final photosString = await restApiService.getPhotos(
-      count: 999999,
+      count: allImages,
       month: month,
       year: year,
       merged: true,
@@ -64,7 +66,7 @@ class DataController {
     final Map<int, SplayTreeSet<int>> yearsAndMonths = {};
     final albumsString = await restApiService.getAlbums(
       albumType: AlbumType.month,
-      count: 9999999,
+      count: allImages,
     );
     final albums = albumEncoder.stringToAlbumsMap(albumsString);
     for (var i = 0; i < albums.length; i++) {

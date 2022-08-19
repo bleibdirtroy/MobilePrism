@@ -219,7 +219,7 @@ class DatabaseService {
     if (albumDataList.length == 1) {
       final albumEntry = albumDataList.first;
       if (albumEntry.photoUids != null) {
-        final List<String> photoUids = albumEntry.photoUids!;
+        final List<String> photoUids = albumEntry.photoUids;
         final String listString = "(${photoUids.reduce((v, e) => "$v, $e")})";
         final photoFilter = [SqlFilter("uid", "IN", listString)];
         final photoRes = await _read(photoDataTableName, filters: photoFilter);
