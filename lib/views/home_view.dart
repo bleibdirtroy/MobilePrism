@@ -14,11 +14,11 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    TimelineView(),
+  static final List<Widget> _widgetOptions = <Widget>[
+    const TimelineView(),
     AlbumsView(),
-    MapView(),
-    SettingsView(),
+    const MapView(),
+    const SettingsView(),
   ];
 
   void _onItemTapped(int index) {

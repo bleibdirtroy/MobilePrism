@@ -18,19 +18,12 @@ class DataController {
 
   DataController();
 
-  Future<void> getAlbums() async {
+  Future<List<Map<String,dynamic>>> getAlbums() async {
     final albumsString = await restApiService.getAlbums(
       albumType: AlbumType.album,
       count: allImages,
     );
-    final albumsMap = albumEncoder.stringToAlbumsMap(albumsString);
-
-    for (var i = 0; i < albumsMap.length; i++) {
-      final photo = albumsMap[i]["hash"].toString();
-      //albumsMap[i]["ThumbUid"] = photo.uid;
-      //final AlbumDataEntry album = AlbumDataEntry.fromMap(albumsMap[i]);
-      //(await getPhotosOfAlbum(album)).map((e) => e.uid).toList();
-    }
+    return albumEncoder.stringToAlbumsMap(albumsString);
   }
 
   Future<List<PhotoDataEntry>> getPhotosOfAlbum(
