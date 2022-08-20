@@ -1,9 +1,12 @@
-import 'package:http/http.dart' as http show Client, get;
+import 'dart:convert';
+
+import 'package:http/http.dart' as http show Client, get, post;
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/rest_api/album_type.dart';
 import 'package:mobileprism/services/rest_api/order_type.dart';
 import 'package:mobileprism/services/rest_api/photo_format.dart';
+import 'package:mobileprism/services/rest_api/rest_api_exceptions.dart';
 
 const typeQueryParameter = "type";
 const countQueryParameter = "count";
@@ -16,14 +19,50 @@ const mergedQueryParameter = "merged";
 const filterQueryParameter = "filter";
 const hashQueryParameter = "hash";
 const uidQueryParameter = "uid";
+
 const headers = {"User-Agent": "$applicationName/$applicationVersion"};
 
 class RestApiService {
   final client = http.Client();
   final authService = AuthService.secureStorage();
   final String photoPrismUrl;
+  String? token;
+  String previewToken = "public";
 
   RestApiService(this.photoPrismUrl);
+
+  Future<void> _getToken() async {
+    token = token ?? await AuthService.secureStorage().getSessionToken();
+  }
+
+  bool _isTokenSet() {
+    return token != null;
+  }
+
+  Future<Map<String, String>> _getHeader() async {
+    if (!_isTokenSet()) await _getToken();
+    return {
+      "User-Agent": "$applicationName/$applicationVersion",
+      "x-session-id": token!
+    };
+  }
+
+  Future<Set<String>> login(String username, String password) async {
+    final response = await http.post(
+      Uri.parse("$photoPrismUrl${photoprismApiPath}session"),
+      headers: headers,
+      body: jsonEncode(
+        <String, String>{"username": username, "password": password},
+      ),
+    );
+    final sessionToken = response.headers["x-session-id"].toString();
+    final previewToken = jsonDecode(response.body)["config"]["previewToken"].toString();
+    if (sessionToken == "null" || previewToken == "null") {
+      throw WrongCredentialsException();
+    } else {
+      return {sessionToken,previewToken};
+    }
+  }
 
   Future<String> getAlbums({
     required AlbumType albumType,
@@ -38,7 +77,7 @@ class RestApiService {
         offset: offset,
         orderType: orderType,
       ),
-      headers: headers,
+      headers: await _getHeader(),
     );
     return response.body;
   }
@@ -56,7 +95,7 @@ class RestApiService {
         public: public,
         quality: quality,
       ),
-      headers: headers,
+      headers: await _getHeader(),
     );
     return response.body;
   }
@@ -67,7 +106,7 @@ class RestApiService {
   }) async {
     final response = await http.get(
       buildPhotosUrl(count: 1, hash: hash, uid: uid),
-      headers: headers,
+      headers: await _getHeader(),
     );
 
     return response.body;
@@ -92,19 +131,9 @@ class RestApiService {
         month: month,
         year: year,
       ),
-      headers: headers,
+      headers: await _getHeader(),
     );
     return response.body;
-  }
-
-  Uri buildPhotoUrl({
-    required String hash,
-    required PhotoFormat photoFormat,
-  }) {
-    final String format = photoFormat.toShortString();
-    return Uri.parse(
-      "$photoPrismUrl${photoprismApiPath}t/$hash/public/$format",
-    );
   }
 
   Uri buildAlbumTitlePhotoUrl({
