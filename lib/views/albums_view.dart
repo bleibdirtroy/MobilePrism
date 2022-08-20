@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/application.dart';
@@ -7,6 +5,7 @@ import 'package:mobileprism/constants/spacing.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/rest_api/photo_format.dart';
 import 'package:mobileprism/services/rest_api/rest_api_service.dart';
+import 'package:mobileprism/views/album_view.dart';
 
 class AlbumsView extends StatelessWidget {
   final _dataController = DataController();
@@ -31,7 +30,15 @@ class AlbumsView extends StatelessWidget {
                 final album = albums.elementAt(index);
                 return GestureDetector(
                   onTap: () {
-                    log("album ${album['UID']} touched");
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AlbumView(
+                          title: album["Title"].toString(),
+                          albumUid: album["UID"].toString(),
+                        ),
+                      ),
+                    );
                   },
                   child: GridTile(
                     footer: GridTileBar(

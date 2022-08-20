@@ -27,11 +27,11 @@ class DataController {
   }
 
   Future<List<PhotoDataEntry>> getPhotosOfAlbum(
-    AlbumDataEntry albumDataEntry,
+    String albumUid,
   ) async {
     final photosString = await restApiService.getPhotos(
       count: allImages,
-      albumUid: albumDataEntry.uid,
+      albumUid: albumUid,
     );
     return photoEncoder.stringToPhotoData(photosString);
   }
