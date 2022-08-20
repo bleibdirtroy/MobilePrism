@@ -1,17 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
+import 'package:mobileprism/services/rest_api/photo_format.dart';
+import 'package:mobileprism/services/rest_api/rest_api_service.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class ImageView extends StatefulWidget {
-  final int? month;
-  final int? year;
-  final String? albumUid;
   final int index;
+  final List<PhotoDataEntry> photos;
 
-  const ImageView({required this.index, this.month, this.year, this.albumUid});
+  const ImageView({required this.index, required this.photos});
 
   @override
   State<ImageView> createState() => _ImageViewState();
@@ -22,7 +23,7 @@ class _ImageViewState extends State<ImageView>
   bool _visible = true;
   late final AnimationController _animationController;
   late final PageController _pageController;
-  final dataController = DataController();
+  final _restApiService = RestApiService(photoprimDefaultServer);
 
   @override
   void initState() {
@@ -41,19 +42,6 @@ class _ImageViewState extends State<ImageView>
     super.dispose();
   }
 
-  Future<List<PhotoDataEntry>> getPhotos() async {
-    if (widget.month != null && widget.year != null) {
-      return dataController.getPhotosOfMonthAndYear(
-        DateTime(
-          widget.year!,
-          widget.month!,
-        ),
-      );
-    } else {
-      throw Exception();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,34 +53,29 @@ class _ImageViewState extends State<ImageView>
           Navigator.of(context).pop();
         },
         key: const Key('key'),
-        child: FutureBuilder(
-          future: getPhotos(),
-          builder: (context, AsyncSnapshot<List<PhotoDataEntry>> snapshot) {
-            if (snapshot.hasData) {
-              return PhotoViewGallery.builder(
-                scrollPhysics: const BouncingScrollPhysics(),
-                pageController: _pageController,
-                itemCount: snapshot.data!.length,
-                builder: (context, index) {
-                  return PhotoViewGalleryPageOptions(
-                    minScale: PhotoViewComputedScale.contained,
-                    maxScale: PhotoViewComputedScale.covered * 8,
-                    imageProvider: CachedNetworkImageProvider(
-                      "https://demo-de.photoprism.app/api/v1/t/${snapshot.data!.elementAt(index).imageHash}/public/${snapshot.data!.elementAt(index).imageQuality}",
-                    ),
-                    onTapUp: (context, details, controllerValue) {
-                      setState(() {
-                        _visible = !_visible;
-                      });
-                    },
-                  );
-                },
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+        child: PhotoViewGallery.builder(
+          scrollPhysics: const BouncingScrollPhysics(),
+          pageController: _pageController,
+          itemCount: widget.photos.length,
+          builder: (context, index) {
+            final photo = widget.photos.elementAt(index);
+            return PhotoViewGalleryPageOptions(
+              minScale: PhotoViewComputedScale.contained,
+              maxScale: PhotoViewComputedScale.covered * 8,
+              imageProvider: CachedNetworkImageProvider(
+                _restApiService
+                    .buildPhotoUrl(
+                      hash: photo.imageHash!,
+                      photoFormat: PhotoFormat.fit_7680,
+                    )
+                    .toString(),
+              ),
+              onTapUp: (context, details, controllerValue) {
+                setState(() {
+                  _visible = !_visible;
+                });
+              },
+            );
           },
         ),
       ),

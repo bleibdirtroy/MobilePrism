@@ -6,6 +6,7 @@ import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:mobileprism/services/rest_api/photo_format.dart';
 import 'package:mobileprism/services/rest_api/rest_api_service.dart';
+import 'package:mobileprism/views/image_view.dart';
 
 class AlbumView extends StatelessWidget {
   AlbumView({required this.title, required this.albumUid});
@@ -17,15 +18,13 @@ class AlbumView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text(title)),
       body: FutureBuilder(
         future: _dataController.getPhotosOfAlbum(albumUid),
         builder: (context, AsyncSnapshot<List<PhotoDataEntry>> snapshot) {
           if (snapshot.hasData) {
             final photos = snapshot.data!;
             return GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
               itemCount: photos.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
@@ -38,11 +37,8 @@ class AlbumView extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) {
-                          return const Center(
-                            child: Text("NOT IMPLEMENTED"),
-                          );
-                        },
+                        builder: (context) =>
+                            ImageView(index: imageIndex, photos: photos),
                       ),
                     );
                   },

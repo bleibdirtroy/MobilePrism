@@ -57,8 +57,7 @@ class TitleWithPhotos extends StatelessWidget {
                           if (currentDate != null) {
                             return ImageView(
                               index: imageIndex,
-                              month: currentDate!.month,
-                              year: currentDate!.year,
+                              photos: photos!,
                             );
                           } else {
                             return const Center(
