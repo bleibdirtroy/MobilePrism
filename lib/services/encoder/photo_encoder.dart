@@ -13,7 +13,6 @@ class PhotoEncoder {
         if (element is Map<String, dynamic>) {
           final PhotoDataEntry photoDataEntry =
               PhotoDataEntry.fromJson(element);
-          log(photoDataEntry.toString());
           photos.add(photoDataEntry);
         } else {
           throw ResponseNotParsableException();
@@ -32,7 +31,6 @@ class PhotoEncoder {
     if (list is List<dynamic>) {
       for (final element in list) {
         if (element is Map<String, dynamic>) {
-          log(element.toString());
         } else {
           throw ResponseNotParsableException();
         }

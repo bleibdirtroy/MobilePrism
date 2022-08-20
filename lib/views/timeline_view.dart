@@ -1,15 +1,10 @@
 import 'dart:collection';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mobileprism/constants/spacing.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
-import 'package:mobileprism/services/rest_api/photo_format.dart';
-import 'package:mobileprism/services/rest_api/rest_api_service.dart';
-import 'package:mobileprism/views/image_view.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
+import 'package:mobileprism/widgets/title_with_photos.dart';
 
 class TimelineView extends StatefulWidget {
   const TimelineView({Key? key}) : super(key: key);
@@ -20,7 +15,6 @@ class TimelineView extends StatefulWidget {
 
 class _TimelineViewState extends State<TimelineView> {
   final dataController = DataController();
-  final restApiService = RestApiService("https://demo-de.photoprism.app");
   int numberOfMonths = 0;
 
   Future<Map<int, SplayTreeSet<int>>> getYearsAndMonth() {
@@ -50,83 +44,36 @@ class _TimelineViewState extends State<TimelineView> {
                 shrinkWrap: true,
                 itemCount: months.length,
                 itemBuilder: (context, monthIndex) {
-                  return StickyHeader(
-                    header: Container(
-                      height: 50.0,
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        DateFormat('MMMM yyyy')
-                            .format(
-                              DateTime(
-                                year,
-                                months.elementAt(monthIndex),
-                              ),
-                            )
-                            .toUpperCase(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline4!
-                            .apply(fontFamily: "Questrial"),
+                  return FutureBuilder(
+                    future: dataController.getPhotosOfMonthAndYear(
+                      DateTime(
+                        years.elementAt(yearIndex),
+                        months.elementAt(monthIndex),
                       ),
                     ),
-                    content: FutureBuilder(
-                      future: dataController.getPhotosOfMonthAndYear(
-                        DateTime(
-                          years.elementAt(yearIndex),
-                          months.elementAt(monthIndex),
-                        ),
-                      ),
-                      builder: (
-                        context,
-                        AsyncSnapshot<List<PhotoDataEntry>> snapshot,
-                      ) {
-                        if (snapshot.hasData) {
-                          final photos = snapshot.data!;
-                          return GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: photos.length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 5,
-                              mainAxisSpacing: mainAxisSpacing,
-                              crossAxisSpacing: crossAxisSpacing,
-                            ),
-                            itemBuilder: (contxt, imageIndex) {
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => ImageView(
-                                        index: imageIndex,
-                                        month: months.elementAt(monthIndex),
-                                        year: years.elementAt(yearIndex),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: CachedNetworkImage(
-                                  imageUrl: restApiService
-                                      .buildPhotoUrl(
-                                        hash: photos[imageIndex].imageHash!,
-                                        photoFormat: PhotoFormat.tile_100,
-                                      )
-                                      .toString(),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                  fit: BoxFit.cover,
+                    builder: (
+                      context,
+                      AsyncSnapshot<List<PhotoDataEntry>> snapshot,
+                    ) {
+                      if (snapshot.hasData) {
+                        final photos = snapshot.data!;
+                        return TitleWithPhotos(
+                          title: DateFormat('MMMM yyyy')
+                              .format(
+                                DateTime(
+                                  year,
+                                  months.elementAt(monthIndex),
                                 ),
-                              );
-                            },
-                          );
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    ),
+                              )
+                              .toUpperCase(),
+                          photos: photos,
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
                   );
                 },
               );

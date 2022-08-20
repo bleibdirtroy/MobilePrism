@@ -13,9 +13,6 @@ class SecureStorageProvider implements StorageProvider {
 
   @override
   Future<void> insertData(String key, String value) async {
-    log("storeData");
-    log("key: $key");
-    log("value: $value \n");
     if (!await existsKey(key)) {
       await _storage.write(
         key: key,
@@ -30,9 +27,6 @@ class SecureStorageProvider implements StorageProvider {
 
   @override
   Future<void> updateData(String key, String value) async {
-    log("updateData");
-    log("key: $key");
-    log("value: $value \n");
     if (await existsKey(key)) {
       await _storage.write(
         key: key,
@@ -57,8 +51,6 @@ class SecureStorageProvider implements StorageProvider {
 
   @override
   Future<String> readData(String key) async {
-    log("readData");
-    log("key: $key");
     if (await existsKey(key)) {
       final String item = await _storage.read(
             key: key,
@@ -66,7 +58,6 @@ class SecureStorageProvider implements StorageProvider {
             iOptions: _getIOSOptions(),
           ) ??
           "";
-      log("item: $item");
       return item;
     } else {
       throw KeyNotFoundInStorage();
@@ -75,8 +66,6 @@ class SecureStorageProvider implements StorageProvider {
 
   @override
   Future<bool> existsKey(String key) async {
-    log("existsKey");
-    log("key: $key");
     bool existsKey;
     if (Platform.isAndroid) {
       existsKey = await _storage.containsKey(
@@ -94,14 +83,11 @@ class SecureStorageProvider implements StorageProvider {
     } else {
       throw UnsupportedPlatformException();
     }
-    log("exists: $existsKey");
     return existsKey;
   }
 
   @override
   Future<void> deleteData(String key) async {
-    log("deleteData");
-    log("key: $key");
     if (await existsKey(key)) {
       await _storage.delete(
         key: key,
@@ -115,8 +101,6 @@ class SecureStorageProvider implements StorageProvider {
 
   @override
   Future<void> deleteAllData() async {
-    log("deleteAllData");
-    log("deleteAll");
     await _storage.deleteAll(
       aOptions: _getAndroidOptions(),
       iOptions: _getIOSOptions(),
