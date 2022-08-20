@@ -52,12 +52,12 @@ Future<Database> _initDb() async {
   late final String dbPath;
   if (Platform.isAndroid) {
     dbPath = await getDatabasesPath();
-  } else if (Platform.isIOS){
+  } else if (Platform.isIOS) {
     dbPath = (await getLibraryDirectory()).path;
   } else {
     throw UnsupportedPlatformException();
   }
-  
+
   return openDatabase(
     join(dbPath, 'meta_data_db.db'),
     onCreate: (db, version) async {
@@ -136,7 +136,6 @@ class DatabaseService {
       return db.query(table);
     }
   }
-
 
   Future<PhotoDataEntry> getPhoto(String id) async {
     final filter = List.filled(1, SqlFilter('uid', '=', '"$id"'));
@@ -221,7 +220,8 @@ class DatabaseService {
     List<String> photoUids,
   ) {
     final dataList = photoUids
-        .map((e) => CrossTableEntry(albumUid: albumUid, photoUid: e).toDbEntry())
+        .map(
+            (e) => CrossTableEntry(albumUid: albumUid, photoUid: e).toDbEntry())
         .toList();
     return _batchInsert(keyCrosstableName, dataList);
   }

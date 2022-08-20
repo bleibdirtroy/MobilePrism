@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:mobileprism/services/controller/data_controller_exceptions.dart';
+import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:mobileprism/services/encoder/album_encoder.dart';
 import 'package:mobileprism/services/encoder/photo_encoder.dart';
@@ -14,12 +14,24 @@ const allImages = 9999999;
 class DataController {
   final albumEncoder = AlbumEncoder();
   final photoEncoder = PhotoEncoder();
-  late final restApiService = RestApiService();
+  String? photoPrismUrl;
+  RestApiService? restApiService;
 
   DataController();
 
+  Future<void> _init() async {
+    photoPrismUrl =
+        photoPrismUrl ?? await AuthService.secureStorage().getHostname();
+    restApiService = restApiService ?? RestApiService(photoPrismUrl!);
+  }
+
+  bool _isInit() {
+    return photoPrismUrl != null && restApiService != null;
+  }
+
   Future<List<Map<String, dynamic>>> getAlbums() async {
-    final albumsString = await restApiService.getAlbums(
+    if (!_isInit()) await _init();
+    final albumsString = await restApiService!.getAlbums(
       albumType: AlbumType.album,
       count: allImages,
     );
@@ -29,7 +41,8 @@ class DataController {
   Future<List<PhotoDataEntry>> getPhotosOfAlbum(
     String albumUid,
   ) async {
-    final photosString = await restApiService.getPhotos(
+    if (!_isInit()) await _init();
+    final photosString = await restApiService!.getPhotos(
       count: allImages,
       albumUid: albumUid,
     );
@@ -37,9 +50,10 @@ class DataController {
   }
 
   Future<Map<int, SplayTreeSet<int>>> getOccupiedDates() async {
+    if (!_isInit()) await _init();
     final Map<int, SplayTreeSet<int>> yearsAndMonths = {};
     if (await _hasDeviceConnection()) {
-      final albumsString = await restApiService.getAlbums(
+      final albumsString = await restApiService!.getAlbums(
         albumType: AlbumType.month,
         count: allImages,
       );
@@ -58,7 +72,8 @@ class DataController {
   }
 
   Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time) async {
-    final photosString = await restApiService.getPhotos(
+    if (!_isInit()) await _init();
+    final photosString = await restApiService!.getPhotos(
       count: allImages,
       month: time.month,
       year: time.year,
@@ -73,18 +88,22 @@ class DataController {
   }
 
   Future<String> getPhotoUrl(String hash) async {
-    return (await restApiService.buildPhotoUrl(
-      hash: hash,
-      photoFormat: PhotoFormat.fit_7680,
-    ))
+    if (!_isInit()) await _init();
+    return restApiService!
+        .buildPhotoUrl(
+          hash: hash,
+          photoFormat: PhotoFormat.fit_7680,
+        )
         .toString();
   }
 
   Future<String> getPreviewPhotoUrl(String hash) async {
-    return (await restApiService.buildPhotoUrl(
-      hash: hash,
-      photoFormat: PhotoFormat.tile_500,
-    ))
+    if (!_isInit()) await _init();
+    return restApiService!
+        .buildPhotoUrl(
+          hash: hash,
+          photoFormat: PhotoFormat.tile_100,
+        )
         .toString();
   }
 }

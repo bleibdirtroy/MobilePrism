@@ -21,12 +21,9 @@ const headers = {"User-Agent": "$applicationName/$applicationVersion"};
 class RestApiService {
   final client = http.Client();
   final authService = AuthService.secureStorage();
+  final String photoPrismUrl;
 
-  RestApiService();
-
-  Future<String> _getPhotoprimUrl() async {
-    return authService.getHostname();
-  }
+  RestApiService(this.photoPrismUrl);
 
   Future<String> getAlbums({
     required AlbumType albumType,
@@ -35,7 +32,7 @@ class RestApiService {
     OrderType? orderType,
   }) async {
     final response = await http.get(
-      await buildAlbumURL(
+      buildAlbumURL(
         albumType: albumType,
         count: count,
         offset: offset,
@@ -53,7 +50,7 @@ class RestApiService {
     int? quality,
   }) async {
     final response = await http.get(
-      await buildMapURL(
+      buildMapURL(
         count: count,
         offset: offset,
         public: public,
@@ -69,7 +66,7 @@ class RestApiService {
     String? hash,
   }) async {
     final response = await http.get(
-      await buildPhotosUrl(count: 1, hash: hash, uid: uid),
+      buildPhotosUrl(count: 1, hash: hash, uid: uid),
       headers: headers,
     );
 
@@ -86,7 +83,7 @@ class RestApiService {
     int? year,
   }) async {
     final response = await http.get(
-      await buildPhotosUrl(
+      buildPhotosUrl(
         count: count,
         albumUid: albumUid,
         merged: merged,
@@ -100,34 +97,32 @@ class RestApiService {
     return response.body;
   }
 
-  Future<Uri> buildPhotoUrl({
+  Uri buildPhotoUrl({
     required String hash,
     required PhotoFormat photoFormat,
-  }) async {
-    final photoPrismUrl = await _getPhotoprimUrl();
+  }) {
     final String format = photoFormat.toShortString();
     return Uri.parse(
       "$photoPrismUrl${photoprismApiPath}t/$hash/public/$format",
     );
   }
 
-  Future<Uri> buildAlbumTitlePhotoUrl({
+  Uri buildAlbumTitlePhotoUrl({
     required String uid,
     required PhotoFormat photoFormat,
-  }) async {
-    final photoPrismUrl = await _getPhotoprimUrl();
+  }) {
     final String format = photoFormat.toShortString();
     return Uri.parse(
-        "$photoPrismUrl${photoprismApiPath}albums/$uid/public/$format");
+      "$photoPrismUrl${photoprismApiPath}albums/$uid/public/$format",
+    );
   }
 
-  Future<Uri> buildAlbumURL({
+  Uri buildAlbumURL({
     required AlbumType albumType,
     required int count,
     int? offset,
     OrderType? orderType,
-  }) async {
-    final photoPrismUrl = await _getPhotoprimUrl();
+  }) {
     final String query = Uri(
       queryParameters: {
         typeQueryParameter: albumType.toShortString(),
@@ -140,13 +135,12 @@ class RestApiService {
     return Uri.parse("$photoPrismUrl${photoprismApiPath}albums?$query");
   }
 
-  Future<Uri> buildMapURL({
+  Uri buildMapURL({
     int? count,
     int? offset,
     bool? public,
     int? quality,
-  }) async {
-    final photoPrismUrl = await _getPhotoprimUrl();
+  }) {
     final String query = Uri(
       queryParameters: {
         publicQueryParameter: public?.toString() ?? "",
@@ -159,7 +153,7 @@ class RestApiService {
     return Uri.parse("$photoPrismUrl${photoprismApiPath}geo?$query");
   }
 
-  Future<Uri> buildPhotosUrl({
+  Uri buildPhotosUrl({
     required int count,
     String? albumUid,
     int? offset,
@@ -169,8 +163,7 @@ class RestApiService {
     int? year,
     String? hash,
     String? uid,
-  }) async {
-    final photoPrismUrl = await _getPhotoprimUrl();
+  }) {
     String query = Uri(
       queryParameters: {
         countQueryParameter: count.toString(),

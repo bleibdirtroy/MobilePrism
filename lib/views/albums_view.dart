@@ -1,8 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/spacing.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
-import 'package:mobileprism/services/rest_api/photo_format.dart';
 import 'package:mobileprism/views/album_view.dart';
 import 'package:mobileprism/widgets/photo_preview.dart';
 
@@ -38,13 +36,14 @@ class AlbumsView extends StatelessWidget {
                     );
                   },
                   child: GridTile(
-                      footer: GridTileBar(
-                        backgroundColor: Colors.black54,
-                        title: Text(album["Title"].toString()),
-                      ),
-                      child: PhotoPreview(
-                        hash: album["Thumb"].toString(),
-                      )),
+                    footer: GridTileBar(
+                      backgroundColor: Colors.black54,
+                      title: Text(album["Title"].toString()),
+                    ),
+                    child: PhotoPreview(
+                      hash: album["Thumb"].toString(),
+                    ),
+                  ),
                 );
               },
             );
