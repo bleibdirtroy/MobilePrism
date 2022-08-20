@@ -58,7 +58,6 @@ class TimelineView extends StatelessWidget {
                               )
                               .toUpperCase(),
                           photos: photos,
-                          currentDate: currentDate,
                         );
                       } else {
                         return const Center(

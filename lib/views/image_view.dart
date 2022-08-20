@@ -1,7 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mobileprism/constants/application.dart';
-import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:mobileprism/services/rest_api/photo_format.dart';
 import 'package:mobileprism/services/rest_api/rest_api_service.dart';
@@ -23,7 +21,7 @@ class _ImageViewState extends State<ImageView>
   bool _visible = true;
   late final AnimationController _animationController;
   late final PageController _pageController;
-  final _restApiService = RestApiService(photoprimDefaultServer);
+  final _restApiService = RestApiService();
 
   @override
   void initState() {

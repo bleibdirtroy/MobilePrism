@@ -1,17 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/spacing.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
-import 'package:mobileprism/services/rest_api/photo_format.dart';
-import 'package:mobileprism/services/rest_api/rest_api_service.dart';
 import 'package:mobileprism/views/image_view.dart';
+import 'package:mobileprism/widgets/photo_preview.dart';
 
 class AlbumView extends StatelessWidget {
   AlbumView({required this.title, required this.albumUid});
   final _dataController = DataController();
-  final _restApiService = RestApiService(photoprimDefaultServer);
   final String title;
   final String albumUid;
 
@@ -42,17 +38,7 @@ class AlbumView extends StatelessWidget {
                       ),
                     );
                   },
-                  child: CachedNetworkImage(
-                    imageUrl: _restApiService
-                        .buildPhotoUrl(
-                          hash: photo.imageHash!,
-                          photoFormat: PhotoFormat.tile_100,
-                        )
-                        .toString(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    fit: BoxFit.cover,
-                  ),
+                  child: PhotoPreview(hash: photo.imageHash!),
                 );
               },
             );
