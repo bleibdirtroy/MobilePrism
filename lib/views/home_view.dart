@@ -15,7 +15,7 @@ class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    const TimelineView(),
+    TimelineView(),
     AlbumsView(),
     const MapView(),
     const SettingsView(),

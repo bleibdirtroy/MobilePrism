@@ -6,16 +6,8 @@ import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:mobileprism/widgets/title_with_photos.dart';
 
-class TimelineView extends StatefulWidget {
-  const TimelineView({Key? key}) : super(key: key);
-
-  @override
-  State<TimelineView> createState() => _TimelineViewState();
-}
-
-class _TimelineViewState extends State<TimelineView> {
+class TimelineView extends StatelessWidget {
   final dataController = DataController();
-  int numberOfMonths = 0;
 
   Future<Map<int, SplayTreeSet<int>>> getYearsAndMonth() {
     final data = dataController.getOccupiedDates();
@@ -44,13 +36,12 @@ class _TimelineViewState extends State<TimelineView> {
                 shrinkWrap: true,
                 itemCount: months.length,
                 itemBuilder: (context, monthIndex) {
+                  final currentDate = DateTime(
+                    years.elementAt(yearIndex),
+                    months.elementAt(monthIndex),
+                  );
                   return FutureBuilder(
-                    future: dataController.getPhotosOfMonthAndYear(
-                      DateTime(
-                        years.elementAt(yearIndex),
-                        months.elementAt(monthIndex),
-                      ),
-                    ),
+                    future: dataController.getPhotosOfMonthAndYear(currentDate),
                     builder: (
                       context,
                       AsyncSnapshot<List<PhotoDataEntry>> snapshot,
@@ -67,6 +58,7 @@ class _TimelineViewState extends State<TimelineView> {
                               )
                               .toUpperCase(),
                           photos: photos,
+                          currentDate: currentDate,
                         );
                       } else {
                         return const Center(
