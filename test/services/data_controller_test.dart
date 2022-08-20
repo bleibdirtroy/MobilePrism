@@ -5,7 +5,7 @@ void main() {
   group("description", () {
     test("description", () async {
       final dataController = DataController();
-      final yearsAndMonths = await dataController.getAvailableYearsAndMonths();
+      final yearsAndMonths = await dataController.getOccupiedDates();
       print(yearsAndMonths.length);
       for (final year in yearsAndMonths.keys) {
         // print(year);

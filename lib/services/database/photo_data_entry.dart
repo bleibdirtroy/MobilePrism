@@ -47,4 +47,16 @@ class PhotoDataEntry {
         "long": long,
         "timestamp": timestamp
       };
+      
+  PhotoDataEntry.fromJson(Map<String, dynamic> json)
+      : uid = json["UID"].toString(),
+        panorama = json["Panorama"] == "true",
+        width = int.parse(json["Width"].toString()),
+        height = int.parse(json["Height"].toString()),
+        imageHash = json["Hash"].toString(),
+        imageQuality = null,
+        lat = double.parse(json["Lat"].toString()),
+        long = double.parse(json["Lng"].toString()),
+        timestamp =
+            DateTime.parse(json["TakenAt"].toString()).millisecondsSinceEpoch;
 }

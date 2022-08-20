@@ -24,7 +24,7 @@ class _TimelineViewState extends State<TimelineView> {
   int numberOfMonths = 0;
 
   Future<Map<int, SplayTreeSet<int>>> getYearsAndMonth() {
-    final data = dataController.getAvailableYearsAndMonths();
+    final data = dataController.getOccupiedDates();
     return data;
   }
 
@@ -71,9 +71,11 @@ class _TimelineViewState extends State<TimelineView> {
                       ),
                     ),
                     content: FutureBuilder(
-                      future: dataController.getPhotosByMonthAndYear(
-                        months.elementAt(monthIndex),
-                        years.elementAt(yearIndex),
+                      future: dataController.getPhotosOfMonthAndYear(
+                        DateTime(
+                          years.elementAt(yearIndex),
+                          months.elementAt(monthIndex),
+                        ),
                       ),
                       builder: (
                         context,

@@ -29,13 +29,14 @@ class RestApiService {
     int? offset,
     OrderType? orderType,
   }) async {
+    final test = buildAlbumURL(
+      albumType: albumType,
+      count: count,
+      offset: offset,
+      orderType: orderType,
+    );
     final response = await http.get(
-      buildAlbumURL(
-        albumType: albumType,
-        count: count,
-        offset: offset,
-        orderType: orderType,
-      ),
+      test,
       headers: headers,
     );
     return response.body;

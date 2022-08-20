@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/services/database/album_data_entry.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:mobileprism/services/encoder/album_encoder.dart';
@@ -12,7 +14,7 @@ const allImages = 9999999;
 class DataController {
   final albumEncoder = AlbumEncoder();
   final photoEncoder = PhotoEncoder();
-  late final restApiService = RestApiService("https://demo-de.photoprism.app");
+  late final restApiService = RestApiService(photoprimDefaultServer);
 
   DataController();
 
@@ -22,21 +24,13 @@ class DataController {
       count: allImages,
     );
     final albumsMap = albumEncoder.stringToAlbumsMap(albumsString);
-    final albums = albumEncoder.stringToAlbumData(albumsString);
 
-    for (var i = 0; i < albums.length; i++) {
-      getPhotoOfHash(albumsMap[i]["hash"].toString());
-      albums[i].thumbUid =
-          (await getPhotoOfHash(albumsMap[i]["hash"].toString())).uid;
-      albums[i].photoUids =
-          (await getPhotosOfAlbum(albums[i])).map((e) => e.uid).toList();
+    for (var i = 0; i < albumsMap.length; i++) {
+      final photo = albumsMap[i]["hash"].toString();
+      //albumsMap[i]["ThumbUid"] = photo.uid;
+      //final AlbumDataEntry album = AlbumDataEntry.fromMap(albumsMap[i]);
+      //(await getPhotosOfAlbum(album)).map((e) => e.uid).toList();
     }
-  }
-
-  Future<PhotoDataEntry> getPhotoOfHash(String hash) async {
-    final photoString = await restApiService.getPhoto(hash: hash);
-    final photo = photoEncoder.stringToPhotoData(photoString)[0];
-    return photo;
   }
 
   Future<List<PhotoDataEntry>> getPhotosOfAlbum(
@@ -49,35 +43,39 @@ class DataController {
     return photoEncoder.stringToPhotoData(photosString);
   }
 
-  Future<List<PhotoDataEntry>> getPhotosByMonthAndYear(
-    int month,
-    int year,
-  ) async {
+  Future<Map<int, SplayTreeSet<int>>> getOccupiedDates() async {
+    final Map<int, SplayTreeSet<int>> yearsAndMonths = {};
+    if (await _hasDeviceConnection()) {
+      final albumsString = await restApiService.getAlbums(
+        albumType: AlbumType.month,
+        count: allImages,
+      );
+      final albums = albumEncoder.stringToAlbumsMap(albumsString);
+      for (var i = 0; i < albums.length; i++) {
+        final year = int.parse(albums[i]["Year"].toString());
+        final month = int.parse(albums[i]["Month"].toString());
+        yearsAndMonths.containsKey(year)
+            ? yearsAndMonths[year]!.add(month)
+            : yearsAndMonths.addAll({
+                year: SplayTreeSet<int>.from({month})
+              });
+      }
+    }
+    return yearsAndMonths;
+  }
+
+  Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time) async {
     final photosString = await restApiService.getPhotos(
       count: allImages,
-      month: month,
-      year: year,
+      month: time.month,
+      year: time.year,
       merged: true,
     );
     return photoEncoder.stringToPhotoData(photosString);
   }
 
-  Future<Map<int, SplayTreeSet<int>>> getAvailableYearsAndMonths() async {
-    final Map<int, SplayTreeSet<int>> yearsAndMonths = {};
-    final albumsString = await restApiService.getAlbums(
-      albumType: AlbumType.month,
-      count: allImages,
-    );
-    final albums = albumEncoder.stringToAlbumsMap(albumsString);
-    for (var i = 0; i < albums.length; i++) {
-      final year = int.parse(albums[i]["Year"].toString());
-      final month = int.parse(albums[i]["Month"].toString());
-      yearsAndMonths.containsKey(year)
-          ? yearsAndMonths[year]!.add(month)
-          : yearsAndMonths.addAll({
-              year: SplayTreeSet<int>.from({month})
-            });
-    }
-    return yearsAndMonths;
+  Future<bool> _hasDeviceConnection() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    return ConnectivityResult.none != connectivityResult;
   }
 }

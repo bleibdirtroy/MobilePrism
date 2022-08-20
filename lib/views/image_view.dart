@@ -43,9 +43,11 @@ class _ImageViewState extends State<ImageView>
 
   Future<List<PhotoDataEntry>> getPhotos() async {
     if (widget.month != null && widget.year != null) {
-      return dataController.getPhotosByMonthAndYear(
-        widget.month!,
-        widget.year!,
+      return dataController.getPhotosOfMonthAndYear(
+        DateTime(
+          widget.year!,
+          widget.month!,
+        ),
       );
     } else {
       throw Exception();
