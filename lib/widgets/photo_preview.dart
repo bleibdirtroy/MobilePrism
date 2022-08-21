@@ -18,6 +18,7 @@ class PhotoPreview extends StatelessWidget {
       builder: (context, AsyncSnapshot<String> snapshot) {
         return snapshot.hasData
             ? CachedNetworkImage(
+                cacheKey: hash,
                 imageUrl: snapshot.data!,
                 errorWidget: (context, url, error) => const Icon(Icons.error),
                 fit: BoxFit.cover,
