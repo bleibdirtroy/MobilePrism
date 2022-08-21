@@ -63,7 +63,10 @@ class DataController {
         yearsAndMonths.containsKey(year)
             ? yearsAndMonths[year]!.add(month)
             : yearsAndMonths.addAll({
-                year: SplayTreeSet<int>.from({month})
+                year: SplayTreeSet<int>.from(
+                  {month},
+                  (a, b) => b.compareTo(a),
+                )
               });
       }
     }
@@ -93,6 +96,6 @@ class DataController {
 
   Future<String> getPreviewPhotoUrl(String hash) async {
     await _init();
-    return "$photoPrismUrl${photoprismApiPath}t/$hash/$previewToken/${PhotoFormat.tile_500.toShortString()}";
+    return "$photoPrismUrl${photoprismApiPath}t/$hash/$previewToken/${PhotoFormat.tile_100.toShortString()}";
   }
 }
