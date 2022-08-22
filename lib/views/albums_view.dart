@@ -25,6 +25,7 @@ class AlbumsView extends StatelessWidget {
               itemBuilder: (context, index) {
                 final album = albums.elementAt(index);
                 return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -40,9 +41,11 @@ class AlbumsView extends StatelessWidget {
                       backgroundColor: Colors.black54,
                       title: Text(album["Title"].toString()),
                     ),
-                    child: PhotoPreview(
-                      hash: album["Thumb"].toString(),
-                    ),
+                    child: album["Thumb"] != ""
+                        ? PhotoPreview(
+                            hash: album["Thumb"].toString(),
+                          )
+                        : const Center(child: Icon(Icons.warning)),
                   ),
                 );
               },

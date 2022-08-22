@@ -20,28 +20,33 @@ class AlbumView extends StatelessWidget {
         builder: (context, AsyncSnapshot<List<PhotoDataEntry>> snapshot) {
           if (snapshot.hasData) {
             final photos = snapshot.data!;
-            return GridView.builder(
-              itemCount: photos.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
-                mainAxisSpacing: mainAxisSpacing,
-                crossAxisSpacing: crossAxisSpacing,
-              ),
-              itemBuilder: (contxt, imageIndex) {
-                final photo = photos.elementAt(imageIndex);
-                return InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ImageView(index: imageIndex, photos: photos),
-                      ),
-                    );
-                  },
-                  child: PhotoPreview(hash: photo.imageHash!),
-                );
-              },
-            );
+            return photos.isNotEmpty
+                ? GridView.builder(
+                    itemCount: photos.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5,
+                      mainAxisSpacing: mainAxisSpacing,
+                      crossAxisSpacing: crossAxisSpacing,
+                    ),
+                    itemBuilder: (contxt, imageIndex) {
+                      final photo = photos.elementAt(imageIndex);
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ImageView(index: imageIndex, photos: photos),
+                            ),
+                          );
+                        },
+                        child: PhotoPreview(hash: photo.imageHash!),
+                      );
+                    },
+                  )
+                : const Center(
+                    child: Text("No photos in album"),
+                  );
           } else {
             return const Center(
               child: CircularProgressIndicator(),
