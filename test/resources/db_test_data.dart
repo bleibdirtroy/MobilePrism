@@ -1,5 +1,6 @@
 import 'package:mobileprism/services/database/album_data_entry.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
+import 'package:mobileprism/services/database/timeline_data_entry.dart';
 
 final testAlbum1 = AlbumDataEntry(
   uid: "1",
@@ -7,6 +8,9 @@ final testAlbum1 = AlbumDataEntry(
   thumbUid: "1",
 );
 final testAlbum2 = AlbumDataEntry(uid: "2", title: "title", thumbUid: "2");
+
+final timelineData1 = TimelineDataEntry(uid: "3", year: 2022, month: 8);
+final timelineData2 = TimelineDataEntry(uid: "4", year: 2022, month: 9);
 
 final testPhoto1 = PhotoDataEntry(
   uid: "1",

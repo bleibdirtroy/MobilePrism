@@ -7,12 +7,14 @@ import 'package:mobileprism/services/database/album_data_entry.dart';
 import 'package:mobileprism/services/database/cross_table_entry.dart';
 import 'package:mobileprism/services/database/database_exceptions.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
+import 'package:mobileprism/services/database/timeline_data_entry.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 const String photoDataTableName = "photo_data";
 const String albumDataTableName = "album_data";
+const String timelineDataTableName = "timeline_data";
 const String keyCrosstableName = "key_crosstable";
 const String photoTableCreationStrg = '''
       CREATE TABLE IF NOT EXISTS $photoDataTableName(uid TEXT PRIMARY KEY, 
@@ -23,6 +25,10 @@ const String photoTableCreationStrg = '''
 const String albumTableCreationStrg = '''
     CREATE TABLE IF NOT EXISTS $albumDataTableName(uid TEXT PRIMARY KEY, 
     photo_uids TEXT, title TEXT, thumb_uid TEXT)
+  ''';
+const String timelineTableCreationStrg = '''
+    CREATE TABLE IF NOT EXISTS $timelineDataTableName(uid TEXT PRIMARY KEY, 
+    year REAL, month REAL)
   ''';
 const String keyCrosstableCreationStrg = '''
     CREATE TABLE IF NOT EXISTS $keyCrosstableName(photo_uid Text, album_uid Text)
@@ -52,17 +58,19 @@ Future<Database> _initDb() async {
   late final String dbPath;
   if (Platform.isAndroid) {
     dbPath = await getDatabasesPath();
-  } else if (Platform.isIOS){
+  } else if (Platform.isIOS) {
     dbPath = (await getLibraryDirectory()).path;
   } else {
     throw UnsupportedPlatformException();
   }
-  
+
   return openDatabase(
     join(dbPath, 'meta_data_db.db'),
     onCreate: (db, version) async {
       await _createPhotoDataTable(db);
       await _createAlbumDataTable(db);
+      await _createTimelineDataTable(db);
+      await _createKeyCrosstable(db);
     },
     version: 1,
   );
@@ -80,10 +88,22 @@ Future<void> _createAlbumDataTable(Database db) async {
   );
 }
 
+Future<void> _createTimelineDataTable(Database db) async {
+  await db.execute(
+    timelineTableCreationStrg,
+  );
+}
+
+Future<void> _createKeyCrosstable(Database db) async {
+  await db.execute(
+    keyCrosstableCreationStrg,
+  );
+}
+
 Future<Database> _openDb() async {
   if (_database == null) {
     _database = await _initDb();
-  } else if (_database!.isOpen) {
+  } else if (!_database!.isOpen) {
     _database = await _initDb();
   }
   return _database!;
@@ -136,7 +156,6 @@ class DatabaseService {
       return db.query(table);
     }
   }
-
 
   Future<PhotoDataEntry> getPhoto(String id) async {
     final filter = List.filled(1, SqlFilter('uid', '=', '"$id"'));
@@ -216,12 +235,21 @@ class DatabaseService {
     return _batchInsert(albumDataTableName, dataList);
   }
 
+  Future<List<Object?>> insertTimelineAlbums(
+    List<TimelineDataEntry> timelineDataEntrys,
+  ) {
+    final dataList = timelineDataEntrys.map((e) => e.toDbEntry()).toList();
+    return _batchInsert(timelineDataTableName, dataList);
+  }
+
   Future<List<Object?>> addPhotoUidsToAlbum(
     String albumUid,
     List<String> photoUids,
   ) {
     final dataList = photoUids
-        .map((e) => CrossTableEntry(albumUid: albumUid, photoUid: e).toDbEntry())
+        .map(
+          (e) => CrossTableEntry(albumUid: albumUid, photoUid: e).toDbEntry(),
+        )
         .toList();
     return _batchInsert(keyCrosstableName, dataList);
   }
