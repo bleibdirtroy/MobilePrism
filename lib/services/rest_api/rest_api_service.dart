@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http show Client, get, post;
 import 'package:mobileprism/constants/application.dart';
+import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/rest_api/album_type.dart';
 import 'package:mobileprism/services/rest_api/order_type.dart';
@@ -25,11 +26,10 @@ const headers = {"User-Agent": "$applicationName/$applicationVersion"};
 class RestApiService {
   final client = http.Client();
   final authService = AuthService.secureStorage();
-  final String photoPrismUrl;
   String? token;
   String previewToken = "public";
 
-  RestApiService(this.photoPrismUrl);
+  RestApiService();
 
   Future<void> _getToken() async {
     token = token ?? await AuthService.secureStorage().getSessionToken();
@@ -47,9 +47,9 @@ class RestApiService {
     };
   }
 
-  Future<Set<String>> login(String username, String password) async {
+  Future<Set<String>> login(String hostname, String username, String password) async {
     final response = await http.post(
-      Uri.parse("$photoPrismUrl${photoprismApiPath}session"),
+      Uri.parse("$hostname${photoprismApiPath}session"),
       headers: headers,
       body: jsonEncode(
         <String, String>{"username": username, "password": password},
@@ -142,7 +142,7 @@ class RestApiService {
   }) {
     final String format = photoFormat.toShortString();
     return Uri.parse(
-      "$photoPrismUrl${photoprismApiPath}albums/$uid/public/$format",
+      "${PhotoPrismServer().hostname}${photoprismApiPath}albums/$uid/public/$format",
     );
   }
 
@@ -161,7 +161,7 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("$photoPrismUrl${photoprismApiPath}albums?$query");
+    return Uri.parse("${PhotoPrismServer().hostname}${photoprismApiPath}albums?$query");
   }
 
   Uri buildMapURL({
@@ -179,7 +179,7 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("$photoPrismUrl${photoprismApiPath}geo?$query");
+    return Uri.parse("${PhotoPrismServer().hostname}${photoprismApiPath}geo?$query");
   }
 
   Uri buildPhotosUrl({
@@ -209,6 +209,6 @@ class RestApiService {
       final String filter = "year:$year+month:$month";
       query = "$query&filter=$filter";
     }
-    return Uri.parse("$photoPrismUrl${photoprismApiPath}photos?$query");
+    return Uri.parse("${PhotoPrismServer().hostname}${photoprismApiPath}photos?$query");
   }
 }

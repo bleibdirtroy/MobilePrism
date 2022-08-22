@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/routes.dart';
+import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/rest_api/rest_api_service.dart';
 import 'package:mobileprism/widgets/error_dialog.dart';
@@ -55,33 +56,49 @@ class _LoginViewState extends State<LoginView> {
           setState(() {});
           return;
         }
-        Set<String> token;
-        try {
-          token = await RestApiService(_hostnameController.text).login(
+        String sessionToken = "";
+        String previewToken = "";
+        if (_hostnameController.text.isEmpty) {
+          previewToken = "public";
+          await _authService.storeUserData(
+            _hostnameController.text,
+            "",
+            "",
+            sessionToken,
+            previewToken,
+          );
+
+         
+        } else {
+          try {
+            final token = await RestApiService().login(
+              _hostnameController.text,
+              _usernameController.text,
+              _passwordController.text,
+            );
+            sessionToken = token.first;
+            previewToken = token.last;
+          } catch (e) {
+            setState(() {
+              _isLoginButtonDisabled = false;
+            });
+
+            showErrorDialog(
+              context,
+              "Cannot connect to your PhotoPrism Server.",
+            );
+            return;
+          }
+          await _authService.storeUserData(
+            _hostnameController.text,
             _usernameController.text,
             _passwordController.text,
+            sessionToken,
+            previewToken,
           );
-        } catch (e) {
-          setState(() {
-            _isLoginButtonDisabled = false;
-          });
-
-          showErrorDialog(
-            context,
-            "Cannot connect to your PhotoPrism Server.",
-          );
-          return;
         }
 
-        await _authService.storeUserData(
-          _hostnameController.text,
-          _usernameController.text,
-          _passwordController.text,
-          token.first,
-          token.last,
-        );
         if (!mounted) return;
-
         Navigator.pushReplacementNamed(
           context,
           homeRoute,

@@ -13,18 +13,11 @@ class PhotoPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _dataController.getPreviewPhotoUrl(hash),
-      builder: (context, AsyncSnapshot<String> snapshot) {
-        return snapshot.hasData
-            ? CachedNetworkImage(
-                cacheKey: hash,
-                imageUrl: snapshot.data!,
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                fit: BoxFit.cover,
-              )
-            : Container();
-      },
+    return CachedNetworkImage(
+      cacheKey: hash,
+      imageUrl: _dataController.getPreviewPhotoUrl(hash),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
+      fit: BoxFit.cover,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/routes.dart';
+import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/key_value_storage/storage_exceptions.dart';
 import 'package:mobileprism/widgets/error_dialog.dart';
@@ -19,13 +20,13 @@ class _SettingsViewState extends State<SettingsView> {
   String hostname = "";
   String username = "";
 
-  Future<void> loadCredentials() async {
+  void loadCredentials() {
     try {
-      hostname = await _authService.getHostname();
-      username = await _authService.getUsername();
+      hostname = PhotoPrismServer().hostname;
+      username = PhotoPrismServer().username;
       setState(() {});
     } on KeyNotFoundInStorage {
-      await showErrorDialog(
+      showErrorDialog(
         context,
         "Hostname and username not found",
       );

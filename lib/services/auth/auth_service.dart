@@ -1,4 +1,5 @@
 import 'package:mobileprism/constants/application.dart';
+import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/key_value_storage/secure_storage_provider.dart';
 import 'package:mobileprism/services/key_value_storage/storage_provider.dart';
 
@@ -21,6 +22,10 @@ class AuthService {
     await _storageProvider.upsertData(passwordKey, password);
     await _storageProvider.upsertData(sessionTokenKey, sessionToken);
     await _storageProvider.upsertData(previewTokenKey, previewToken);
+    PhotoPrismServer().hostname = hostname;
+    PhotoPrismServer().username = username;
+    PhotoPrismServer().sessionToken = sessionToken;
+    PhotoPrismServer().previewToken = previewToken;
   }
 
   Future<String> getHostname() {
