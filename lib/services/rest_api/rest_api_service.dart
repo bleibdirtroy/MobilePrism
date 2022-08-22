@@ -30,7 +30,7 @@ class RestApiService {
 
   RestApiService();
 
-  Map<String, String> _getHeader() {
+  Map<String, String> getHeader() {
     return {
       "User-Agent": "$applicationName/$applicationVersion",
       "x-session-id": PhotoPrismServer().sessionToken
@@ -69,7 +69,7 @@ class RestApiService {
         offset: offset,
         orderType: orderType,
       ),
-      headers: _getHeader(),
+      headers: getHeader(),
     );
     return response.body;
   }
@@ -87,7 +87,7 @@ class RestApiService {
         public: public,
         quality: quality,
       ),
-      headers: _getHeader(),
+      headers: getHeader(),
     );
     return response.body;
   }
@@ -98,7 +98,7 @@ class RestApiService {
   }) async {
     final response = await http.get(
       buildPhotosUrl(count: 1, hash: hash, uid: uid),
-      headers: _getHeader(),
+      headers: getHeader(),
     );
 
     return response.body;
@@ -123,7 +123,7 @@ class RestApiService {
         month: month,
         year: year,
       ),
-      headers: _getHeader(),
+      headers: getHeader(),
     );
     return response.body;
   }
