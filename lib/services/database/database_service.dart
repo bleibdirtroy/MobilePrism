@@ -236,7 +236,8 @@ class DatabaseService {
   }
 
   Future<List<Object?>> insertTimelineAlbums(
-      List<TimelineDataEntry> timelineDataEntrys) {
+    List<TimelineDataEntry> timelineDataEntrys,
+  ) {
     final dataList = timelineDataEntrys.map((e) => e.toDbEntry()).toList();
     return _batchInsert(timelineDataTableName, dataList);
   }
@@ -247,7 +248,8 @@ class DatabaseService {
   ) {
     final dataList = photoUids
         .map(
-            (e) => CrossTableEntry(albumUid: albumUid, photoUid: e).toDbEntry())
+          (e) => CrossTableEntry(albumUid: albumUid, photoUid: e).toDbEntry(),
+        )
         .toList();
     return _batchInsert(keyCrosstableName, dataList);
   }
