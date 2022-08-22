@@ -26,28 +26,19 @@ const headers = {"User-Agent": "$applicationName/$applicationVersion"};
 class RestApiService {
   final client = http.Client();
   final authService = AuthService.secureStorage();
-  String? token;
   String previewToken = "public";
 
   RestApiService();
 
-  Future<void> _getToken() async {
-    token = token ?? await AuthService.secureStorage().getSessionToken();
-  }
-
-  bool _isTokenSet() {
-    return token != null;
-  }
-
-  Future<Map<String, String>> _getHeader() async {
-    if (!_isTokenSet()) await _getToken();
+  Map<String, String> _getHeader() {
     return {
       "User-Agent": "$applicationName/$applicationVersion",
-      "x-session-id": token!
+      "x-session-id": PhotoPrismServer().sessionToken
     };
   }
 
-  Future<Set<String>> login(String hostname, String username, String password) async {
+  Future<Set<String>> login(
+      String hostname, String username, String password) async {
     final response = await http.post(
       Uri.parse("$hostname${photoprismApiPath}session"),
       headers: headers,
@@ -56,11 +47,12 @@ class RestApiService {
       ),
     );
     final sessionToken = response.headers["x-session-id"].toString();
-    final previewToken = jsonDecode(response.body)["config"]["previewToken"].toString();
+    final previewToken =
+        jsonDecode(response.body)["config"]["previewToken"].toString();
     if (sessionToken == "null" || previewToken == "null") {
       throw WrongCredentialsException();
     } else {
-      return {sessionToken,previewToken};
+      return {sessionToken, previewToken};
     }
   }
 
@@ -77,7 +69,7 @@ class RestApiService {
         offset: offset,
         orderType: orderType,
       ),
-      headers: await _getHeader(),
+      headers: _getHeader(),
     );
     return response.body;
   }
@@ -95,7 +87,7 @@ class RestApiService {
         public: public,
         quality: quality,
       ),
-      headers: await _getHeader(),
+      headers: _getHeader(),
     );
     return response.body;
   }
@@ -106,7 +98,7 @@ class RestApiService {
   }) async {
     final response = await http.get(
       buildPhotosUrl(count: 1, hash: hash, uid: uid),
-      headers: await _getHeader(),
+      headers: _getHeader(),
     );
 
     return response.body;
@@ -131,7 +123,7 @@ class RestApiService {
         month: month,
         year: year,
       ),
-      headers: await _getHeader(),
+      headers: _getHeader(),
     );
     return response.body;
   }
@@ -161,7 +153,8 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("${PhotoPrismServer().hostname}${photoprismApiPath}albums?$query");
+    return Uri.parse(
+        "${PhotoPrismServer().hostname}${photoprismApiPath}albums?$query");
   }
 
   Uri buildMapURL({
@@ -179,7 +172,8 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("${PhotoPrismServer().hostname}${photoprismApiPath}geo?$query");
+    return Uri.parse(
+        "${PhotoPrismServer().hostname}${photoprismApiPath}geo?$query");
   }
 
   Uri buildPhotosUrl({
@@ -209,6 +203,7 @@ class RestApiService {
       final String filter = "year:$year+month:$month";
       query = "$query&filter=$filter";
     }
-    return Uri.parse("${PhotoPrismServer().hostname}${photoprismApiPath}photos?$query");
+    return Uri.parse(
+        "${PhotoPrismServer().hostname}${photoprismApiPath}photos?$query");
   }
 }
