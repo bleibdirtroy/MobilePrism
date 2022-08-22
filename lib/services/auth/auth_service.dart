@@ -64,7 +64,7 @@ class AuthService {
         await _storageProvider.existsKey(previewTokenKey);
   }
 
-  Future<void> defaultPhotoprismServer() async {
+  Future<void> demoPhotoprismServer() async {
     return storeUserData(photoprimDefaultServer, "", "", "", "public");
   }
 }

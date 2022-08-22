@@ -36,7 +36,7 @@ void main() {
     test("Use public hostname", () async {
       final AuthService authService = AuthService(MockStorageProvider.iOS());
 
-      await authService.defaultPhotoprismServer();
+      await authService.demoPhotoprismServer();
 
       expect(await authService.getHostname(), photoprimDefaultServer);
 
@@ -86,7 +86,7 @@ void main() {
     test("Use public hostname", () async {
       final AuthService authService = AuthService(MockStorageProvider.iOS());
 
-      await authService.defaultPhotoprismServer();
+      await authService.demoPhotoprismServer();
 
       expect(await authService.getHostname(), photoprimDefaultServer);
 

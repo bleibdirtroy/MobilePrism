@@ -5,9 +5,11 @@ import 'package:intl/intl.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:mobileprism/widgets/title_with_photos.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class TimelineView extends StatelessWidget {
   final dataController = DataController();
+  final scrollController = ScrollController();
 
   Future<Map<int, SplayTreeSet<int>>> getYearsAndMonth() {
     final data = dataController.getOccupiedDates();
@@ -25,55 +27,69 @@ class TimelineView extends StatelessWidget {
         if (snapshot.hasData) {
           final years = snapshot.data!.keys.toList()
             ..sort((a, b) => b.compareTo(a));
-
-          return ListView.builder(
-            itemCount: years.length,
-            itemBuilder: (context, yearIndex) {
-              final year = years.elementAt(yearIndex);
-              final months = snapshot.data![year]!;
-              return ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: months.length,
-                itemBuilder: (context, monthIndex) {
-                  final currentDate = DateTime(
-                    years.elementAt(yearIndex),
-                    months.elementAt(monthIndex),
-                  );
-                  return FutureBuilder(
-                    future: dataController.getPhotosOfMonthAndYear(currentDate),
-                    builder: (
-                      context,
-                      AsyncSnapshot<List<PhotoDataEntry>> snapshot,
-                    ) {
-                      if (snapshot.hasData) {
-                        final photos = snapshot.data!;
-                        return TitleWithPhotos(
-                          title: DateFormat('MMMM yyyy')
-                              .format(
-                                DateTime(
-                                  year,
-                                  months.elementAt(monthIndex),
+          return SingleChildScrollView(
+            child: Column(
+              children: years
+                  .map(
+                    (year) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: snapshot.data![year]!
+                          .map(
+                            (month) => StickyHeader(
+                              header: Container(
+                                height: 50.0,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
                                 ),
-                              )
-                              .toUpperCase(),
-                          photos: photos,
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                  );
-                },
-              );
-            },
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  DateFormat('MMMM yyyy')
+                                      .format(
+                                        DateTime(
+                                          year,
+                                          month,
+                                        ),
+                                      )
+                                      .toUpperCase(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4!
+                                      .apply(fontFamily: "Questrial"),
+                                ),
+                              ),
+                              content: FutureBuilder(
+                                future: dataController.getPhotosOfMonthAndYear(
+                                  DateTime(
+                                    year,
+                                    month,
+                                  ),
+                                ),
+                                builder: (
+                                  context,
+                                  AsyncSnapshot<List<PhotoDataEntry>> snapshot,
+                                ) {
+                                  if (snapshot.hasData) {
+                                    final photos = snapshot.data!;
+                                    return ListOfPhotos(
+                                      photos: photos,
+                                    );
+                                  } else {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  )
+                  .toList(),
+            ),
           );
         } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );

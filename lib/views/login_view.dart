@@ -89,9 +89,9 @@ class _LoginViewState extends State<LoginView> {
           previewToken,
         );
         if (!mounted) return;
-        Navigator.pushReplacementNamed(
-          context,
+        Navigator.of(context).pushNamedAndRemoveUntil(
           homeRoute,
+          (route) => false,
         );
       };
     }
@@ -174,11 +174,12 @@ class _LoginViewState extends State<LoginView> {
                                     TextButton(
                                       onPressed: () async {
                                         await _authService
-                                            .defaultPhotoprismServer();
+                                            .demoPhotoprismServer();
                                         if (!mounted) return;
-                                        Navigator.pushReplacementNamed(
-                                          context,
+                                        Navigator.of(context)
+                                            .pushNamedAndRemoveUntil(
                                           homeRoute,
+                                          (route) => false,
                                         );
                                       },
                                       child: const Text('use demo server'),
