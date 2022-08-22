@@ -46,7 +46,8 @@ void main() async {
 
   test('Test writing timeline albums', () async {
     await deleteAllEntries();
-    final res = await dbService.insertTimelineAlbums([timelineData1, timelineData2]);
+    final res =
+        await dbService.insertTimelineAlbums([timelineData1, timelineData2]);
     expect(res.length, 2);
   });
 
