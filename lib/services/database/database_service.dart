@@ -108,7 +108,7 @@ Future<bool> openDb() async {
 class DatabaseService {
   late final Database _db;
 
-  DatabaseService(){
+  DatabaseService() {
     _db = _database;
   }
 

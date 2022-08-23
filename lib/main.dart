@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
+import 'package:mobileprism/services/database/database_exceptions.dart';
 import 'package:mobileprism/services/database/database_service.dart';
 import 'package:mobileprism/views/home_view.dart';
 import 'package:mobileprism/views/login_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!await openDb()){
-    print("Could not openDB!");
+  if (!await openDb()) {
+    throw CouldNotOpenDbException();
   }
-  DatabaseService dbService = DatabaseService();
-  print(dbService.isOpen());
   runApp(MyApp());
 }
 
