@@ -5,3 +5,5 @@ class FieldsMissingException implements Exception {}
 class DuplicateKeyException implements Exception {}
 
 class KeyNotFoundException implements Exception {}
+
+class CouldNotOpenDbException implements Exception {}
