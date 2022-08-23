@@ -34,7 +34,7 @@ const String keyCrosstableCreationStrg = '''
     CREATE TABLE IF NOT EXISTS $keyCrosstableName(photo_uid Text, album_uid Text)
   ''';
 
-late final Database? _database;
+late final Database _database;
 
 class SqlFilter {
   final String column;
@@ -100,45 +100,29 @@ Future<void> _createKeyCrosstable(Database db) async {
   );
 }
 
-Future<Database> _openDb() async {
-  if (_database == null) {
-    _database = await _initDb();
-  } else if (!_database!.isOpen) {
-    _database = await _initDb();
-  }
-  return _database!;
+Future<bool> openDb() async {
+  _database = await _initDb();
+  return _database.isOpen;
 }
 
 class DatabaseService {
-  late final Database? _db;
+  late final Database _db;
 
-  DatabaseService();
+  DatabaseService() {
+    _db = _database;
+  }
 
   DatabaseService.test(this._db);
 
-  Future<bool> openDB() async {
-    _db = await _openDb();
-    return _db!.isOpen;
-  }
-
   bool isOpen() {
-    return _db != null && _db!.isOpen;
-  }
-
-  Database _getOpenDb() {
-    if (_db != null && _db!.isOpen) {
-      return _db!;
-    } else {
-      throw DbNotOpenException();
-    }
+    return _db.isOpen;
   }
 
   Future<List<Object?>> _batchInsert(
     String table,
     List<Map<String, dynamic>> dataList,
   ) async {
-    final db = _getOpenDb();
-    final batch = db.batch();
+    final batch = _db.batch();
     for (final data in dataList) {
       batch.insert(table, data, conflictAlgorithm: ConflictAlgorithm.replace);
     }
@@ -149,11 +133,10 @@ class DatabaseService {
     String table, {
     List<SqlFilter>? filters,
   }) async {
-    final db = _getOpenDb();
     if (filters != null) {
-      return db.rawQuery('SELECT * FROM $table WHERE ${filters.join()}');
+      return _db.rawQuery('SELECT * FROM $table WHERE ${filters.join()}');
     } else {
-      return db.query(table);
+      return _db.query(table);
     }
   }
 
