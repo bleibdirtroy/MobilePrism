@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
-import 'package:mobileprism/widgets/title_with_photos.dart';
+import 'package:mobileprism/widgets/list_of_photos.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class TimelineView extends StatelessWidget {
