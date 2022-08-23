@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/spacing.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
+import 'package:mobileprism/services/database/album_data_entry.dart';
 import 'package:mobileprism/views/album_view.dart';
 import 'package:mobileprism/widgets/photo_preview.dart';
 
@@ -12,9 +13,9 @@ class AlbumsView extends StatelessWidget {
     return Scaffold(
       body: FutureBuilder(
         future: _dataController.getAlbums(),
-        builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+        builder: (context, AsyncSnapshot<List<AlbumDataEntry>> snapshot) {
           if (snapshot.hasData) {
-            final List<Map<String, dynamic>> albums = snapshot.data!;
+            final List<AlbumDataEntry> albums = snapshot.data!;
             return GridView.builder(
               itemCount: albums.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -29,21 +30,18 @@ class AlbumsView extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => AlbumView(
-                          title: album["Title"].toString(),
-                          albumUid: album["UID"].toString(),
-                        ),
+                        builder: (context) => AlbumView(album),
                       ),
                     );
                   },
                   child: GridTile(
                     footer: GridTileBar(
                       backgroundColor: Colors.black54,
-                      title: Text(album["Title"].toString()),
+                      title: Text(album.title),
                     ),
-                    child: album["Thumb"] != ""
+                    child: album.thumbHash != ""
                         ? PhotoPreview(
-                            hash: album["Thumb"].toString(),
+                            hash: album.thumbHash,
                           )
                         : const Center(child: Icon(Icons.warning)),
                   ),

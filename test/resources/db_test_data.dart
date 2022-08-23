@@ -5,9 +5,9 @@ import 'package:mobileprism/services/database/timeline_data_entry.dart';
 final testAlbum1 = AlbumDataEntry(
   uid: "1",
   title: "title",
-  thumbUid: "1",
+  thumbHash: "1",
 );
-final testAlbum2 = AlbumDataEntry(uid: "2", title: "title", thumbUid: "2");
+final testAlbum2 = AlbumDataEntry(uid: "2", title: "title", thumbHash: "2");
 
 final timelineData1 = TimelineDataEntry(uid: "3", year: 2022, month: 8);
 final timelineData2 = TimelineDataEntry(uid: "4", year: 2022, month: 9);

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 
 import "package:collection/collection.dart";
@@ -24,11 +25,11 @@ const String photoTableCreationStrg = '''
     ''';
 const String albumTableCreationStrg = '''
     CREATE TABLE IF NOT EXISTS $albumDataTableName(uid TEXT PRIMARY KEY, 
-    photo_uids TEXT, title TEXT, thumb_uid TEXT)
+    photo_uids TEXT, title TEXT, thumb_hash TEXT)
   ''';
 const String timelineTableCreationStrg = '''
     CREATE TABLE IF NOT EXISTS $timelineDataTableName(uid TEXT PRIMARY KEY, 
-    year REAL, month REAL)
+    year INTEGER, month INTEGER)
   ''';
 const String keyCrosstableCreationStrg = '''
     CREATE TABLE IF NOT EXISTS $keyCrosstableName(photo_uid Text, album_uid Text)
@@ -153,16 +154,17 @@ class DatabaseService {
     }
   }
 
-  Future<Map<int, Set<int>>> getTimlineAlbums() async {
-    final List<Map<String, dynamic>> res = await _read(photoDataTableName);
-    final Iterable<MapEntry<int, int>> yearMonthTuples = res
-        .map((e) => PhotoDataEntry.fromDbEntry(e).timestamp)
-        .whereType<int>()
-        .map((e) => DateTime.fromMillisecondsSinceEpoch(e * 1000))
-        .map((e) => MapEntry(e.year, e.month));
+  Future<Map<int, SplayTreeSet<int>>> getTimlineAlbums() async {
+    final List<Map<String, dynamic>> res = await _read(timelineDataTableName);
+    final entries = res.map((e) => TimelineDataEntry.fromDbEntry(e));
+    final group = groupBy(entries, (TimelineDataEntry e) => e.year).map(
+      (key, value) => MapEntry<int, SplayTreeSet<int>>(
+        key,
+        SplayTreeSet.from(value.map((e) => e.month)),
+      ),
+    );
 
-    return groupBy(yearMonthTuples, (MapEntry<int, int> e) => e.key)
-        .map((key, value) => MapEntry(key, value.map((e) => e.value).toSet()));
+    return group;
   }
 
   // [start] / [end]: milliseconds since epoch

@@ -1,7 +1,7 @@
 class TimelineDataEntry {
-  late final String uid;
-  late final int year;
-  late final int month;
+  final String uid;
+  final int year;
+  final int month;
 
   TimelineDataEntry({
     required this.uid,
@@ -9,11 +9,10 @@ class TimelineDataEntry {
     required this.month,
   });
 
-  TimelineDataEntry.fromDbEntry(Map<String, dynamic> data) {
-    uid = data["uid"] as String;
-    year = data["year"] as int;
-    year = data["month"] as int;
-  }
+  TimelineDataEntry.fromDbEntry(Map<String, dynamic> data)
+      : uid = data["uid"] as String,
+        year = data["year"] as int,
+        month = data["month"] as int;
 
   Map<String, dynamic> toDbEntry() => {
         "uid": uid,

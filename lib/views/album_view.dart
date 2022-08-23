@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/spacing.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
+import 'package:mobileprism/services/database/album_data_entry.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:mobileprism/views/image_view.dart';
 import 'package:mobileprism/widgets/photo_preview.dart';
 
 class AlbumView extends StatelessWidget {
-  AlbumView({required this.title, required this.albumUid});
+  AlbumView(this.album);
   final _dataController = DataController();
-  final String title;
-  final String albumUid;
+  final AlbumDataEntry album;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: Text(album.title)),
       body: FutureBuilder(
-        future: _dataController.getPhotosOfAlbum(albumUid),
+        future: _dataController.getPhotosOfAlbum(album.uid),
         builder: (context, AsyncSnapshot<List<PhotoDataEntry>> snapshot) {
           if (snapshot.hasData) {
             final photos = snapshot.data!;

@@ -1,9 +1,13 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/models/photo_prism_server.dart';
+import 'package:mobileprism/services/database/album_data_entry.dart';
+import 'package:mobileprism/services/database/database_service.dart';
 import 'package:mobileprism/services/database/photo_data_entry.dart';
+import 'package:mobileprism/services/database/timeline_data_entry.dart';
 import 'package:mobileprism/services/encoder/album_encoder.dart';
 import 'package:mobileprism/services/encoder/photo_encoder.dart';
 import 'package:mobileprism/services/rest_api/album_type.dart';
@@ -19,12 +23,19 @@ class DataController {
 
   DataController();
 
-  Future<List<Map<String, dynamic>>> getAlbums() async {
-    final albumsString = await restApiService.getAlbums(
-      albumType: AlbumType.album,
-      count: allImages,
-    );
-    return albumEncoder.stringToAlbumsMap(albumsString);
+  Future<List<AlbumDataEntry>> getAlbums() async {
+    if (await _hasInternetConnection()) {
+      final albumsString = await restApiService.getAlbums(
+        albumType: AlbumType.album,
+        count: allImages,
+      );
+      final albums = (jsonDecode(albumsString) as List<dynamic>)
+          .map((e) => AlbumDataEntry.fromJson(e as Map<String, dynamic>))
+          .toList();
+      await DatabaseService().insertAlbums(albums);
+    }
+
+    return DatabaseService().getAlbums();
   }
 
   Future<List<PhotoDataEntry>> getPhotosOfAlbum(
@@ -39,7 +50,8 @@ class DataController {
 
   Future<Map<int, SplayTreeSet<int>>> getOccupiedDates() async {
     final Map<int, SplayTreeSet<int>> yearsAndMonths = {};
-    if (await _hasDeviceConnection()) {
+
+    if (await _hasInternetConnection()) {
       final albumsString = await restApiService.getAlbums(
         albumType: AlbumType.month,
         count: allImages,
@@ -48,6 +60,9 @@ class DataController {
       for (var i = 0; i < albums.length; i++) {
         final year = int.parse(albums[i]["Year"].toString());
         final month = int.parse(albums[i]["Month"].toString());
+        final uid = albums[i]["UID"].toString();
+        TimelineDataEntry(month: month, year: year, uid: uid);
+
         yearsAndMonths.containsKey(year)
             ? yearsAndMonths[year]!.add(month)
             : yearsAndMonths.addAll({
@@ -57,8 +72,19 @@ class DataController {
                 )
               });
       }
+      await DatabaseService().insertTimelineAlbums(
+        albums
+            .map(
+              (e) => TimelineDataEntry(
+                month: int.parse(e["Month"].toString()),
+                year: int.parse(e["Year"].toString()),
+                uid: e["UID"].toString(),
+              ),
+            )
+            .toList(),
+      );
     }
-    return yearsAndMonths;
+    return DatabaseService().getTimlineAlbums();
   }
 
   Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time) async {
@@ -68,10 +94,12 @@ class DataController {
       year: time.year,
       merged: true,
     );
+    DatabaseService()
+        .insertPhotos(photoEncoder.stringToPhotoData(photosString));
     return photoEncoder.stringToPhotoData(photosString);
   }
 
-  Future<bool> _hasDeviceConnection() async {
+  Future<bool> _hasInternetConnection() async {
     final connectivityResult = await Connectivity().checkConnectivity();
     return ConnectivityResult.none != connectivityResult;
   }
