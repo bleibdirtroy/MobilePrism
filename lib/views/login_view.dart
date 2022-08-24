@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
+import 'package:mobileprism/services/rest_api/rest_api_service.dart';
+import 'package:mobileprism/widgets/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class _LoginViewState extends State<LoginView> {
   late final TextEditingController _usernameController;
   late final TextEditingController _passwordController;
   bool isHostnameEmpty = false;
+  bool _isLoginButtonDisabled = false;
 
   @override
   void initState() {
@@ -36,6 +39,55 @@ class _LoginViewState extends State<LoginView> {
     _hostnameController.text.isEmpty
         ? isHostnameEmpty = true
         : isHostnameEmpty = false;
+  }
+
+  VoidCallback? _login() {
+    if (_isLoginButtonDisabled) {
+      return null;
+    } else {
+      return () async {
+        setState(() {
+          _isLoginButtonDisabled = true;
+        });
+
+        _checkHostname();
+        if (isHostnameEmpty) {
+          setState(() {});
+          return;
+        }
+        Set<String> token;
+        try {
+          token = await RestApiService(_hostnameController.text).login(
+            _usernameController.text,
+            _passwordController.text,
+          );
+        } catch (e) {
+          setState(() {
+            _isLoginButtonDisabled = false;
+          });
+
+          showErrorDialog(
+            context,
+            "Cannot connect to your PhotoPrism Server.",
+          );
+          return;
+        }
+
+        await _authService.storeUserData(
+          _hostnameController.text,
+          _usernameController.text,
+          _passwordController.text,
+          token.first,
+          token.last,
+        );
+        if (!mounted) return;
+
+        Navigator.pushReplacementNamed(
+          context,
+          homeRoute,
+        );
+      };
+    }
   }
 
   @override
@@ -98,23 +150,7 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                         ElevatedButton(
                           key: const Key("loginbutton"),
-                          onPressed: () async {
-                            _checkHostname();
-                            if (isHostnameEmpty) {
-                              setState(() {});
-                              return;
-                            }
-                            await _authService.storeUserData(
-                              _hostnameController.text,
-                              _usernameController.text,
-                              _passwordController.text,
-                            );
-                            if (!mounted) return;
-                            Navigator.pushReplacementNamed(
-                              context,
-                              homeRoute,
-                            );
-                          },
+                          onPressed: _login(),
                           child: const Text('Login'),
                         ),
                         ElevatedButton(

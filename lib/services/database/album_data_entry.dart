@@ -17,4 +17,9 @@ class AlbumDataEntry {
 
   Map<String, dynamic> toDbEntry() =>
       {"uid": uid, "title": title, "thumb_uid": thumbUid};
+
+  AlbumDataEntry.fromMap(Map<String, dynamic> data)
+      : uid = data["UID"].toString(),
+        title = data["Title"].toString(),
+        thumbUid = data["ThumbUid"].toString();
 }
