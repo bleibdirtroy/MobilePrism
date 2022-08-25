@@ -56,11 +56,12 @@ class RestApiService {
       ),
     );
     final sessionToken = response.headers["x-session-id"].toString();
-    final previewToken = jsonDecode(response.body)["config"]["previewToken"].toString();
+    final previewToken =
+        jsonDecode(response.body)["config"]["previewToken"].toString();
     if (sessionToken == "null" || previewToken == "null") {
       throw WrongCredentialsException();
     } else {
-      return {sessionToken,previewToken};
+      return {sessionToken, previewToken};
     }
   }
 

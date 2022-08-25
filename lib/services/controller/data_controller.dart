@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mobileprism/constants/application.dart';
+import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
-import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:mobileprism/services/encoder/album_encoder.dart';
 import 'package:mobileprism/services/encoder/photo_encoder.dart';
 import 'package:mobileprism/services/rest_api/album_type.dart';
