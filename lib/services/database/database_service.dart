@@ -33,7 +33,7 @@ const String timelineTableCreationStrg = '''
     year INTEGER, month INTEGER)
   ''';
 const String keyCrosstableCreationStrg = '''
-    CREATE TABLE IF NOT EXISTS $keyCrosstableName(photo_uid Text, photo_uid Text)
+    CREATE TABLE IF NOT EXISTS $keyCrosstableName(album_uid Text, photo_uid Text)
   ''';
 
 late final Database _database;
