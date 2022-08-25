@@ -25,9 +25,13 @@ void main() {
     final res = testData.map((e) => e.toDbEntry()).toList();
     final expectedKey = ["uid", "title", "thumb_hash"];
     expect(
-        const ListEquality().equals(res[0].keys.toList(), expectedKey), true,);
+      const ListEquality().equals(res[0].keys.toList(), expectedKey),
+      true,
+    );
     expect(
-        const ListEquality().equals(res[1].keys.toList(), expectedKey), true,);
+      const ListEquality().equals(res[1].keys.toList(), expectedKey),
+      true,
+    );
     expect((res[0].values.first.toString()) == "1", true);
     expect(res[0].values.elementAt(1).toString() == "title", true);
     expect(res[0].values.elementAt(2).toString() == "1", true);

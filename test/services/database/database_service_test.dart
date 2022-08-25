@@ -23,7 +23,6 @@ void main() async {
   }
 
   test('Test setting up db', () async {
-    print("hI");
     expect(await db.getVersion(), 0);
     expect(db.isOpen, true);
   });

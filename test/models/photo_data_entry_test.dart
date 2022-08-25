@@ -35,9 +35,13 @@ void main() {
       "timestamp"
     ];
     expect(
-        const ListEquality().equals(res[0].keys.toList(), expectedKey), true,);
+      const ListEquality().equals(res[0].keys.toList(), expectedKey),
+      true,
+    );
     expect(
-        const ListEquality().equals(res[1].keys.toList(), expectedKey), true,);
+      const ListEquality().equals(res[1].keys.toList(), expectedKey),
+      true,
+    );
     expect(res.length, 2);
   });
 }

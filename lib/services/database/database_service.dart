@@ -234,7 +234,8 @@ class DatabaseService {
   ) {
     final dataList = photoUids
         .map(
-            (e) => CrossTableEntry(albumUid: albumUid, photoUid: e).toDbEntry(),)
+          (e) => CrossTableEntry(albumUid: albumUid, photoUid: e).toDbEntry(),
+        )
         .toList();
     return _batchInsert(keyCrosstableName, dataList);
   }
