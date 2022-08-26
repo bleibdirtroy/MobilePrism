@@ -88,15 +88,22 @@ class DataController {
   }
 
   Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time) async {
-    final photosString = await restApiService.getPhotos(
-      count: allImages,
-      month: time.month,
-      year: time.year,
-      merged: true,
+    if (await _hasInternetConnection()) {
+      final photosString = await restApiService.getPhotos(
+        count: allImages,
+        month: time.month,
+        year: time.year,
+        merged: true,
+      );
+      final photos = (jsonDecode(photosString) as List<dynamic>)
+          .map((e) => PhotoDataEntry.fromJson(e as Map<String, dynamic>))
+          .toList();
+      await DatabaseService().insertPhotos(photos);
+    }
+    return DatabaseService().getPhotosByDateRange(
+      time.millisecondsSinceEpoch,
+      DateTime(time.year, time.month + 1, 0).millisecondsSinceEpoch,
     );
-    DatabaseService()
-        .insertPhotos(photoEncoder.stringToPhotoData(photosString));
-    return photoEncoder.stringToPhotoData(photosString);
   }
 
   Future<bool> _hasInternetConnection() async {
