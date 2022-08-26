@@ -15,9 +15,11 @@ class PhotoPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-      cacheKey: hash,
+      cacheKey: "$hash/thumb",
       httpHeaders: RestApiService().getHeader(),
       imageUrl: _dataController.getPreviewPhotoUrl(hash),
+      
+      placeholder: (context, url) => Container(),
       errorWidget: (context, url, error) => const Icon(Icons.error),
       fit: BoxFit.cover,
     );

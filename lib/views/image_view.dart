@@ -66,6 +66,7 @@ class _ImageViewState extends State<ImageView>
               maxScale: PhotoViewComputedScale.covered * 8,
               imageProvider: CachedNetworkImageProvider(
                 photoUrls[index],
+                cacheKey: "${widget.photos.elementAt(index).imageHash}/full",
                 headers: RestApiService().getHeader(),
               ),
               onTapUp: (context, details, controllerValue) {
