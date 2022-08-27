@@ -48,7 +48,7 @@ class RestApiService {
     );
     final sessionToken = response.headers["x-session-id"].toString();
     final previewToken =
-        jsonDecode(response.body)["config"]["previewToken"].toString();
+        (jsonDecode(response.body) as Map<String, Map<String, dynamic>>)["config"]!["previewToken"].toString();
     if (sessionToken == "null" || previewToken == "null") {
       throw WrongCredentialsException();
     } else {

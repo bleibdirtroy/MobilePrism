@@ -4,15 +4,16 @@ import 'dart:io';
 
 import "package:collection/collection.dart";
 import 'package:mobileprism/exceptions.dart';
-import 'package:mobileprism/services/database/album_data_entry.dart';
-import 'package:mobileprism/services/database/cross_table_entry.dart';
+import 'package:mobileprism/models/album_data_entry.dart';
+import 'package:mobileprism/models/cross_table_entry.dart';
+import 'package:mobileprism/models/photo_data_entry.dart';
+import 'package:mobileprism/models/timeline_data_entry.dart';
 import 'package:mobileprism/services/database/database_exceptions.dart';
-import 'package:mobileprism/services/database/photo_data_entry.dart';
-import 'package:mobileprism/services/database/timeline_data_entry.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+const int dbVersion = 1;
 const String photoDataTableName = "photo_data";
 const String albumDataTableName = "album_data";
 const String timelineDataTableName = "timeline_data";
@@ -32,7 +33,7 @@ const String timelineTableCreationStrg = '''
     year INTEGER, month INTEGER)
   ''';
 const String keyCrosstableCreationStrg = '''
-    CREATE TABLE IF NOT EXISTS $keyCrosstableName(photo_uid Text, album_uid Text)
+    CREATE TABLE IF NOT EXISTS $keyCrosstableName(album_uid Text, photo_uid Text)
   ''';
 
 late final Database _database;
@@ -53,28 +54,6 @@ class SqlFilter {
       return ' $comparator ("$column" $operator $value)';
     }
   }
-}
-
-Future<Database> _initDb() async {
-  late final String dbPath;
-  if (Platform.isAndroid) {
-    dbPath = await getDatabasesPath();
-  } else if (Platform.isIOS) {
-    dbPath = (await getLibraryDirectory()).path;
-  } else {
-    throw UnsupportedPlatformException();
-  }
-
-  return openDatabase(
-    join(dbPath, 'meta_data_db.db'),
-    onCreate: (db, version) async {
-      await _createPhotoDataTable(db);
-      await _createAlbumDataTable(db);
-      await _createTimelineDataTable(db);
-      await _createKeyCrosstable(db);
-    },
-    version: 1,
-  );
 }
 
 Future<void> _createPhotoDataTable(Database db) async {
@@ -98,6 +77,28 @@ Future<void> _createTimelineDataTable(Database db) async {
 Future<void> _createKeyCrosstable(Database db) async {
   await db.execute(
     keyCrosstableCreationStrg,
+  );
+}
+
+Future<Database> _initDb() async {
+  late final String dbPath;
+  if (Platform.isAndroid) {
+    dbPath = await getDatabasesPath();
+  } else if (Platform.isIOS) {
+    dbPath = (await getLibraryDirectory()).path;
+  } else {
+    throw UnsupportedPlatformException();
+  }
+
+  return openDatabase(
+    join(dbPath, 'meta_data_db.db'),
+    onCreate: (db, version) async {
+      await _createPhotoDataTable(db);
+      await _createAlbumDataTable(db);
+      await _createTimelineDataTable(db);
+      await _createKeyCrosstable(db);
+    },
+    version: dbVersion,
   );
 }
 
@@ -169,8 +170,8 @@ class DatabaseService {
 
   // [start] / [end]: milliseconds since epoch
   Future<List<PhotoDataEntry>> getPhotosByDateRange(int start, int end) async {
-    final String startInSecondsStr = (start ~/ 1000).toString();
-    final String endInSecondsStr = (end ~/ 1000).toString();
+    final String startInSecondsStr = start.toString();
+    final String endInSecondsStr = end.toString();
     final List<SqlFilter> filters = [
       SqlFilter('timestamp', '>=', startInSecondsStr),
       SqlFilter('timestamp', '<=', endInSecondsStr, comparator: "AND")

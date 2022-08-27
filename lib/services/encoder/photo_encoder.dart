@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mobileprism/services/database/photo_data_entry.dart';
+import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/services/encoder/encoder_exceptions.dart';
 
 class PhotoEncoder {

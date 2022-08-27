@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mobileprism/constants/application.dart';
+import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/database/album_data_entry.dart';
 import 'package:mobileprism/services/database/database_service.dart';
-import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:mobileprism/services/database/timeline_data_entry.dart';
 import 'package:mobileprism/services/encoder/album_encoder.dart';
 import 'package:mobileprism/services/encoder/photo_encoder.dart';

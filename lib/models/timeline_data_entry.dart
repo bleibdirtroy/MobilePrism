@@ -19,4 +19,9 @@ class TimelineDataEntry {
         "year": year,
         "month": month,
       };
+
+  TimelineDataEntry.fromJson(Map<String, dynamic> json)
+      : uid = json["UID"] as String,
+        year = json["Year"] as int,
+        month = json["Month"] as int;
 }
