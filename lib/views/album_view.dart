@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/spacing.dart';
+import 'package:mobileprism/models/album_data_entry.dart';
 import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
-import 'package:mobileprism/services/database/album_data_entry.dart';
-import 'package:mobileprism/services/database/photo_data_entry.dart';
 import 'package:mobileprism/views/image_view.dart';
 import 'package:mobileprism/widgets/photo_preview.dart';
 

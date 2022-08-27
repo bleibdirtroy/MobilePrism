@@ -3,11 +3,13 @@ import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mobileprism/constants/application.dart';
+import 'package:mobileprism/models/album_data_entry.dart';
 import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/models/photo_prism_server.dart';
-import 'package:mobileprism/services/database/album_data_entry.dart';
+import 'package:mobileprism/models/timeline_data_entry.dart';
+
 import 'package:mobileprism/services/database/database_service.dart';
-import 'package:mobileprism/services/database/timeline_data_entry.dart';
+
 import 'package:mobileprism/services/encoder/album_encoder.dart';
 import 'package:mobileprism/services/encoder/photo_encoder.dart';
 import 'package:mobileprism/services/rest_api/album_type.dart';
@@ -41,11 +43,18 @@ class DataController {
   Future<List<PhotoDataEntry>> getPhotosOfAlbum(
     String albumUid,
   ) async {
-    final photosString = await restApiService.getPhotos(
-      count: allImages,
-      albumUid: albumUid,
-    );
-    return photoEncoder.stringToPhotoData(photosString);
+    if (await _hasInternetConnection()) {
+      final photosString = await restApiService.getPhotos(
+        count: allImages,
+        albumUid: albumUid,
+      );
+      final photos = photoEncoder.stringToPhotoData(photosString);
+      await DatabaseService().insertPhotos(photos);
+      await DatabaseService()
+          .addPhotoUidsToAlbum(albumUid, photos.map((e) => e.uid).toList());
+    }
+
+    return DatabaseService().getAlbumPhotos(albumUid);
   }
 
   Future<Map<int, SplayTreeSet<int>>> getOccupiedDates() async {
