@@ -49,9 +49,20 @@ class SqlFilter {
   @override
   String toString() {
     if (comparator == null) {
-      return '("$column" $operator $value)';
+      if (value is String) {
+        return '("$column" $operator "$value")';
+      }
+      else {
+        return '("$column" $operator $value)';
+      } 
     } else {
-      return ' $comparator ("$column" $operator $value)';
+      if (value is String) {
+        return ' $comparator ("$column" $operator "$value")';
+      }
+      else {
+        return ' $comparator ("$column" $operator $value)';
+      }
+      
     }
   }
 }
@@ -182,13 +193,13 @@ class DatabaseService {
   }
 
   Future<List<PhotoDataEntry>> getAlbumPhotos(String albumUid) async {
-    final SqlFilter crossTableFilter = SqlFilter('album_uid', '==', albumUid);
+    final SqlFilter crossTableFilter = SqlFilter('album_uid', '=', albumUid);
     final List<Map<String, dynamic>> corssTableRes =
         await _read(keyCrosstableName, filters: [crossTableFilter]);
     final photoUids =
         corssTableRes.map((e) => CrossTableEntry.fromDbEntry(e).photoUid);
     final photoFilters = photoUids
-        .map((e) => SqlFilter('uid', '==', e, comparator: "OR"))
+        .map((e) => SqlFilter('uid', '=', e, comparator: "OR"))
         .toList();
     photoFilters[0] = SqlFilter(
       photoFilters[0].column,
