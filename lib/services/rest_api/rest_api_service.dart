@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http show Client, get, post;
 import 'package:mobileprism/constants/application.dart';
@@ -46,12 +47,15 @@ class RestApiService {
         <String, String>{"username": username, "password": password},
       ),
     );
+
     final sessionToken = response.headers["x-session-id"].toString();
     final previewToken =
-        (jsonDecode(response.body) as Map<String, Map<String, dynamic>>)["config"]!["previewToken"].toString();
+        (jsonDecode(response.body))["config"]!["previewToken"].toString();
     if (sessionToken == "null" || previewToken == "null") {
+      log("exception");
       throw WrongCredentialsException();
     } else {
+      log("fertig");
       return {sessionToken, previewToken};
     }
   }
@@ -200,7 +204,7 @@ class RestApiService {
     ).query;
 
     if (month != null && year != null) {
-      final String filter = "year:$year+month:$month";
+      final String filter = "year:$year+month:$month+public:true";
       query = "$query&filter=$filter";
     }
     return Uri.parse(
