@@ -18,7 +18,6 @@ class PhotoPreview extends StatelessWidget {
       cacheKey: "$hash/thumb",
       httpHeaders: RestApiService().getHeader(),
       imageUrl: _dataController.getPreviewPhotoUrl(hash),
-      
       placeholder: (context, url) => Container(),
       errorWidget: (context, url, error) => const Icon(Icons.error),
       fit: BoxFit.cover,

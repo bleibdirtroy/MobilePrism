@@ -51,18 +51,15 @@ class SqlFilter {
     if (comparator == null) {
       if (value is String) {
         return '("$column" $operator "$value")';
-      }
-      else {
+      } else {
         return '("$column" $operator $value)';
-      } 
+      }
     } else {
       if (value is String) {
         return ' $comparator ("$column" $operator "$value")';
-      }
-      else {
+      } else {
         return ' $comparator ("$column" $operator $value)';
       }
-      
     }
   }
 }
