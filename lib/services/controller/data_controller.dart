@@ -111,7 +111,7 @@ class DataController {
     }
     return DatabaseService().getPhotosByDateRange(
       time.millisecondsSinceEpoch,
-      DateTime(time.year, time.month + 1, 0).millisecondsSinceEpoch,
+      DateTime(time.year, time.month + 1).millisecondsSinceEpoch,
     );
   }
 

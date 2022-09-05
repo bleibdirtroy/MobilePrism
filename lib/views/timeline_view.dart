@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
-import 'package:mobileprism/widgets/column_builder.dart';
 import 'package:mobileprism/widgets/list_of_photos.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
@@ -13,7 +12,7 @@ class TimelineView extends StatefulWidget {
   State<TimelineView> createState() => _TimelineViewState();
 }
 
-class _TimelineViewState extends State<TimelineView> with AutomaticKeepAliveClientMixin{
+class _TimelineViewState extends State<TimelineView> {
   final dataController = DataController();
 
   final ScrollController _scrollController = ScrollController();
@@ -25,7 +24,6 @@ class _TimelineViewState extends State<TimelineView> with AutomaticKeepAliveClie
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return FutureBuilder(
       future: getYearsAndMonth(),
       builder: (
@@ -36,7 +34,9 @@ class _TimelineViewState extends State<TimelineView> with AutomaticKeepAliveClie
           final years = snapshot.data!.keys.toList()
             ..sort((a, b) => b.compareTo(a));
           return ListView.builder(
+            cacheExtent: 10000,
             controller: _scrollController,
+            itemCount: years.length,
             itemBuilder: (context, index) {
               final year = years.elementAt(index);
               final months = snapshot.data![year]!.toList()
@@ -59,9 +59,6 @@ class _TimelineViewState extends State<TimelineView> with AutomaticKeepAliveClie
       },
     );
   }
-  
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class TitleWithPhotosByMonthAndYear extends StatelessWidget {
@@ -69,8 +66,11 @@ class TitleWithPhotosByMonthAndYear extends StatelessWidget {
   final int year;
   final int month;
 
-  TitleWithPhotosByMonthAndYear(
-      {super.key, required this.year, required this.month});
+  TitleWithPhotosByMonthAndYear({
+    super.key,
+    required this.year,
+    required this.month,
+  });
 
   @override
   Widget build(BuildContext context) {
