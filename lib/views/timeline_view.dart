@@ -13,7 +13,7 @@ class TimelineView extends StatefulWidget {
   State<TimelineView> createState() => _TimelineViewState();
 }
 
-class _TimelineViewState extends State<TimelineView> {
+class _TimelineViewState extends State<TimelineView> with AutomaticKeepAliveClientMixin{
   final dataController = DataController();
 
   final ScrollController _scrollController = ScrollController();
@@ -25,6 +25,7 @@ class _TimelineViewState extends State<TimelineView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return FutureBuilder(
       future: getYearsAndMonth(),
       builder: (
@@ -34,24 +35,23 @@ class _TimelineViewState extends State<TimelineView> {
         if (snapshot.hasData) {
           final years = snapshot.data!.keys.toList()
             ..sort((a, b) => b.compareTo(a));
-          return ListView(
+          return ListView.builder(
             controller: _scrollController,
-            children: years.map(
-              (year) {
-                final months = snapshot.data![year]!.toList()
-                  ..sort((a, b) => b.compareTo(a));
-                return Column(
-                  children: months
-                      .map(
-                        (month) => TitleWithPhotosByMonthAndYear(
-                          year: year,
-                          month: month,
-                        ),
-                      )
-                      .toList(),
-                );
-              },
-            ).toList(),
+            itemBuilder: (context, index) {
+              final year = years.elementAt(index);
+              final months = snapshot.data![year]!.toList()
+                ..sort((a, b) => b.compareTo(a));
+              return Column(
+                children: months
+                    .map(
+                      (month) => TitleWithPhotosByMonthAndYear(
+                        year: year,
+                        month: month,
+                      ),
+                    )
+                    .toList(),
+              );
+            },
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -59,6 +59,9 @@ class _TimelineViewState extends State<TimelineView> {
       },
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class TitleWithPhotosByMonthAndYear extends StatelessWidget {
