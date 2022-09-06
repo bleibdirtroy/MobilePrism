@@ -20,7 +20,6 @@ class TitleWithPhotosByMonthAndYear extends StatefulWidget {
       _TitleWithPhotosByMonthAndYearState();
 }
 
-
 class _TitleWithPhotosByMonthAndYearState
     extends State<TitleWithPhotosByMonthAndYear>
     with AutomaticKeepAliveClientMixin {
