@@ -10,13 +10,13 @@ class AuthService {
 
   factory AuthService.secureStorage() => AuthService(SecureStorageProvider());
 
-  Future<void> storeUserData(
-    String hostname,
-    String username,
-    String password,
-    String sessionToken,
-    String previewToken,
-  ) async {
+  Future<void> storeUserData({
+    required String hostname,
+    required String username,
+    required String password,
+    required String sessionToken,
+    required String previewToken,
+  }) async {
     await _storageProvider.upsertData(hostnameKey, hostname);
     await _storageProvider.upsertData(usernameKey, username);
     await _storageProvider.upsertData(passwordKey, password);
@@ -65,7 +65,13 @@ class AuthService {
   }
 
   Future<void> demoPhotoprismServer() async {
-    return storeUserData(photoprimDefaultServer, "", "", "", "public");
+    return storeUserData(
+      hostname: photoprimDefaultServer,
+      username: "",
+      password: "",
+      sessionToken: "",
+      previewToken: "public",
+    );
   }
 }
 

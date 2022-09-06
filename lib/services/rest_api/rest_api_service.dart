@@ -39,7 +39,10 @@ class RestApiService {
   }
 
   Future<Set<String>> login(
-      String hostname, String username, String password) async {
+    String hostname,
+    String username,
+    String password,
+  ) async {
     final response = await http.post(
       Uri.parse("$hostname${photoprismApiPath}session"),
       headers: headers,
@@ -50,7 +53,9 @@ class RestApiService {
 
     final sessionToken = response.headers["x-session-id"].toString();
     final previewToken =
-        (jsonDecode(response.body))["config"]!["previewToken"].toString();
+        ((jsonDecode(response.body) as Map<String, dynamic>)["config"]!
+                as Map<String, dynamic>)["previewToken"]
+            .toString();
     if (sessionToken == "null" || previewToken == "null") {
       log("exception");
       throw WrongCredentialsException();
@@ -158,7 +163,8 @@ class RestApiService {
     ).query;
 
     return Uri.parse(
-        "${PhotoPrismServer().hostname}${photoprismApiPath}albums?$query");
+      "${PhotoPrismServer().hostname}${photoprismApiPath}albums?$query",
+    );
   }
 
   Uri buildMapURL({
@@ -177,7 +183,8 @@ class RestApiService {
     ).query;
 
     return Uri.parse(
-        "${PhotoPrismServer().hostname}${photoprismApiPath}geo?$query");
+      "${PhotoPrismServer().hostname}${photoprismApiPath}geo?$query",
+    );
   }
 
   Uri buildPhotosUrl({
@@ -208,6 +215,7 @@ class RestApiService {
       query = "$query&filter=$filter";
     }
     return Uri.parse(
-        "${PhotoPrismServer().hostname}${photoprismApiPath}photos?$query");
+      "${PhotoPrismServer().hostname}${photoprismApiPath}photos?$query",
+    );
   }
 }

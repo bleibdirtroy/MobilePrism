@@ -82,11 +82,11 @@ class _LoginViewState extends State<LoginView> {
         }
 
         await _authService.storeUserData(
-          _hostnameController.text,
-          _usernameController.text,
-          _passwordController.text,
-          sessionToken,
-          previewToken,
+          hostname: _hostnameController.text,
+          username: _usernameController.text,
+          password: _passwordController.text,
+          sessionToken: sessionToken,
+          previewToken: previewToken,
         );
         if (!mounted) return;
         Navigator.of(context).pushNamedAndRemoveUntil(

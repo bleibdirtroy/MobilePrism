@@ -13,23 +13,45 @@ void main() {
     test("Store user data", () async {
       final AuthService authService =
           AuthService(MockStorageProvider.android());
-      await authService.storeUserData(hostname, username, password);
+      await authService.storeUserData(
+        hostname: hostname,
+        username: username,
+        password: password,
+        sessionToken: "",
+        previewToken: "public",
+      );
 
       expect(await authService.getHostname(), hostname);
       expect(await authService.getUsername(), username);
       expect(await authService.getPassword(), password);
+      expect(await authService.getPreviewToken(), "public");
+      expect(await authService.getSessionToken(), "");
 
       expect(await authService.isUserdataStored(), true);
     });
     test("Override stored data", () async {
       final AuthService authService =
           AuthService(MockStorageProvider.android());
-      await authService.storeUserData(hostname, username, password);
-      await authService.storeUserData(hostname, username2, password);
+      await authService.storeUserData(
+        hostname: hostname,
+        username: username,
+        password: password,
+        previewToken: "asdf",
+        sessionToken: "qwer",
+      );
+      await authService.storeUserData(
+        hostname: hostname,
+        username: username2,
+        password: password,
+        previewToken: "fdsa",
+        sessionToken: "rewq",
+      );
 
       expect(await authService.getHostname(), hostname);
       expect(await authService.getUsername(), username2);
       expect(await authService.getPassword(), password);
+      expect(await authService.getPreviewToken(), "fdsa");
+      expect(await authService.getSessionToken(), "rewq");
 
       expect(await authService.isUserdataStored(), true);
     });
@@ -46,7 +68,13 @@ void main() {
     test("Delete user data", () async {
       final AuthService authService =
           AuthService(MockStorageProvider.android());
-      await authService.storeUserData(hostname, username, password);
+      await authService.storeUserData(
+        hostname: hostname,
+        username: username,
+        password: password,
+        sessionToken: "",
+        previewToken: "public",
+      );
       expect(await authService.isUserdataStored(), true);
 
       await authService.deleteUserData();
@@ -75,11 +103,19 @@ void main() {
     test("Store user data", () async {
       final AuthService authService = AuthService(MockStorageProvider.iOS());
 
-      await authService.storeUserData(hostname, username, password);
+      await authService.storeUserData(
+        hostname: hostname,
+        username: username,
+        password: password,
+        sessionToken: "",
+        previewToken: "public",
+      );
 
       expect(await authService.getHostname(), hostname);
       expect(await authService.getUsername(), username);
       expect(await authService.getPassword(), password);
+      expect(await authService.getPreviewToken(), "public");
+      expect(await authService.getSessionToken(), "");
 
       expect(await authService.isUserdataStored(), true);
     });
@@ -89,25 +125,46 @@ void main() {
       await authService.demoPhotoprismServer();
 
       expect(await authService.getHostname(), photoprimDefaultServer);
+      expect(await authService.getPreviewToken(), "public");
 
       expect(await authService.isUserdataStored(), true);
     });
 
     test("Override stored data", () async {
       final AuthService authService = AuthService(MockStorageProvider.iOS());
-      await authService.storeUserData(hostname, username, password);
-      await authService.storeUserData(hostname, username2, password);
+      await authService.storeUserData(
+        hostname: hostname,
+        username: username,
+        password: password,
+        previewToken: "asdf",
+        sessionToken: "qwer",
+      );
+      await authService.storeUserData(
+        hostname: hostname,
+        username: username2,
+        password: password,
+        previewToken: "fdsa",
+        sessionToken: "rewq",
+      );
 
       expect(await authService.getHostname(), hostname);
       expect(await authService.getUsername(), username2);
       expect(await authService.getPassword(), password);
+      expect(await authService.getPreviewToken(), "fdsa");
+      expect(await authService.getSessionToken(), "rewq");
 
       expect(await authService.isUserdataStored(), true);
     });
 
     test("Delete user data", () async {
       final AuthService authService = AuthService(MockStorageProvider.iOS());
-      await authService.storeUserData(hostname, username, password);
+      await authService.storeUserData(
+        hostname: hostname,
+        username: username,
+        password: password,
+        previewToken: "",
+        sessionToken: "",
+      );
       expect(await authService.isUserdataStored(), true);
 
       await authService.deleteUserData();
@@ -143,6 +200,8 @@ class MockStorageProvider implements StorageProvider {
         "hostname": null,
         "username": null,
         "password": null,
+        "sessionToken": null,
+        "previewToken": null,
       });
 
   factory MockStorageProvider.android() => MockStorageProvider({});

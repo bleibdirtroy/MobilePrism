@@ -49,12 +49,14 @@ class SqlFilter {
   @override
   String toString() {
     if (comparator == null) {
+      // ignore: unnecessary_type_check
       if (value is String) {
         return '("$column" $operator "$value")';
       } else {
         return '("$column" $operator $value)';
       }
     } else {
+      // ignore: unnecessary_type_check
       if (value is String) {
         return ' $comparator ("$column" $operator "$value")';
       } else {
