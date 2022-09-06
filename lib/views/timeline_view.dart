@@ -1,65 +1,54 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:mobileprism/constants/spacing.dart';
-import 'package:mobileprism/views/image_view.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
+import 'package:mobileprism/services/controller/data_controller.dart';
+import 'package:mobileprism/widgets/title_with_fotos_by_month_and_year.dart';
 
-class TimelineView extends StatefulWidget {
-  const TimelineView({Key? key}) : super(key: key);
+class TimelineView extends StatelessWidget {
+  final dataController = DataController();
+  final Map<int, Set<int>> test = {};
 
-  @override
-  State<TimelineView> createState() => _TimelineViewState();
-}
+  final ScrollController _scrollController = ScrollController();
 
-class _TimelineViewState extends State<TimelineView> {
+  Future<Map<int, SplayTreeSet<int>>> getYearsAndMonth() {
+    final data = dataController.getOccupiedDates();
+    return data;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 7,
-      itemBuilder: (context, monthIndex) {
-        return StickyHeader(
-          header: Container(
-            height: 50.0,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              DateFormat('MMMM')
-                  // 12 - is just used to display the months in reverese order.
-                  // This is not needed later!
-                  .format(DateTime(0, 12 - monthIndex))
-                  .toUpperCase(),
-              style: Theme.of(context)
-                  .textTheme
-                  .headline4!
-                  .apply(fontFamily: "Questrial"),
-            ),
-          ),
-          content: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 18,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5,
-              mainAxisSpacing: mainAxisSpacing,
-              crossAxisSpacing: crossAxisSpacing,
-            ),
-            itemBuilder: (contxt, imageIndex) {
-              return InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ImageView(),
-                    ),
-                  );
-                },
-                child: Image(
-                  image: AssetImage("assets/images/${monthIndex + 1}.jpg"),
-                  fit: BoxFit.cover,
-                ),
+    return FutureBuilder(
+      future: getYearsAndMonth(),
+      builder: (
+        context,
+        AsyncSnapshot<Map<int, SplayTreeSet<int>>> snapshot,
+      ) {
+        if (snapshot.hasData) {
+          final years = snapshot.data!.keys.toList()
+            ..sort((a, b) => b.compareTo(a));
+          return ListView.builder(
+            cacheExtent: 500,
+            controller: _scrollController,
+            itemCount: years.length,
+            itemBuilder: (context, index) {
+              final year = years.elementAt(index);
+              final months = snapshot.data![year]!.toList()
+                ..sort((a, b) => b.compareTo(a));
+              return Column(
+                children: months
+                    .map(
+                      (month) => TitleWithPhotosByMonthAndYear(
+                        year: year,
+                        month: month,
+                      ),
+                    )
+                    .toList(),
               );
             },
-          ),
-        );
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
       },
     );
   }

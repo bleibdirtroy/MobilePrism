@@ -1,8 +1,14 @@
-import 'package:http/http.dart' as http show Client, get;
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:http/http.dart' as http show Client, get, post;
 import 'package:mobileprism/constants/application.dart';
+import 'package:mobileprism/models/photo_prism_server.dart';
+import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/rest_api/album_type.dart';
 import 'package:mobileprism/services/rest_api/order_type.dart';
 import 'package:mobileprism/services/rest_api/photo_format.dart';
+import 'package:mobileprism/services/rest_api/rest_api_exceptions.dart';
 
 const typeQueryParameter = "type";
 const countQueryParameter = "count";
@@ -13,13 +19,51 @@ const qualityQueryParameter = "quality";
 const albumQueryParameter = "album";
 const mergedQueryParameter = "merged";
 const filterQueryParameter = "filter";
+const hashQueryParameter = "hash";
+const uidQueryParameter = "uid";
+
 const headers = {"User-Agent": "$applicationName/$applicationVersion"};
 
 class RestApiService {
-  final String photoPrismUrl;
   final client = http.Client();
+  final authService = AuthService.secureStorage();
+  String previewToken = "public";
 
-  RestApiService(this.photoPrismUrl);
+  RestApiService();
+
+  Map<String, String> getHeader() {
+    return {
+      "User-Agent": "$applicationName/$applicationVersion",
+      "x-session-id": PhotoPrismServer().sessionToken
+    };
+  }
+
+  Future<Set<String>> login(
+    String hostname,
+    String username,
+    String password,
+  ) async {
+    final response = await http.post(
+      Uri.parse("$hostname${photoprismApiPath}session"),
+      headers: headers,
+      body: jsonEncode(
+        <String, String>{"username": username, "password": password},
+      ),
+    );
+
+    final sessionToken = response.headers["x-session-id"].toString();
+    final previewToken =
+        ((jsonDecode(response.body) as Map<String, dynamic>)["config"]!
+                as Map<String, dynamic>)["previewToken"]
+            .toString();
+    if (sessionToken == "null" || previewToken == "null") {
+      log("exception");
+      throw WrongCredentialsException();
+    } else {
+      log("fertig");
+      return {sessionToken, previewToken};
+    }
+  }
 
   Future<String> getAlbums({
     required AlbumType albumType,
@@ -34,7 +78,7 @@ class RestApiService {
         offset: offset,
         orderType: orderType,
       ),
-      headers: headers,
+      headers: getHeader(),
     );
     return response.body;
   }
@@ -52,8 +96,20 @@ class RestApiService {
         public: public,
         quality: quality,
       ),
-      headers: headers,
+      headers: getHeader(),
     );
+    return response.body;
+  }
+
+  Future<String> getPhoto({
+    String? uid,
+    String? hash,
+  }) async {
+    final response = await http.get(
+      buildPhotosUrl(count: 1, hash: hash, uid: uid),
+      headers: getHeader(),
+    );
+
     return response.body;
   }
 
@@ -73,19 +129,12 @@ class RestApiService {
         merged: merged,
         offset: offset,
         orderType: orderType,
+        month: month,
+        year: year,
       ),
-      headers: headers,
+      headers: getHeader(),
     );
     return response.body;
-  }
-
-  Uri buildPhotoUrl({
-    required String hash,
-    required PhotoFormat photoFormat,
-  }) {
-    final String format = photoFormat.toShortString();
-
-    return Uri.parse("${photoPrismUrl}t/$hash/public/$format");
   }
 
   Uri buildAlbumTitlePhotoUrl({
@@ -93,7 +142,9 @@ class RestApiService {
     required PhotoFormat photoFormat,
   }) {
     final String format = photoFormat.toShortString();
-    return Uri.parse("${photoPrismUrl}albums/$uid/public/$format");
+    return Uri.parse(
+      "${PhotoPrismServer().hostname}${photoprismApiPath}albums/$uid/public/$format",
+    );
   }
 
   Uri buildAlbumURL({
@@ -111,7 +162,9 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("$photoPrismUrl$photoprismApiPath/albums?$query");
+    return Uri.parse(
+      "${PhotoPrismServer().hostname}${photoprismApiPath}albums?$query",
+    );
   }
 
   Uri buildMapURL({
@@ -129,7 +182,9 @@ class RestApiService {
       },
     ).query;
 
-    return Uri.parse("$photoPrismUrl$photoprismApiPath/geo?$query");
+    return Uri.parse(
+      "${PhotoPrismServer().hostname}${photoprismApiPath}geo?$query",
+    );
   }
 
   Uri buildPhotosUrl({
@@ -140,6 +195,8 @@ class RestApiService {
     OrderType? orderType,
     int? month,
     int? year,
+    String? hash,
+    String? uid,
   }) {
     String query = Uri(
       queryParameters: {
@@ -148,19 +205,17 @@ class RestApiService {
         offsetQueryParameter: offset?.toString() ?? "",
         mergedQueryParameter: merged?.toString() ?? "",
         orderQueryParameter: orderType?.toShortString() ?? "",
+        hashQueryParameter: hash ?? "",
+        uidQueryParameter: uid ?? "",
       },
     ).query;
 
     if (month != null && year != null) {
-      final String filter = "year:$year+month:$month";
+      final String filter = "year:$year+month:$month+public:true";
       query = "$query&filter=$filter";
     }
-    return Uri.parse("$photoPrismUrl$photoprismApiPath/photos?$query");
-  }
-}
-
-extension ParseToString on Enum {
-  String toShortString() {
-    return toString().split('.').last;
+    return Uri.parse(
+      "${PhotoPrismServer().hostname}${photoprismApiPath}photos?$query",
+    );
   }
 }

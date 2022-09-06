@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
+import 'package:mobileprism/services/rest_api/rest_api_service.dart';
+import 'package:mobileprism/widgets/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class _LoginViewState extends State<LoginView> {
   late final TextEditingController _usernameController;
   late final TextEditingController _passwordController;
   bool isHostnameEmpty = false;
+  bool _isLoginButtonDisabled = false;
 
   @override
   void initState() {
@@ -36,6 +39,62 @@ class _LoginViewState extends State<LoginView> {
     _hostnameController.text.isEmpty
         ? isHostnameEmpty = true
         : isHostnameEmpty = false;
+  }
+
+  VoidCallback? _login() {
+    if (_isLoginButtonDisabled) {
+      return null;
+    } else {
+      return () async {
+        setState(() {
+          _isLoginButtonDisabled = true;
+        });
+
+        _checkHostname();
+        if (isHostnameEmpty) {
+          setState(() {});
+          return;
+        }
+        String sessionToken = "";
+        String previewToken = "";
+
+        if (_hostnameController.text.isEmpty) {
+          previewToken = "public";
+        } else {
+          try {
+            final token = await RestApiService().login(
+              _hostnameController.text,
+              _usernameController.text,
+              _passwordController.text,
+            );
+            sessionToken = token.first;
+            previewToken = token.last;
+          } catch (e) {
+            setState(() {
+              _isLoginButtonDisabled = false;
+            });
+            await showErrorDialog(
+              context,
+              "Cannot connect to your PhotoPrism Server.",
+            );
+            return;
+          }
+        }
+
+        await _authService.storeUserData(
+          hostname: _hostnameController.text,
+          username: _usernameController.text,
+          password: _passwordController.text,
+          sessionToken: sessionToken,
+          previewToken: previewToken,
+        );
+        if (!mounted) return;
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          homeRoute,
+          (route) => false,
+        );
+      };
+    }
   }
 
   @override
@@ -98,23 +157,7 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                         ElevatedButton(
                           key: const Key("loginbutton"),
-                          onPressed: () async {
-                            _checkHostname();
-                            if (isHostnameEmpty) {
-                              setState(() {});
-                              return;
-                            }
-                            await _authService.storeUserData(
-                              _hostnameController.text,
-                              _usernameController.text,
-                              _passwordController.text,
-                            );
-                            if (!mounted) return;
-                            Navigator.pushReplacementNamed(
-                              context,
-                              homeRoute,
-                            );
-                          },
+                          onPressed: _login(),
                           child: const Text('Login'),
                         ),
                         ElevatedButton(
@@ -131,11 +174,12 @@ class _LoginViewState extends State<LoginView> {
                                     TextButton(
                                       onPressed: () async {
                                         await _authService
-                                            .defaultPhotoprismServer();
+                                            .demoPhotoprismServer();
                                         if (!mounted) return;
-                                        Navigator.pushReplacementNamed(
-                                          context,
+                                        Navigator.of(context)
+                                            .pushNamedAndRemoveUntil(
                                           homeRoute,
+                                          (route) => false,
                                         );
                                       },
                                       child: const Text('use demo server'),

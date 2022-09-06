@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/routes.dart';
+import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/database/database_exceptions.dart';
 import 'package:mobileprism/services/database/database_service.dart';
@@ -16,6 +17,18 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final AuthService _authService = AuthService.secureStorage();
+
+  Future<bool> _initApp() async {
+    if (await _authService.isUserdataStored()) {
+      PhotoPrismServer().username = await _authService.getUsername();
+      PhotoPrismServer().hostname = await _authService.getHostname();
+      PhotoPrismServer().previewToken = await _authService.getPreviewToken();
+      PhotoPrismServer().sessionToken = await _authService.getSessionToken();
+
+      return true;
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +64,7 @@ class MyApp extends StatelessWidget {
         homeRoute: (context) => const HomeView(),
       },
       home: FutureBuilder(
-        future: _authService.isUserdataStored(),
+        future: _initApp(),
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData) {
             return snapshot.data! ? const HomeView() : const LoginView();

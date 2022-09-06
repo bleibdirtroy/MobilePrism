@@ -102,15 +102,15 @@ void main() async {
 
   test('Test get timeline albums', () async {
     await deleteAllEntries();
-    await dbService.insertPhotos([testPhoto1, testPhoto2, testPhoto3]);
+    await dbService
+        .insertTimelineAlbums([timelineData1, timelineData2, timelineData3]);
 
     final res = await dbService.getTimlineAlbums();
     final Map<int, Set<int>> expectedRes = {
-      2022: {4, 8},
+      2022: {4, 9},
       2019: {6}
     };
     expect(const DeepCollectionEquality().equals(res, expectedRes), true);
-    expect(res.containsKey(2019), true);
   });
 
   test('Test get photos by date range', () async {

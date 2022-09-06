@@ -27,7 +27,9 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  cached_network_image: ^3.2.1
   collection: ^1.16.0
+  connectivity_plus: ^2.3.6+1
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
@@ -70,15 +72,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/1.jpg
-    - assets/images/2.jpg
-    - assets/images/3.jpg
-    - assets/images/4.jpg
-    - assets/images/5.jpg
-    - assets/images/6.jpg
-    - assets/images/7.jpg
-    - assets/images/8.jpg
-    - assets/images/large.jpg
-    - assets/images/video.mp4
     - assets/images/logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
