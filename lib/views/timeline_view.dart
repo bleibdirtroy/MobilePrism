@@ -7,13 +7,9 @@ import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/widgets/list_of_photos.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
-class TimelineView extends StatefulWidget {
-  @override
-  State<TimelineView> createState() => _TimelineViewState();
-}
-
-class _TimelineViewState extends State<TimelineView> {
-  final dataController = DataController();
+class TimelineView extends StatelessWidget {
+   final dataController = DataController();
+  final Map<int, Set<int>> test = {};
 
   final ScrollController _scrollController = ScrollController();
 
@@ -34,7 +30,7 @@ class _TimelineViewState extends State<TimelineView> {
           final years = snapshot.data!.keys.toList()
             ..sort((a, b) => b.compareTo(a));
           return ListView.builder(
-            cacheExtent: 10000,
+            cacheExtent: 500,
             controller: _scrollController,
             itemCount: years.length,
             itemBuilder: (context, index) {
@@ -61,19 +57,29 @@ class _TimelineViewState extends State<TimelineView> {
   }
 }
 
-class TitleWithPhotosByMonthAndYear extends StatelessWidget {
-  final dataController = DataController();
+class TitleWithPhotosByMonthAndYear extends StatefulWidget {
   final int year;
   final int month;
 
-  TitleWithPhotosByMonthAndYear({
+  const TitleWithPhotosByMonthAndYear({
     super.key,
     required this.year,
     required this.month,
   });
 
   @override
+  State<TitleWithPhotosByMonthAndYear> createState() =>
+      _TitleWithPhotosByMonthAndYearState();
+}
+
+class _TitleWithPhotosByMonthAndYearState
+    extends State<TitleWithPhotosByMonthAndYear>
+    with AutomaticKeepAliveClientMixin {
+  final dataController = DataController();
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return StickyHeader(
       header: Container(
         height: 50.0,
@@ -85,8 +91,8 @@ class TitleWithPhotosByMonthAndYear extends StatelessWidget {
           DateFormat('MMMM yyyy')
               .format(
                 DateTime(
-                  year,
-                  month,
+                  widget.year,
+                  widget.month,
                 ),
               )
               .toUpperCase(),
@@ -99,9 +105,10 @@ class TitleWithPhotosByMonthAndYear extends StatelessWidget {
       content: FutureBuilder(
         future: dataController.getPhotosOfMonthAndYear(
           DateTime(
-            year,
-            month,
+            widget.year,
+            widget.month,
           ),
+          useOnlyDatabase: false,
         ),
         builder: (
           context,
@@ -121,4 +128,7 @@ class TitleWithPhotosByMonthAndYear extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

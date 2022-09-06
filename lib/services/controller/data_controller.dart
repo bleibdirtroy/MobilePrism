@@ -96,8 +96,8 @@ class DataController {
     return DatabaseService().getTimlineAlbums();
   }
 
-  Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time) async {
-    if (await _hasInternetConnection()) {
+  Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time,{required bool useOnlyDatabase}) async {
+    if (await _hasInternetConnection() && !useOnlyDatabase) {
       final photosString = await restApiService.getPhotos(
         count: allImages,
         month: time.month,
