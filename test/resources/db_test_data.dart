@@ -92,5 +92,5 @@ final testPhoto3 = PhotoDataEntry(
   timestamp: 1560512900000,
 );
 
-final crossTableData1 = CrossTableEntry(albumUid: "20", photoUid: "1");
-final crossTableData2 = CrossTableEntry(albumUid: "21", photoUid: "2");
+// final crossTableData1 = CrossTableEntry(albumUid: "20", photoUid: "1");
+// final crossTableData2 = CrossTableEntry(albumUid: "21", photoUid: "2");

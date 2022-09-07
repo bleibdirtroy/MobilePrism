@@ -1,19 +1,14 @@
-class CrossTableEntry {
-  late final String albumUid;
-  late final String photoUid;
+// import 'package:objectbox/objectbox.dart';
 
-  CrossTableEntry({
-    required this.albumUid,
-    required this.photoUid,
-  });
+// @Entity()
+// class CrossTableEntry {
+//   int id;
+//   final String albumUid;
+//   final String photoUid;
 
-  CrossTableEntry.fromDbEntry(Map<String, dynamic> data) {
-    photoUid = data["photo_uid"] as String;
-    albumUid = data["album_uid"] as String;
-  }
-
-  Map<String, dynamic> toDbEntry() => {
-        "photo_uid": photoUid,
-        "album_uid": albumUid,
-      };
-}
+//   CrossTableEntry({
+//     this.id = 0,
+//     required this.albumUid,
+//     required this.photoUid,
+//   });
+// }

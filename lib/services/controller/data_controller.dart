@@ -47,6 +47,7 @@ class DataController {
       final photosString = await restApiService.getPhotos(
         count: allImages,
         albumUid: albumUid,
+        merged: true,
       );
       final photos = photoEncoder.stringToPhotoData(photosString);
       await DatabaseService().insertPhotos(photos);

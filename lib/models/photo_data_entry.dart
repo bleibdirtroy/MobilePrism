@@ -1,17 +1,26 @@
 // @JsonSerializable(fieldRename: FieldRename.snake)
+import 'package:mobileprism/models/album_data_entry.dart';
+import 'package:mobileprism/models/timeline_data_entry.dart';
+import 'package:objectbox/objectbox.dart';
 
+@Entity()
 class PhotoDataEntry {
-  late final String uid;
-  late final bool? panorama;
-  late final int? width;
-  late final int? height;
-  late final String? imageHash;
-  late final String? imageQuality;
-  late final double? lat;
-  late final double? long;
-  late final int? timestamp;
+  int id;
+  @Unique()
+  final String uid;
+  final bool? panorama;
+  final int? width;
+  final int? height;
+  final String? imageHash;
+  final String? imageQuality;
+  final double? lat;
+  final double? long;
+  final int? timestamp;
+  final timlineAlbum = ToOne<TimelineDataEntry>();
+  final normalAlbums = ToMany<AlbumDataEntry>();
 
   PhotoDataEntry({
+    this.id = 0,
     required this.uid,
     this.panorama,
     this.width,
@@ -23,46 +32,45 @@ class PhotoDataEntry {
     this.timestamp,
   });
 
-  PhotoDataEntry.fromDbEntry(Map<String, dynamic> data)
-      : uid = data["uid"].toString(),
-        panorama = data["panorama"] is int ? !(data["panorama"]! == 0) : null,
-        width = data["width"] is int ? data["width"]! as int : null,
-        imageHash = data["image_hash"] is String
-            ? data["image_hash"]!.toString()
-            : null,
-        imageQuality = data["image_quality"] is String
-            ? data["image_quality"]!.toString()
-            : null,
-        lat = data["lat"] is num ? data["lat"]! as double : null,
-        long = data["long"] is num ? data["long"]! as double : null,
-        timestamp = data["timestamp"] is num ? data["timestamp"]! as int : null;
-
-  Map<String, dynamic> toDbEntry() => {
-        "uid": uid,
-        "panorama": panorama != null ? (panorama! ? 1 : 0) : null,
-        "width": width,
-        "height": height,
-        "image_hash": imageHash,
-        "image_quality": imageQuality,
-        "lat": lat,
-        "long": long,
-        "timestamp": timestamp
-      };
-
   PhotoDataEntry.fromJson(Map<String, dynamic> json)
-      : uid = json["UID"].toString(),
-        panorama = json["Panorama"] == "true",
-        width = int.parse(json["Width"].toString()),
-        height = int.parse(json["Height"].toString()),
-        imageHash = json["Hash"].toString(),
-        imageQuality = null,
-        lat = double.parse(json["Lat"].toString()),
-        long = double.parse(json["Lng"].toString()),
-        timestamp =
-            DateTime.parse(json["TakenAt"].toString()).millisecondsSinceEpoch;
-
+    : id = 0,
+      uid = json["UID"].toString(),
+      panorama = json["Panorama"] == "true",
+      width = int.parse(json["Width"].toString()),
+      height = int.parse(json["Height"].toString()),
+      imageHash = json["Hash"].toString(),
+      imageQuality = null,
+      lat = double.parse(json["Lat"].toString()),
+      long = double.parse(json["Lng"].toString()),
+      timestamp =
+          DateTime.parse(json["TakenAt"].toString()).millisecondsSinceEpoch;
+    
   @override
   String toString() {
     return "Photo: $uid";
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    return other is PhotoDataEntry
+        && other.uid == uid
+        && other.panorama == panorama
+        && other.width == width
+        && other.height == height
+        && other.imageHash == imageHash
+        && other.imageQuality == imageQuality
+        && other.lat == lat
+        && other.long == long
+        && other.timestamp == timestamp;
+  }
+
+  @override
+  int get hashCode => Object.hash(uid, panorama, width, height, imageHash, imageQuality, lat, long, timestamp);
 }
