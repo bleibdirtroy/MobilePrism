@@ -56,7 +56,6 @@ class _TitleWithPhotosByMonthAndYearState
             widget.year,
             widget.month,
           ),
-          useOnlyDatabase: false,
         ),
         builder: (
           context,

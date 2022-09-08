@@ -51,7 +51,7 @@ class DataController {
       );
       final photos = photoEncoder.stringToPhotoData(photosString);
       await DatabaseService().insertPhotos(photos);
-      await DatabaseService()
+      DatabaseService()
           .addPhotoUidsToAlbum(albumUid, photos.map((e) => e.uid).toList());
     }
 
@@ -97,11 +97,8 @@ class DataController {
     return DatabaseService().getTimlineAlbums();
   }
 
-  Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(
-    DateTime time, {
-    required bool useOnlyDatabase,
-  }) async {
-    if (await _hasInternetConnection() && !useOnlyDatabase) {
+  Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time) async {
+    if (await _hasInternetConnection()) {
       final photosString = await restApiService.getPhotos(
         count: allImages,
         month: time.month,
