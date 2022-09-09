@@ -60,6 +60,7 @@ class _SettingsViewState extends State<SettingsView> {
     });
     Future.wait(futures).then((value) {
       PhotoPrismServer().useDatabaseOnly = true;
+      SettingsService().setUseDatabase();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Preload finished'),
