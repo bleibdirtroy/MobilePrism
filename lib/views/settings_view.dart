@@ -22,23 +22,8 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   final AuthService _authService = AuthService.secureStorage();
   final DataController _dataController = DataController();
-  String hostname = "";
-  String username = "";
   int progressCurrent = 0;
   int progressMax = 0;
-
-  void loadCredentials() {
-    try {
-      hostname = PhotoPrismServer().hostname;
-      username = PhotoPrismServer().username;
-      setState(() {});
-    } on KeyNotFoundInStorage {
-      showErrorDialog(
-        context,
-        "Hostname and username not found",
-      );
-    }
-  }
 
   Future<void> preloadTimeline() async {
     progressMax = 0;
@@ -86,7 +71,6 @@ class _SettingsViewState extends State<SettingsView> {
   void initState() {
     progressMax = 0;
     progressCurrent = 0;
-    loadCredentials();
     super.initState();
   }
 
@@ -109,12 +93,12 @@ class _SettingsViewState extends State<SettingsView> {
             ListTile(
               leading: const Icon(Icons.language),
               title: const Text("Hostname"),
-              subtitle: Text(hostname),
+              subtitle: Text(PhotoPrismServer().hostname),
             ),
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text("Username"),
-              subtitle: Text(username),
+              subtitle: Text(PhotoPrismServer().username),
             ),
             const Divider(color: Colors.white),
             const Text("App Settings"),
