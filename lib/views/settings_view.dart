@@ -90,11 +90,11 @@ class _SettingsViewState extends State<SettingsView> {
     super.initState();
   }
 
-  Future<void> _deleteCacheDir() async {
-    final cacheDir = await getApplicationSupportDirectory();
+  Future<void> _deleteAppDir() async {
+    final appDir = await getApplicationSupportDirectory();
 
-    if (cacheDir.existsSync()) {
-      cacheDir.deleteSync(recursive: true);
+    if (appDir.existsSync()) {
+      appDir.deleteSync(recursive: true);
     }
   }
 
@@ -124,7 +124,7 @@ class _SettingsViewState extends State<SettingsView> {
               onTap: () async {
                 await _authService.deleteUserData();
                 await DefaultCacheManager().emptyCache();
-                await _deleteCacheDir();
+                await _deleteAppDir();
                 Restart.restartApp(webOrigin: loginRoute);
                 if (!mounted) return;
                 Navigator.of(context).pushReplacementNamed(loginRoute);
