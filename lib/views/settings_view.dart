@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,8 +8,8 @@ import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/key_value_storage/storage_exceptions.dart';
 import 'package:mobileprism/widgets/error_dialog.dart';
-import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -93,6 +90,14 @@ class _SettingsViewState extends State<SettingsView> {
     super.initState();
   }
 
+  Future<void> _deleteCacheDir() async {
+    final cacheDir = await getApplicationSupportDirectory();
+
+    if (cacheDir.existsSync()) {
+      cacheDir.deleteSync(recursive: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,6 +124,8 @@ class _SettingsViewState extends State<SettingsView> {
               onTap: () async {
                 await _authService.deleteUserData();
                 await DefaultCacheManager().emptyCache();
+                await _deleteCacheDir();
+                Restart.restartApp(webOrigin: loginRoute);
                 if (!mounted) return;
                 Navigator.of(context).pushReplacementNamed(loginRoute);
               },
