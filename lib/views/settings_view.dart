@@ -7,6 +7,7 @@ import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/key_value_storage/storage_exceptions.dart';
+import 'package:mobileprism/services/settings/settings_service.dart';
 import 'package:mobileprism/widgets/error_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
@@ -149,6 +150,7 @@ class _SettingsViewState extends State<SettingsView> {
                 onChanged: (value) {
                   PhotoPrismServer().useDatabaseOnly =
                       !PhotoPrismServer().useDatabaseOnly;
+                  SettingsService().setUseDatabase();
                   setState(() {});
                 },
               ),
