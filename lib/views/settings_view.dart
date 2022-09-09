@@ -94,11 +94,6 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -157,7 +152,7 @@ class _SettingsViewState extends State<SettingsView> {
             ),
             ListTile(
               leading: const Icon(Icons.storage),
-              title: const Text("Only database use "),
+              title: const Text("Use database only"),
               trailing: Switch(
                 value: PhotoPrismServer().useDatabaseOnly,
                 onChanged: (value) {
