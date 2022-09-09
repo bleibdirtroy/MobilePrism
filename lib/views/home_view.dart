@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/views/albums_view.dart';
-import 'package:mobileprism/views/map_view.dart';
 import 'package:mobileprism/views/settings_view.dart';
 import 'package:mobileprism/views/timeline_view.dart';
 
@@ -17,7 +16,6 @@ class _HomeViewState extends State<HomeView> {
   static final List<Widget> _widgetOptions = <Widget>[
     TimelineView(),
     AlbumsView(),
-    const MapView(),
     const SettingsView(),
   ];
 
@@ -43,10 +41,6 @@ class _HomeViewState extends State<HomeView> {
           BottomNavigationBarItem(
             icon: Icon(Icons.burst_mode),
             label: 'Albums',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Map',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

@@ -61,7 +61,8 @@ class DataController {
   Future<Map<int, SplayTreeSet<int>>> getOccupiedDates() async {
     final Map<int, SplayTreeSet<int>> yearsAndMonths = {};
 
-    if (await _hasInternetConnection()) {
+    if (await _hasInternetConnection() && !PhotoPrismServer().useDatabaseOnly) {
+      print("Internet");
       final albumsString = await restApiService.getAlbums(
         albumType: AlbumType.month,
         count: allImages,
@@ -98,7 +99,7 @@ class DataController {
   }
 
   Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time) async {
-    if (await _hasInternetConnection()) {
+    if (await _hasInternetConnection() && !PhotoPrismServer().useDatabaseOnly) {
       final photosString = await restApiService.getPhotos(
         count: allImages,
         month: time.month,
