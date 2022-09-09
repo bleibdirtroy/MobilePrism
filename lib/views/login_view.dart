@@ -24,9 +24,9 @@ class _LoginViewState extends State<LoginView> {
     _hostnameController = TextEditingController();
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
-    _hostnameController.text = "https://photo.adnopol.duckdns.org";
-    _usernameController.text = "admin";
-    _passwordController.text = "^Q3z6#3q!cW!5Xu#J7oS5mTWwQeM@PVS";
+    _hostnameController.text = "";
+    _usernameController.text = "";
+    _passwordController.text = "";
     super.initState();
   }
 
