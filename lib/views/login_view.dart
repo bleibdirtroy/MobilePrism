@@ -52,7 +52,9 @@ class _LoginViewState extends State<LoginView> {
 
         _checkHostname();
         if (isHostnameEmpty) {
-          setState(() {});
+          setState(() {
+            _isLoginButtonDisabled = false;
+          });
           return;
         }
         String sessionToken = "";
