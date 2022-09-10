@@ -106,7 +106,7 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
+        child: ColoredBox(
           color: Colors.black,
           child: Center(
             child: Container(
