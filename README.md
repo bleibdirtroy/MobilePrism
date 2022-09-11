@@ -1,18 +1,11 @@
-[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
-
 # MobilePrism
 
 MobilePrism is a mobile Android and IOS application for managing your PhotoPrism server.
 
-## Getting Started
+![Login](https://user-images.githubusercontent.com/32508255/189525046-ab224b84-8330-4f4d-b219-99ce2bda5481.png) |![Timeline](https://user-images.githubusercontent.com/32508255/189525049-0c683334-4921-48ef-9d26-5d1ddb13fda6.png) |![Albums](https://user-images.githubusercontent.com/32508255/189525044-0c0f7498-d34b-45e6-b669-9835829e5cd7.png) |![Settings](https://user-images.githubusercontent.com/32508255/189525048-8bda0e55-d14a-4d03-880c-5bb93fb59c80.png)   
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
