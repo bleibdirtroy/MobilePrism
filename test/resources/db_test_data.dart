@@ -1,5 +1,4 @@
 import 'package:mobileprism/models/album_data_entry.dart';
-import 'package:mobileprism/models/cross_table_entry.dart';
 import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/models/timeline_data_entry.dart';
 
@@ -54,9 +53,9 @@ final testAlbum2 = AlbumDataEntry(
   thumbHash: "2",
 );
 
-final timelineData1 = TimelineDataEntry(uid: "3", year: 2019, month: 6);
-final timelineData2 = TimelineDataEntry(uid: "4", year: 2022, month: 4);
-final timelineData3 = TimelineDataEntry(uid: "5", year: 2022, month: 9);
+final testTimelineData1 = TimelineDataEntry(uid: "3", year: 2019, month: 6);
+final testTimelineData2 = TimelineDataEntry(uid: "4", year: 2022, month: 4);
+final testTimelineData3 = TimelineDataEntry(uid: "5", year: 2022, month: 9);
 
 final testPhoto1 = PhotoDataEntry(
   uid: "1",
@@ -91,6 +90,3 @@ final testPhoto3 = PhotoDataEntry(
   imageQuality: "high_qal",
   timestamp: 1560512900000,
 );
-
-// final crossTableData1 = CrossTableEntry(albumUid: "20", photoUid: "1");
-// final crossTableData2 = CrossTableEntry(albumUid: "21", photoUid: "2");

@@ -26,13 +26,12 @@ class TimelineDataEntry {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is TimelineDataEntry
-        && other.uid == uid
-        && other.year == year
-        && other.month == month;
+    return other is TimelineDataEntry &&
+        other.uid == uid &&
+        other.year == year &&
+        other.month == month;
   }
 
   @override
   int get hashCode => Object.hash(uid, year, month);
-
 }
