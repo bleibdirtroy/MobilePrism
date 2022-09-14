@@ -34,7 +34,7 @@ class DataController {
       final albums = (jsonDecode(albumsString) as List<dynamic>)
           .map((e) => AlbumDataEntry.fromJson(e as Map<String, dynamic>))
           .toList();
-      await DatabaseService().insertAlbums(albums);
+      DatabaseService().insertAlbums(albums);
     }
 
     return DatabaseService().getAlbums();
@@ -47,10 +47,11 @@ class DataController {
       final photosString = await restApiService.getPhotos(
         count: allImages,
         albumUid: albumUid,
+        merged: true,
       );
       final photos = photoEncoder.stringToPhotoData(photosString);
-      await DatabaseService().insertPhotos(photos);
-      await DatabaseService()
+      DatabaseService().insertPhotos(photos);
+      DatabaseService()
           .addPhotoUidsToAlbum(albumUid, photos.map((e) => e.uid).toList());
     }
 
@@ -81,7 +82,7 @@ class DataController {
                 )
               });
       }
-      await DatabaseService().insertTimelineAlbums(
+      DatabaseService().insertTimelineAlbums(
         albums
             .map(
               (e) => TimelineDataEntry(
@@ -96,11 +97,8 @@ class DataController {
     return DatabaseService().getTimlineAlbums();
   }
 
-  Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(
-    DateTime time, {
-    required bool useOnlyDatabase,
-  }) async {
-    if (await _hasInternetConnection() && !useOnlyDatabase) {
+  Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time) async {
+    if (await _hasInternetConnection()) {
       final photosString = await restApiService.getPhotos(
         count: allImages,
         month: time.month,
@@ -110,7 +108,7 @@ class DataController {
       final photos = (jsonDecode(photosString) as List<dynamic>)
           .map((e) => PhotoDataEntry.fromJson(e as Map<String, dynamic>))
           .toList();
-      await DatabaseService().insertPhotos(photos);
+      DatabaseService().insertPhotos(photos);
     }
     return DatabaseService().getPhotosByDateRange(
       time.millisecondsSinceEpoch,

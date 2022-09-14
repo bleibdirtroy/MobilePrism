@@ -1,0 +1,155 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:4209662370358741946",
+      "lastPropertyId": "4:4466220806890578341",
+      "name": "AlbumDataEntry",
+      "properties": [
+        {
+          "id": "1:7392963453722542665",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5850010757992064376",
+          "name": "uid",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "2:3887120241572630880"
+        },
+        {
+          "id": "3:5276354274092634945",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "4:4466220806890578341",
+          "name": "thumbHash",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:7625189409452623148",
+      "lastPropertyId": "11:5854691199582023177",
+      "name": "PhotoDataEntry",
+      "properties": [
+        {
+          "id": "1:6763714954173155299",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3484408926055086587",
+          "name": "uid",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "3:5666291094842947682"
+        },
+        {
+          "id": "3:2057419487444540295",
+          "name": "panorama",
+          "type": 1
+        },
+        {
+          "id": "4:8964545807455641350",
+          "name": "width",
+          "type": 6
+        },
+        {
+          "id": "5:2048773436702247410",
+          "name": "height",
+          "type": 6
+        },
+        {
+          "id": "6:8504236008471054180",
+          "name": "imageHash",
+          "type": 9
+        },
+        {
+          "id": "7:2990509220499176518",
+          "name": "imageQuality",
+          "type": 9
+        },
+        {
+          "id": "8:681409044793030908",
+          "name": "lat",
+          "type": 8
+        },
+        {
+          "id": "9:6228088929213798471",
+          "name": "long",
+          "type": 8
+        },
+        {
+          "id": "10:7104128751106610549",
+          "name": "timestamp",
+          "type": 6
+        },
+        {
+          "id": "11:5854691199582023177",
+          "name": "timlineAlbumId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "1:6209834261246088967",
+          "relationTarget": "TimelineDataEntry"
+        }
+      ],
+      "relations": [
+        {
+          "id": "1:3380437945350987211",
+          "name": "normalAlbums",
+          "targetId": "1:4209662370358741946"
+        }
+      ]
+    },
+    {
+      "id": "3:7578893731678626438",
+      "lastPropertyId": "4:1981915645581937461",
+      "name": "TimelineDataEntry",
+      "properties": [
+        {
+          "id": "1:4791612107836186351",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5325970080369669013",
+          "name": "uid",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "4:7556572821596476085"
+        },
+        {
+          "id": "3:6413967649597593352",
+          "name": "year",
+          "type": 6
+        },
+        {
+          "id": "4:1981915645581937461",
+          "name": "month",
+          "type": 6
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:7578893731678626438",
+  "lastIndexId": "4:7556572821596476085",
+  "lastRelationId": "1:3380437945350987211",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

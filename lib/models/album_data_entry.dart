@@ -1,25 +1,43 @@
+import 'package:mobileprism/models/photo_data_entry.dart';
+import 'package:objectbox/objectbox.dart';
+
+@Entity()
 class AlbumDataEntry {
-  late final String uid;
-  late final String title;
-  late final String thumbHash;
+  int id;
+  @Unique()
+  final String uid;
+  final String title;
+  final String thumbHash;
+  @Backlink('normalAlbums')
+  final albumPhotos = ToMany<PhotoDataEntry>();
 
   AlbumDataEntry({
+    this.id = 0,
     required this.uid,
     required this.title,
     required this.thumbHash,
   });
 
-  AlbumDataEntry.fromDbEntry(Map<String, dynamic> data) {
-    uid = data["uid"] as String;
-    title = data["title"] as String;
-    thumbHash = data["thumb_hash"].toString();
-  }
-
   AlbumDataEntry.fromJson(Map<String, dynamic> json)
-      : uid = json["UID"] as String,
+      : id = 0,
+        uid = json["UID"] as String,
         title = json["Title"] as String,
         thumbHash = json["Thumb"].toString();
 
-  Map<String, dynamic> toDbEntry() =>
-      {"uid": uid, "title": title, "thumb_hash": thumbHash};
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is AlbumDataEntry &&
+        other.uid == uid &&
+        other.title == title &&
+        other.thumbHash == thumbHash;
+  }
+
+  @override
+  int get hashCode => Object.hash(uid, title, thumbHash);
 }

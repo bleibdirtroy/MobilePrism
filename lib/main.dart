@@ -9,7 +9,7 @@ import 'package:mobileprism/views/login_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!await openDb()) {
+  if (!await createStore()) {
     throw CouldNotOpenDbException();
   }
   runApp(MyApp());

@@ -31,6 +31,10 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+lib/generated/objectbox.g.dart
+test/objectbox
+lib/libobjectbox.dylib
+download
 
 # Web related
 lib/generated_plugin_registrant.dart
