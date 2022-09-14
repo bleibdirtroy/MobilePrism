@@ -31,7 +31,7 @@ class DatabaseService {
   }
 
   bool isOpen() {
-    return _db.isClosed();
+    return !_db.isClosed();
   }
 
   void deleteDbContent() {
