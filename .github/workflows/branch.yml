@@ -25,4 +25,5 @@ jobs:
       - run: flutter pub get
       - run: flutter pub run build_runner build
       - run: flutter analyze
+      - run: bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/main/install.sh)
       - run: flutter test
