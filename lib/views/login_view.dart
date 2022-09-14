@@ -173,7 +173,7 @@ class _LoginViewState extends State<LoginView> {
                                 return AlertDialog(
                                   title: const Text("MobilePrism"),
                                   content: const Text(
-                                    "Connect to your PhotoPrism® server using your PhotoPrism® url, username and password. Or connect to the public PhotoPrism® demo to test our app.",
+                                    "Connect to your PhotoPrism server using your PhotoPrism url, username and password. Or connect to the public PhotoPrism demo to test our app.",
                                   ),
                                   actions: <Widget>[
                                     TextButton(

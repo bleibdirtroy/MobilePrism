@@ -6,15 +6,14 @@ import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
-import 'package:mobileprism/services/key_value_storage/storage_exceptions.dart';
+import 'package:mobileprism/services/database/database_service.dart';
 import 'package:mobileprism/services/settings/settings_service.dart';
-import 'package:mobileprism/widgets/error_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  const SettingsView({super.key});
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -32,7 +31,6 @@ class _SettingsViewState extends State<SettingsView> {
     PhotoPrismServer().useDatabaseOnly = false;
     setState(() {});
     final dates = await _dataController.getOccupiedDates();
-    // ignore: avoid_function_literals_in_foreach_calls
     dates.forEach((year, months) => progressMax += months.length);
     setState(() {});
     final futures = <Future>[];
@@ -48,8 +46,7 @@ class _SettingsViewState extends State<SettingsView> {
         );
       }
     });
-    // ignore: avoid_function_literals_in_foreach_calls
-    futures.forEach((element) {
+    for (final element in futures) {
       element.then((value) {
         if (mounted) {
           setState(() {
@@ -57,7 +54,7 @@ class _SettingsViewState extends State<SettingsView> {
           });
         }
       });
-    });
+    }
     Future.wait(futures).then((value) {
       PhotoPrismServer().useDatabaseOnly = true;
       SettingsService().setUseDatabase();
