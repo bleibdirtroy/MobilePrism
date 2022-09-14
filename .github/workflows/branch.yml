@@ -23,6 +23,6 @@ jobs:
         with:
           channel: "stable" # or: 'beta' or 'master'
       - run: flutter pub get
-      - run: flutter analyze
       - run: flutter pub run build_runner build
+      - run: flutter analyze
       - run: flutter test
