@@ -1,18 +1,29 @@
-[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
+# MobilePrism: Your mobile app for PhotoPrism
+MobilePrism is designed to create an app similar to goole photos. PhotoPrism offers all the [features](https://photoprism.app/features) to implement such an app. There are still many things left on our to-do list, but we want to make MobilePrism available right now.   
 
-# MobilePrism
+![Preview](https://user-images.githubusercontent.com/32508255/189530994-d4bae8d1-234d-44b1-96e0-3d51181941d4.png)
 
-MobilePrism is a mobile Android and IOS application for managing your PhotoPrism server.
+Our goal is to stay comaptible with the latest version of PhotoPrism. Follow [this guide](https://docs.photoprism.app/getting-started/) to install PhotoPrism on your home computer or cloud.
 
-## Getting Started
+Currently only images can be displayed in this app. Support for videos, gifs and so on will be added in future versions.
 
-This project is a starting point for a Flutter application.
+## Features
+MobilePrism uses a local database to store loaded albums and photos. Therefore, it can be used offline.
 
-A few resources to get you started if this is your first Flutter project:
+- <b>login</b> - Use your credentials or try a public instance
+- <b>timeline</b> - View your photoprism pictures in cronological order from today to the past
+- <b>caching</b> - Pictures are cached on your device and can be viewed offline
+- <b>database</b> - Photoprism structure is saved in a local database and can be used offline
+- <b>albums</b> - View your photoprism albums 
+- <b>settings</b> - Preload your timeline or clear your cache
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Ideas? Requests? Questions?
+We are extremly thankful for everyone using this app.
+Check out the [discussions page](https://github.com/bleibdirtroy/MobilePrism/discussions) and stay in contact with the community. 
+Currently we want to expand and stabilize the project and do not accept any new contributor or pull requests.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
+## MobilePrism is not PhotoPrism
+We are not affiliated, endorsed or partnered with PhotoPrism.    
+This App will always be free and open source.

@@ -33,18 +33,18 @@ class PhotoDataEntry {
   });
 
   PhotoDataEntry.fromJson(Map<String, dynamic> json)
-    : id = 0,
-      uid = json["UID"].toString(),
-      panorama = json["Panorama"] == "true",
-      width = int.parse(json["Width"].toString()),
-      height = int.parse(json["Height"].toString()),
-      imageHash = json["Hash"].toString(),
-      imageQuality = null,
-      lat = double.parse(json["Lat"].toString()),
-      long = double.parse(json["Lng"].toString()),
-      timestamp =
-          DateTime.parse(json["TakenAt"].toString()).millisecondsSinceEpoch;
-    
+      : id = 0,
+        uid = json["UID"].toString(),
+        panorama = json["Panorama"] == "true",
+        width = int.parse(json["Width"].toString()),
+        height = int.parse(json["Height"].toString()),
+        imageHash = json["Hash"].toString(),
+        imageQuality = null,
+        lat = double.parse(json["Lat"].toString()),
+        long = double.parse(json["Lng"].toString()),
+        timestamp =
+            DateTime.parse(json["TakenAt"].toString()).millisecondsSinceEpoch;
+
   @override
   String toString() {
     return "Photo: $uid";
@@ -59,18 +59,28 @@ class PhotoDataEntry {
       return false;
     }
 
-    return other is PhotoDataEntry
-        && other.uid == uid
-        && other.panorama == panorama
-        && other.width == width
-        && other.height == height
-        && other.imageHash == imageHash
-        && other.imageQuality == imageQuality
-        && other.lat == lat
-        && other.long == long
-        && other.timestamp == timestamp;
+    return other is PhotoDataEntry &&
+        other.uid == uid &&
+        other.panorama == panorama &&
+        other.width == width &&
+        other.height == height &&
+        other.imageHash == imageHash &&
+        other.imageQuality == imageQuality &&
+        other.lat == lat &&
+        other.long == long &&
+        other.timestamp == timestamp;
   }
 
   @override
-  int get hashCode => Object.hash(uid, panorama, width, height, imageHash, imageQuality, lat, long, timestamp);
+  int get hashCode => Object.hash(
+        uid,
+        panorama,
+        width,
+        height,
+        imageHash,
+        imageQuality,
+        lat,
+        long,
+        timestamp,
+      );
 }

@@ -34,7 +34,7 @@ class DataController {
       final albums = (jsonDecode(albumsString) as List<dynamic>)
           .map((e) => AlbumDataEntry.fromJson(e as Map<String, dynamic>))
           .toList();
-      await DatabaseService().insertAlbums(albums);
+      DatabaseService().insertAlbums(albums);
     }
 
     return DatabaseService().getAlbums();
@@ -50,7 +50,7 @@ class DataController {
         merged: true,
       );
       final photos = photoEncoder.stringToPhotoData(photosString);
-      await DatabaseService().insertPhotos(photos);
+      DatabaseService().insertPhotos(photos);
       DatabaseService()
           .addPhotoUidsToAlbum(albumUid, photos.map((e) => e.uid).toList());
     }
@@ -83,7 +83,7 @@ class DataController {
                 )
               });
       }
-      await DatabaseService().insertTimelineAlbums(
+      DatabaseService().insertTimelineAlbums(
         albums
             .map(
               (e) => TimelineDataEntry(
@@ -109,7 +109,7 @@ class DataController {
       final photos = (jsonDecode(photosString) as List<dynamic>)
           .map((e) => PhotoDataEntry.fromJson(e as Map<String, dynamic>))
           .toList();
-      await DatabaseService().insertPhotos(photos);
+      DatabaseService().insertPhotos(photos);
     }
     return DatabaseService().getPhotosByDateRange(
       time.millisecondsSinceEpoch,

@@ -14,15 +14,15 @@ class AlbumDataEntry {
   AlbumDataEntry({
     this.id = 0,
     required this.uid,
-    required this.title, 
+    required this.title,
     required this.thumbHash,
   });
 
   AlbumDataEntry.fromJson(Map<String, dynamic> json)
-    : id = 0,
-      uid = json["UID"] as String,
-      title = json["Title"] as String,
-      thumbHash = json["Thumb"].toString();
+      : id = 0,
+        uid = json["UID"] as String,
+        title = json["Title"] as String,
+        thumbHash = json["Thumb"].toString();
 
   @override
   bool operator ==(Object other) {
@@ -32,10 +32,10 @@ class AlbumDataEntry {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is AlbumDataEntry
-        && other.uid == uid
-        && other.title == title
-        && other.thumbHash == thumbHash;
+    return other is AlbumDataEntry &&
+        other.uid == uid &&
+        other.title == title &&
+        other.thumbHash == thumbHash;
   }
 
   @override
