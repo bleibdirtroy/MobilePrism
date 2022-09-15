@@ -62,7 +62,6 @@ class DataController {
     final Map<int, SplayTreeSet<int>> yearsAndMonths = {};
 
     if (await _hasInternetConnection() && !PhotoPrismServer().useDatabaseOnly) {
-      print("Internet");
       final albumsString = await restApiService.getAlbums(
         albumType: AlbumType.month,
         count: allImages,
