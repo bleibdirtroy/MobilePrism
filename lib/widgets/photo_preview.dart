@@ -5,9 +5,9 @@ import 'package:mobileprism/services/rest_api/rest_api_service.dart';
 
 class PhotoPreview extends StatelessWidget {
   PhotoPreview({
-    Key? key,
+    super.key,
     required this.hash,
-  }) : super(key: key);
+  });
 
   final DataController _dataController = DataController();
   final String hash;

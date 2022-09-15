@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/rest_api/rest_api_service.dart';

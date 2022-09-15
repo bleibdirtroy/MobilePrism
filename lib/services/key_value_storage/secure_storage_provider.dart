@@ -107,7 +107,6 @@ class SecureStorageProvider implements StorageProvider {
   }
 
   AndroidOptions _getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: false,
         sharedPreferencesName: "mobileprism",
       );
 
