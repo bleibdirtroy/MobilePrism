@@ -1,4 +1,4 @@
-package com.example.mobileprism
+package de.adnopol.mobileprism
 
 import io.flutter.embedding.android.FlutterActivity
 
