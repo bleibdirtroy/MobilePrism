@@ -5,7 +5,6 @@ class PhotoPrismServer {
   String hostname = "";
   String sessionToken = "";
   String previewToken = "";
-  bool useDatabaseOnly = false;
 
   factory PhotoPrismServer() {
     return _photoPrismServer;

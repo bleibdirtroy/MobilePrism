@@ -4,7 +4,6 @@ import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/database/database_exceptions.dart';
 import 'package:mobileprism/services/database/database_service.dart';
-import 'package:mobileprism/services/settings/settings_service.dart';
 import 'package:mobileprism/views/home_view.dart';
 import 'package:mobileprism/views/login_view.dart';
 
@@ -13,7 +12,6 @@ void main() async {
   if (!await createStore()) {
     throw CouldNotOpenDbException();
   }
-  await SettingsService().loadSettings();
   runApp(MyApp());
 }
 

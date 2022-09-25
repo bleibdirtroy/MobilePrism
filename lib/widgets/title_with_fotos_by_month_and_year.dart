@@ -51,7 +51,7 @@ class _TitleWithPhotosByMonthAndYearState
         ),
       ),
       content: FutureBuilder(
-        future: dataController.getPhotosOfMonthAndYear(
+        future: dataController.updatePhotosOfMonthAndYear(
           DateTime(
             widget.year,
             widget.month,

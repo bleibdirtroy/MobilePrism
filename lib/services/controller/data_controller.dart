@@ -25,7 +25,7 @@ class DataController {
 
   DataController();
 
-  Future<List<AlbumDataEntry>> getAlbums() async {
+  Future<List<AlbumDataEntry>> updateAlbums() async {
     if (await _hasInternetConnection()) {
       final albumsString = await restApiService.getAlbums(
         albumType: AlbumType.album,
@@ -40,7 +40,11 @@ class DataController {
     return DatabaseService().getAlbums();
   }
 
-  Future<List<PhotoDataEntry>> getPhotosOfAlbum(
+  List<AlbumDataEntry> getAlbums() {
+    return DatabaseService().getAlbums();
+  }
+
+  Future<List<PhotoDataEntry>> updatePhotosOfAlbum(
     String albumUid,
   ) async {
     if (await _hasInternetConnection()) {
@@ -54,14 +58,17 @@ class DataController {
       DatabaseService()
           .addPhotoUidsToAlbum(albumUid, photos.map((e) => e.uid).toList());
     }
-
     return DatabaseService().getAlbumPhotos(albumUid);
   }
 
-  Future<Map<int, SplayTreeSet<int>>> getOccupiedDates() async {
+  List<PhotoDataEntry> getPhotosOfAlbum(String albumUid) {
+    return DatabaseService().getAlbumPhotos(albumUid);
+  }
+
+  Future<Map<int, SplayTreeSet<int>>> updateOccupiedDates() async {
     final Map<int, SplayTreeSet<int>> yearsAndMonths = {};
 
-    if (await _hasInternetConnection() && !PhotoPrismServer().useDatabaseOnly) {
+    if (await _hasInternetConnection()) {
       final albumsString = await restApiService.getAlbums(
         albumType: AlbumType.month,
         count: allImages,
@@ -97,8 +104,12 @@ class DataController {
     return DatabaseService().getTimlineAlbums();
   }
 
-  Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time) async {
-    if (await _hasInternetConnection() && !PhotoPrismServer().useDatabaseOnly) {
+  Map<int, SplayTreeSet<int>> getOccupiedDates() {
+    return DatabaseService().getTimlineAlbums();
+  }
+
+  Future<List<PhotoDataEntry>> updatePhotosOfMonthAndYear(DateTime time) async {
+    if (await _hasInternetConnection()) {
       final photosString = await restApiService.getPhotos(
         count: allImages,
         month: time.month,
@@ -110,6 +121,13 @@ class DataController {
           .toList();
       DatabaseService().insertPhotos(photos);
     }
+    return DatabaseService().getPhotosByDateRange(
+      time.millisecondsSinceEpoch,
+      DateTime(time.year, time.month + 1).millisecondsSinceEpoch,
+    );
+  }
+
+  List<PhotoDataEntry> getPhotosOfMonthAndYear(DateTime time) {
     return DatabaseService().getPhotosByDateRange(
       time.millisecondsSinceEpoch,
       DateTime(time.year, time.month + 1).millisecondsSinceEpoch,

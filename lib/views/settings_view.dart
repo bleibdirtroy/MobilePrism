@@ -5,8 +5,7 @@ import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
-import 'package:mobileprism/services/controller/data_controller.dart';
-import 'package:mobileprism/services/settings/settings_service.dart';
+import 'package:mobileprism/services/database/database_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,50 +19,8 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   final AuthService _authService = AuthService.secureStorage();
-  final DataController _dataController = DataController();
   int progressCurrent = 0;
   int progressMax = 0;
-
-  Future<void> preloadTimeline() async {
-    progressMax = 0;
-    progressCurrent = 0;
-    PhotoPrismServer().useDatabaseOnly = false;
-    setState(() {});
-    final dates = await _dataController.getOccupiedDates();
-    dates.forEach((year, months) => progressMax += months.length);
-    setState(() {});
-    final futures = <Future>[];
-    dates.forEach((year, months) async {
-      for (final month in months) {
-        futures.add(
-          _dataController.getPhotosOfMonthAndYear(
-            DateTime(
-              year,
-              month,
-            ),
-          ),
-        );
-      }
-    });
-    for (final element in futures) {
-      element.then((value) {
-        if (mounted) {
-          setState(() {
-            progressCurrent++;
-          });
-        }
-      });
-    }
-    Future.wait(futures).then((value) {
-      PhotoPrismServer().useDatabaseOnly = true;
-      SettingsService().setUseDatabase();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Preload finished'),
-        ),
-      );
-    });
-  }
 
   @override
   void initState() {
@@ -113,7 +70,7 @@ class _SettingsViewState extends State<SettingsView> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.delete),
+              leading: const Icon(Icons.image),
               title: const Text("Clear image cache"),
               onTap: () async {
                 await DefaultCacheManager().emptyCache();
@@ -126,31 +83,16 @@ class _SettingsViewState extends State<SettingsView> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.browse_gallery),
-              title: const Text("Preload Timeline"),
-              trailing: Text("$progressCurrent/$progressMax"),
+              leading: const Icon(Icons.storage),
+              title: const Text("Clear database"),
               onTap: () {
-                if (!mounted) return;
+                DatabaseService().deleteDbContent();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Preload started'),
+                    content: Text('Database cleared'),
                   ),
                 );
-                preloadTimeline();
               },
-            ),
-            ListTile(
-              leading: const Icon(Icons.storage),
-              title: const Text("Use database only"),
-              trailing: Switch(
-                value: PhotoPrismServer().useDatabaseOnly,
-                onChanged: (value) {
-                  PhotoPrismServer().useDatabaseOnly =
-                      !PhotoPrismServer().useDatabaseOnly;
-                  SettingsService().setUseDatabase();
-                  setState(() {});
-                },
-              ),
             ),
             const Divider(color: Colors.white),
             const Text("About us"),
