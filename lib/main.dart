@@ -24,7 +24,6 @@ class MyApp extends StatelessWidget {
       PhotoPrismServer().hostname = await _authService.getHostname();
       PhotoPrismServer().previewToken = await _authService.getPreviewToken();
       PhotoPrismServer().sessionToken = await _authService.getSessionToken();
-
       return true;
     }
     return false;

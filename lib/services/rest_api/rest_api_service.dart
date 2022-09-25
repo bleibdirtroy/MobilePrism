@@ -38,6 +38,11 @@ class RestApiService {
     };
   }
 
+  Future<bool> hasConnection() async {
+    final response = await http.get(Uri.parse(PhotoPrismServer().hostname));
+    return response.statusCode == 200;
+  }
+
   Future<Set<String>> login(
     String hostname,
     String username,

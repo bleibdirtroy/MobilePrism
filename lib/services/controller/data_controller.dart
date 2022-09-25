@@ -136,7 +136,9 @@ class DataController {
 
   Future<bool> _hasInternetConnection() async {
     final connectivityResult = await Connectivity().checkConnectivity();
-    return ConnectivityResult.none != connectivityResult;
+    final pingResult = await restApiService.hasConnection();
+    print(pingResult);
+    return (ConnectivityResult.none != connectivityResult) && pingResult;
   }
 
   String getPhotoUrl(String hash) {

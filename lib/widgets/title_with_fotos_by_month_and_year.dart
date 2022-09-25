@@ -1,33 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/widgets/list_of_photos.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
-class TitleWithPhotosByMonthAndYear extends StatefulWidget {
+class TitleWithPhotosByMonthAndYear extends StatelessWidget {
   final int year;
   final int month;
 
-  const TitleWithPhotosByMonthAndYear({
+  TitleWithPhotosByMonthAndYear({
     super.key,
     required this.year,
     required this.month,
   });
-
-  @override
-  State<TitleWithPhotosByMonthAndYear> createState() =>
-      _TitleWithPhotosByMonthAndYearState();
-}
-
-class _TitleWithPhotosByMonthAndYearState
-    extends State<TitleWithPhotosByMonthAndYear>
-    with AutomaticKeepAliveClientMixin {
   final dataController = DataController();
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    final photos = dataController.getPhotosOfMonthAndYear(
+      DateTime(
+        year,
+        month,
+      ),
+    );
     return StickyHeader(
       header: Container(
         height: 50.0,
@@ -39,8 +34,8 @@ class _TitleWithPhotosByMonthAndYearState
           DateFormat('MMMM yyyy')
               .format(
                 DateTime(
-                  widget.year,
-                  widget.month,
+                  year,
+                  month,
                 ),
               )
               .toUpperCase(),
@@ -50,32 +45,9 @@ class _TitleWithPhotosByMonthAndYearState
               .apply(fontFamily: "Questrial"),
         ),
       ),
-      content: FutureBuilder(
-        future: dataController.updatePhotosOfMonthAndYear(
-          DateTime(
-            widget.year,
-            widget.month,
-          ),
-        ),
-        builder: (
-          context,
-          AsyncSnapshot<List<PhotoDataEntry>> snapshot,
-        ) {
-          if (snapshot.hasData) {
-            final photos = snapshot.data!;
-            return ListOfPhotos(
-              photos: photos,
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+      content: ListOfPhotos(
+        photos: photos,
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
