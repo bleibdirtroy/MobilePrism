@@ -29,14 +29,6 @@ class _SettingsViewState extends State<SettingsView> {
     super.initState();
   }
 
-  Future<void> _deleteAppDir() async {
-    final appDir = await getApplicationSupportDirectory();
-
-    if (appDir.existsSync()) {
-      appDir.deleteSync(recursive: true);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +55,7 @@ class _SettingsViewState extends State<SettingsView> {
               onTap: () async {
                 await _authService.deleteUserData();
                 await DefaultCacheManager().emptyCache();
-                await _deleteAppDir();
+                DatabaseService().deleteDbContent();
                 Restart.restartApp(webOrigin: loginRoute);
                 if (!mounted) return;
                 Navigator.of(context).pushReplacementNamed(loginRoute);

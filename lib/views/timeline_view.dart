@@ -16,6 +16,8 @@ class _TimelineViewState extends State<TimelineView> {
   final ScrollController _scrollController = ScrollController();
   Map<int, SplayTreeSet<int>> occupiedDates = {};
   List<int> availableYears = [];
+  int progressMax = 0;
+  int progressCurrent = 0;
 
   void getYearsAndMonth() {
     occupiedDates = dataController.getOccupiedDates();
@@ -23,11 +25,32 @@ class _TimelineViewState extends State<TimelineView> {
       ..sort((a, b) => b.compareTo(a));
   }
 
-  Future<void> updateYearsAndMonth() async {
-    occupiedDates = await dataController.updateOccupiedDates();
-    availableYears = occupiedDates.keys.toList()
-      ..sort((a, b) => b.compareTo(a));
-    setState(() {});
+  Future<void> preloadTimeline() async {
+    final dates = await dataController.updateOccupiedDates();
+    final futures = <Future>[];
+
+    dates.forEach((year, months) async {
+      for (final month in months) {
+        futures.add(
+          dataController.updatePhotosOfMonthAndYear(
+            DateTime(
+              year,
+              month,
+            ),
+          ),
+        );
+      }
+    });
+    await Future.wait(futures).then((value) {
+      setState(() {
+        getYearsAndMonth();
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Preload finished'),
+        ),
+      );
+    });
   }
 
   @override
@@ -41,7 +64,7 @@ class _TimelineViewState extends State<TimelineView> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () {
-          return updateYearsAndMonth();
+          return preloadTimeline();
         },
         child: availableYears.isNotEmpty
             ? DraggableScrollbar.semicircle(
