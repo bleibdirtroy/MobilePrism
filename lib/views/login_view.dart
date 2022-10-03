@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/routes.dart';
-import 'package:mobileprism/services/auth/auth_service.dart';
 import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/widgets/error_dialog.dart';
 
@@ -13,7 +12,6 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final AuthService _authService = AuthService.secureStorage();
   late final TextEditingController _hostnameController;
   late final TextEditingController _usernameController;
   late final TextEditingController _passwordController;
@@ -71,7 +69,6 @@ class _LoginViewState extends State<LoginView> {
         );
         if (!mounted) return;
         if (userCreated) {
-          
           Navigator.of(context).pushNamedAndRemoveUntil(
             homeRoute,
             (route) => false,
