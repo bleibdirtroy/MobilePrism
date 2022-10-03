@@ -7,6 +7,7 @@ import 'package:mobileprism/models/album_data_entry.dart';
 import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/models/timeline_data_entry.dart';
+import 'package:mobileprism/services/auth/auth_service.dart';
 
 import 'package:mobileprism/services/database/database_service.dart';
 
@@ -21,9 +22,63 @@ const allImages = 9999999;
 class DataController {
   final albumEncoder = AlbumEncoder();
   final photoEncoder = PhotoEncoder();
-  RestApiService restApiService = RestApiService();
+  final RestApiService restApiService = RestApiService();
+  final AuthService _authService = AuthService.secureStorage();
 
   DataController();
+
+  Future<bool> createUser({
+    required String hostname,
+    String? username,
+    String? password,
+  }) async {
+    if (hostname != "" && username != null && password != null) {
+      // first login
+      var sessionToken = "";
+      var previewToken = "";
+      try {
+        final token = await restApiService.login(hostname, username, password);
+        sessionToken = token.first;
+        previewToken = token.last;
+      } catch (e) {
+        return false;
+      }
+
+      PhotoPrismServer().hostname = hostname;
+      PhotoPrismServer().username = username;
+      PhotoPrismServer().sessionToken = sessionToken;
+      PhotoPrismServer().previewToken = previewToken;
+
+      await _authService.storeUserData(
+        hostname: hostname,
+        username: username,
+        password: password,
+        sessionToken: sessionToken,
+        previewToken: previewToken,
+      );
+
+      return true;
+    } else if (hostname != "" && username == null && password == null) {
+      // public Server
+      if (!await _hasInternetConnection(hostname)) return false;
+
+      PhotoPrismServer().hostname = hostname;
+      PhotoPrismServer().username = "";
+      PhotoPrismServer().sessionToken = "";
+      PhotoPrismServer().previewToken = publicPhotoPrismPreviewToken;
+
+      await _authService.storeUserData(
+        hostname: hostname,
+        username: "",
+        password: "",
+        sessionToken: "",
+        previewToken: publicPhotoPrismPreviewToken,
+      );
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   Future<List<AlbumDataEntry>> updateAlbums() async {
     if (await _hasInternetConnection()) {
@@ -134,11 +189,15 @@ class DataController {
     );
   }
 
-  Future<bool> _hasInternetConnection() async {
+  Future<bool> _hasInternetConnection([String? hostname]) async {
     final connectivityResult = await Connectivity().checkConnectivity();
-    final pingResult = await restApiService.hasConnection();
-    print(pingResult);
+    final pingResult = await restApiService.hasConnection(hostname);
     return (ConnectivityResult.none != connectivityResult) && pingResult;
+  }
+
+  Future<void> deleteAppStorage() async {
+    DatabaseService().deleteDbContent();
+    await _authService.deleteUserData();
   }
 
   String getPhotoUrl(String hash) {

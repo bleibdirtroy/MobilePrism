@@ -26,7 +26,7 @@ const headers = {"User-Agent": "$applicationName/$applicationVersion"};
 
 class RestApiService {
   final client = http.Client();
-  final authService = AuthService.secureStorage();
+  final _authService = AuthService.secureStorage();
   String previewToken = "public";
 
   RestApiService();
@@ -38,9 +38,14 @@ class RestApiService {
     };
   }
 
-  Future<bool> hasConnection() async {
-    final response = await http.get(Uri.parse(PhotoPrismServer().hostname));
-    return response.statusCode == 200;
+  Future<bool> hasConnection([String? hostname]) async {
+    try {
+      final response =
+          await http.get(Uri.parse(hostname ?? PhotoPrismServer().hostname));
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<Set<String>> login(
@@ -70,6 +75,24 @@ class RestApiService {
     }
   }
 
+  Future<void> refreshToken() async {
+    final password = await _authService.getPassword();
+
+    final token = await login(
+      PhotoPrismServer().hostname,
+      PhotoPrismServer().username,
+      password,
+    );
+    final sessionToken = token.first;
+    final previewToken = token.last;
+
+    PhotoPrismServer().sessionToken = sessionToken;
+    PhotoPrismServer().previewToken = previewToken;
+
+    await _authService.setSessionToken(sessionToken);
+    await _authService.setPreviewToken(previewToken);
+  }
+
   Future<String> getAlbums({
     required AlbumType albumType,
     required int count,
@@ -85,7 +108,12 @@ class RestApiService {
       ),
       headers: getHeader(),
     );
-    return response.body;
+    if (response.statusCode == 401) {
+      await refreshToken();
+      return getAlbums(albumType: albumType, count: count);
+    } else {
+      return response.body;
+    }
   }
 
   Future<String> getMap({
@@ -103,7 +131,12 @@ class RestApiService {
       ),
       headers: getHeader(),
     );
-    return response.body;
+    if (response.statusCode == 401) {
+      await refreshToken();
+      return getMap();
+    } else {
+      return response.body;
+    }
   }
 
   Future<String> getPhoto({
@@ -115,7 +148,12 @@ class RestApiService {
       headers: getHeader(),
     );
 
-    return response.body;
+    if (response.statusCode == 401) {
+      await refreshToken();
+      return getPhoto(uid: uid, hash: hash);
+    } else {
+      return response.body;
+    }
   }
 
   Future<String> getPhotos({
@@ -139,7 +177,20 @@ class RestApiService {
       ),
       headers: getHeader(),
     );
-    return response.body;
+    if (response.statusCode == 401) {
+      await refreshToken();
+      return getPhotos(
+        count: count,
+        albumUid: albumUid,
+        merged: true,
+        month: month,
+        offset: offset,
+        orderType: orderType,
+        year: year,
+      );
+    } else {
+      return response.body;
+    }
   }
 
   Uri buildAlbumTitlePhotoUrl({

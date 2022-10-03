@@ -5,9 +5,8 @@ import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/routes.dart';
 import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/services/auth/auth_service.dart';
+import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/services/database/database_service.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -56,7 +55,6 @@ class _SettingsViewState extends State<SettingsView> {
                 await _authService.deleteUserData();
                 await DefaultCacheManager().emptyCache();
                 DatabaseService().deleteDbContent();
-                Restart.restartApp(webOrigin: loginRoute);
                 if (!mounted) return;
                 Navigator.of(context).pushReplacementNamed(loginRoute);
               },
@@ -76,12 +74,13 @@ class _SettingsViewState extends State<SettingsView> {
             ),
             ListTile(
               leading: const Icon(Icons.storage),
-              title: const Text("Clear database"),
-              onTap: () {
-                DatabaseService().deleteDbContent();
+              title: const Text("Clear app storage"),
+              onTap: () async {
+                await DataController().deleteAppStorage();
+                if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Database cleared'),
+                    content: Text('App storage cleared'),
                   ),
                 );
               },

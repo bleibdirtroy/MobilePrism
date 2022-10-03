@@ -48,6 +48,26 @@ class AuthService {
     return _storageProvider.readData(previewTokenKey);
   }
 
+  Future<void> setHostname(String hostname) {
+    return _storageProvider.upsertData(hostnameKey, hostname);
+  }
+
+  Future<void> setUsername(String username) {
+    return _storageProvider.upsertData(usernameKey, username);
+  }
+
+  Future<void> setPassword(String password) {
+    return _storageProvider.upsertData(passwordKey, password);
+  }
+
+  Future<void> setSessionToken(String sessionToken) {
+    return _storageProvider.upsertData(sessionTokenKey, sessionToken);
+  }
+
+  Future<void> setPreviewToken(String previewToken) {
+    return _storageProvider.upsertData(previewTokenKey, previewToken);
+  }
+
   Future<void> deleteUserData() async {
     await _storageProvider.deleteData(hostnameKey);
     await _storageProvider.deleteData(usernameKey);
@@ -66,11 +86,11 @@ class AuthService {
 
   Future<void> demoPhotoprismServer() async {
     return storeUserData(
-      hostname: photoprimDefaultServer,
+      hostname: publicPhotoPrismServer,
       username: "",
       password: "",
       sessionToken: "",
-      previewToken: "public",
+      previewToken: publicPhotoPrismPreviewToken,
     );
   }
 }
