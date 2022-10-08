@@ -5,9 +5,9 @@ import 'package:mobileprism/services/rest_api/rest_api_service.dart';
 
 class PhotoPreview extends StatelessWidget {
   PhotoPreview({
-    Key? key,
+    super.key,
     required this.hash,
-  }) : super(key: key);
+  });
 
   final DataController _dataController = DataController();
   final String hash;
@@ -18,7 +18,8 @@ class PhotoPreview extends StatelessWidget {
       cacheKey: "$hash/thumb",
       httpHeaders: RestApiService().getHeader(),
       imageUrl: _dataController.getPreviewPhotoUrl(hash),
-      placeholder: (context, url) => Container(),
+      placeholder: (context, url) =>
+          const ColoredBox(color: Color.fromARGB(255, 37, 37, 37)),
       errorWidget: (context, url, error) => const Icon(Icons.error),
       fit: BoxFit.cover,
     );

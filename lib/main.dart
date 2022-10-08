@@ -24,7 +24,6 @@ class MyApp extends StatelessWidget {
       PhotoPrismServer().hostname = await _authService.getHostname();
       PhotoPrismServer().previewToken = await _authService.getPreviewToken();
       PhotoPrismServer().sessionToken = await _authService.getSessionToken();
-
       return true;
     }
     return false;
@@ -69,7 +68,7 @@ class MyApp extends StatelessWidget {
           if (snapshot.hasData) {
             return snapshot.data! ? const HomeView() : const LoginView();
           } else {
-            return Container(
+            return ColoredBox(
               color: Theme.of(context).backgroundColor,
             );
           }

@@ -17,9 +17,6 @@ PODS:
   - path_provider_ios (0.0.1):
     - Flutter
   - ReachabilitySwift (5.0.0)
-  - sqflite (0.0.2):
-    - Flutter
-    - FMDB (>= 2.7.5)
   - url_launcher_ios (0.0.1):
     - Flutter
 

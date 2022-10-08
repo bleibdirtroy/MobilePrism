@@ -2,7 +2,7 @@
     package="de.adnopol.mobileprism">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="mobileprism"
+        android:label="MobilePrism"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

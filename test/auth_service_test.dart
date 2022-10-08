@@ -60,7 +60,7 @@ void main() {
 
       await authService.demoPhotoprismServer();
 
-      expect(await authService.getHostname(), photoprimDefaultServer);
+      expect(await authService.getHostname(), publicPhotoPrismServer);
 
       expect(await authService.isUserdataStored(), true);
     });
@@ -124,7 +124,7 @@ void main() {
 
       await authService.demoPhotoprismServer();
 
-      expect(await authService.getHostname(), photoprimDefaultServer);
+      expect(await authService.getHostname(), publicPhotoPrismServer);
       expect(await authService.getPreviewToken(), "public");
 
       expect(await authService.isUserdataStored(), true);

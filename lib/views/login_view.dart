@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprism/constants/application.dart';
 import 'package:mobileprism/constants/routes.dart';
-import 'package:mobileprism/services/auth/auth_service.dart';
-import 'package:mobileprism/services/rest_api/rest_api_service.dart';
+import 'package:mobileprism/services/controller/data_controller.dart';
 import 'package:mobileprism/widgets/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
 }
 
 class _LoginViewState extends State<LoginView> {
-  final AuthService _authService = AuthService.secureStorage();
   late final TextEditingController _hostnameController;
   late final TextEditingController _usernameController;
   late final TextEditingController _passwordController;
@@ -24,6 +23,9 @@ class _LoginViewState extends State<LoginView> {
     _hostnameController = TextEditingController();
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
+    _hostnameController.text = "";
+    _usernameController.text = "";
+    _passwordController.text = "";
     super.initState();
   }
 
@@ -57,44 +59,30 @@ class _LoginViewState extends State<LoginView> {
           });
           return;
         }
-        String sessionToken = "";
-        String previewToken = "";
 
-        if (_hostnameController.text.isEmpty) {
-          previewToken = "public";
-        } else {
-          try {
-            final token = await RestApiService().login(
-              _hostnameController.text,
-              _usernameController.text,
-              _passwordController.text,
-            );
-            sessionToken = token.first;
-            previewToken = token.last;
-          } catch (e) {
-            setState(() {
-              _isLoginButtonDisabled = false;
-            });
-            await showErrorDialog(
-              context,
-              "Cannot connect to your PhotoPrism Server.",
-            );
-            return;
-          }
-        }
-
-        await _authService.storeUserData(
+        final userCreated = await DataController().createUser(
           hostname: _hostnameController.text,
-          username: _usernameController.text,
-          password: _passwordController.text,
-          sessionToken: sessionToken,
-          previewToken: previewToken,
+          username:
+              _usernameController.text != "" ? _usernameController.text : null,
+          password:
+              _passwordController.text != "" ? _passwordController.text : null,
         );
         if (!mounted) return;
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          homeRoute,
-          (route) => false,
-        );
+        if (userCreated) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            homeRoute,
+            (route) => false,
+          );
+        } else {
+          setState(() {
+            _isLoginButtonDisabled = false;
+          });
+          await showErrorDialog(
+            context,
+            "Cannot connect to your PhotoPrism Server.",
+          );
+          return;
+        }
       };
     }
   }
@@ -103,7 +91,7 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
+        child: ColoredBox(
           color: Colors.black,
           child: Center(
             child: Container(
@@ -137,19 +125,20 @@ class _LoginViewState extends State<LoginView> {
                     controller: _hostnameController,
                   ),
                   TextField(
+                    textInputAction: TextInputAction.next,
+                    enableSuggestions: false,
                     autocorrect: false,
                     decoration: const InputDecoration(
-                      labelText: 'Username',
+                      labelText: 'Username (empty if public)',
                     ),
-                    textInputAction: TextInputAction.next,
                     controller: _usernameController,
                   ),
                   TextField(
                     textInputAction: TextInputAction.done,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                    ),
                     obscureText: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Password (empty if public)',
+                    ),
                     controller: _passwordController,
                   ),
                   Padding(
@@ -170,13 +159,14 @@ class _LoginViewState extends State<LoginView> {
                                 return AlertDialog(
                                   title: const Text("MobilePrism"),
                                   content: const Text(
-                                    "Connect to your PhotoPrism® server using your PhotoPrism® url, username and password. Or connect to the public PhotoPrism® demo to test our app.",
+                                    "Connect to your PhotoPrism server using your PhotoPrism url, username and password. Or connect to the public PhotoPrism demo to test our app.",
                                   ),
                                   actions: <Widget>[
                                     TextButton(
                                       onPressed: () async {
-                                        await _authService
-                                            .demoPhotoprismServer();
+                                        await DataController().createUser(
+                                          hostname: publicPhotoPrismServer,
+                                        );
                                         if (!mounted) return;
                                         Navigator.of(context)
                                             .pushNamedAndRemoveUntil(

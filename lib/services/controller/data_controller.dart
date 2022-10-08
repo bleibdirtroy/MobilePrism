@@ -7,6 +7,7 @@ import 'package:mobileprism/models/album_data_entry.dart';
 import 'package:mobileprism/models/photo_data_entry.dart';
 import 'package:mobileprism/models/photo_prism_server.dart';
 import 'package:mobileprism/models/timeline_data_entry.dart';
+import 'package:mobileprism/services/auth/auth_service.dart';
 
 import 'package:mobileprism/services/database/database_service.dart';
 
@@ -21,11 +22,65 @@ const allImages = 9999999;
 class DataController {
   final albumEncoder = AlbumEncoder();
   final photoEncoder = PhotoEncoder();
-  RestApiService restApiService = RestApiService();
+  final RestApiService restApiService = RestApiService();
+  final AuthService _authService = AuthService.secureStorage();
 
   DataController();
 
-  Future<List<AlbumDataEntry>> getAlbums() async {
+  Future<bool> createUser({
+    required String hostname,
+    String? username,
+    String? password,
+  }) async {
+    if (hostname != "" && username != null && password != null) {
+      // first login
+      var sessionToken = "";
+      var previewToken = "";
+      try {
+        final token = await restApiService.login(hostname, username, password);
+        sessionToken = token.first;
+        previewToken = token.last;
+      } catch (e) {
+        return false;
+      }
+
+      PhotoPrismServer().hostname = hostname;
+      PhotoPrismServer().username = username;
+      PhotoPrismServer().sessionToken = sessionToken;
+      PhotoPrismServer().previewToken = previewToken;
+
+      await _authService.storeUserData(
+        hostname: hostname,
+        username: username,
+        password: password,
+        sessionToken: sessionToken,
+        previewToken: previewToken,
+      );
+
+      return true;
+    } else if (hostname != "" && username == null && password == null) {
+      // public Server
+      if (!await _hasInternetConnection(hostname)) return false;
+
+      PhotoPrismServer().hostname = hostname;
+      PhotoPrismServer().username = "";
+      PhotoPrismServer().sessionToken = "";
+      PhotoPrismServer().previewToken = publicPhotoPrismPreviewToken;
+
+      await _authService.storeUserData(
+        hostname: hostname,
+        username: "",
+        password: "",
+        sessionToken: "",
+        previewToken: publicPhotoPrismPreviewToken,
+      );
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<List<AlbumDataEntry>> updateAlbums() async {
     if (await _hasInternetConnection()) {
       final albumsString = await restApiService.getAlbums(
         albumType: AlbumType.album,
@@ -40,7 +95,11 @@ class DataController {
     return DatabaseService().getAlbums();
   }
 
-  Future<List<PhotoDataEntry>> getPhotosOfAlbum(
+  List<AlbumDataEntry> getAlbums() {
+    return DatabaseService().getAlbums();
+  }
+
+  Future<List<PhotoDataEntry>> updatePhotosOfAlbum(
     String albumUid,
   ) async {
     if (await _hasInternetConnection()) {
@@ -54,11 +113,14 @@ class DataController {
       DatabaseService()
           .addPhotoUidsToAlbum(albumUid, photos.map((e) => e.uid).toList());
     }
-
     return DatabaseService().getAlbumPhotos(albumUid);
   }
 
-  Future<Map<int, SplayTreeSet<int>>> getOccupiedDates() async {
+  List<PhotoDataEntry> getPhotosOfAlbum(String albumUid) {
+    return DatabaseService().getAlbumPhotos(albumUid);
+  }
+
+  Future<Map<int, SplayTreeSet<int>>> updateOccupiedDates() async {
     final Map<int, SplayTreeSet<int>> yearsAndMonths = {};
 
     if (await _hasInternetConnection()) {
@@ -97,7 +159,11 @@ class DataController {
     return DatabaseService().getTimlineAlbums();
   }
 
-  Future<List<PhotoDataEntry>> getPhotosOfMonthAndYear(DateTime time) async {
+  Map<int, SplayTreeSet<int>> getOccupiedDates() {
+    return DatabaseService().getTimlineAlbums();
+  }
+
+  Future<List<PhotoDataEntry>> updatePhotosOfMonthAndYear(DateTime time) async {
     if (await _hasInternetConnection()) {
       final photosString = await restApiService.getPhotos(
         count: allImages,
@@ -116,9 +182,22 @@ class DataController {
     );
   }
 
-  Future<bool> _hasInternetConnection() async {
+  List<PhotoDataEntry> getPhotosOfMonthAndYear(DateTime time) {
+    return DatabaseService().getPhotosByDateRange(
+      time.millisecondsSinceEpoch,
+      DateTime(time.year, time.month + 1).millisecondsSinceEpoch,
+    );
+  }
+
+  Future<bool> _hasInternetConnection([String? hostname]) async {
     final connectivityResult = await Connectivity().checkConnectivity();
-    return ConnectivityResult.none != connectivityResult;
+    final pingResult = await restApiService.hasConnection(hostname);
+    return (ConnectivityResult.none != connectivityResult) && pingResult;
+  }
+
+  Future<void> deleteAppStorage() async {
+    DatabaseService().deleteDbContent();
+    await _authService.deleteUserData();
   }
 
   String getPhotoUrl(String hash) {
