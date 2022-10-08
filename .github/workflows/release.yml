@@ -27,10 +27,11 @@ jobs:
       with:
         channel: 'stable'
     - run: flutter pub get
+    - run: flutter pub run build_runner build
     - run: flutter analyze
+    - run: bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/main/install.sh)
     - run: flutter test
-    - run: flutter build apk
-    - run: flutter build appbundle
+    - run: flutter build apk --split-per-abi
     - uses: actions/upload-artifact@v3
       with:
         name: MobilePrism
