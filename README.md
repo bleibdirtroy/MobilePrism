@@ -1,4 +1,4 @@
-# MobilePrism: Your mobile app for PhotoPrism
+# MobilePrism - A Mobile App for PhotoPrism
 MobilePrism is designed to create an app similar to goole photos. PhotoPrism offers all the [features](https://photoprism.app/features) to implement such an app. There are still many things left on our to-do list, but we want to make MobilePrism available right now.   
 
 ![Preview](https://user-images.githubusercontent.com/32508255/189530994-d4bae8d1-234d-44b1-96e0-3d51181941d4.png)
