@@ -24,6 +24,6 @@ Currently we want to expand and stabilize the project and do not accept any new 
 
 
 
-## MobilePrism is not PhotoPrism
+## Disclaimer MobilePrism is not PhotoPrism
 We are not affiliated, endorsed or partnered with PhotoPrism.    
 This App will always be free and open source.
