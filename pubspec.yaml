@@ -77,7 +77,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/logo/splash_logo.png
+    - assets/logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see
@@ -103,9 +103,9 @@ flutter_icons:
   ios: true
   remove_alpha_ios: true
   min_sdk_android: 23
-  image_path: "assets/logo/splash_logo.png"
+  image_path: "assets/logo.png"
   adaptive_icon_background: "#000000"
-  adaptive_icon_foreground: "assets/logo/splash_logo.png"
+  adaptive_icon_foreground: "assets/logo.png"
 
 flutter_native_splash:
   # This package generates native code to customize Flutter's default white native splash screen
@@ -127,12 +127,12 @@ flutter_native_splash:
 
   # The image parameter allows you to specify an image used in the splash screen.  It must be a
   # png file and should be sized for 4x pixel density.
-  image: assets/logo/splash_logo.png
+  image: assets/logo.png
 
   # The branding property allows you to specify an image used as branding in the splash screen.
   # It must be a png file. It is supported for Android, iOS and the Web.  For Android 12,
   # see the Android 12 section below.
-  #branding: assets/logo/splash_logo.png
+  #branding: assets/logo.png
 
   # To position the branding image at the bottom of the screen you can use bottom, bottomRight,
   # and bottomLeft. The default values is bottom if not specified or specified something else.
@@ -159,7 +159,7 @@ flutter_native_splash:
     # 640 pixels in diameter.
     # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
     # 768 pixels in diameter.
-    image: assets/logo/splash_logo.png
+    image: assets/logo.png
 
     # Splash screen background color.
     color: "#000000"

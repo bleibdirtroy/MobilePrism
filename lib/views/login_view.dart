@@ -105,7 +105,7 @@ class _LoginViewState extends State<LoginView> {
                 children: [
                   Expanded(
                     child: Image.asset(
-                      "assets/logo/splash_logo.png",
+                      "assets/logo.png",
                       width: 200,
                     ),
                   ),
