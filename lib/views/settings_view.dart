@@ -100,9 +100,10 @@ class _SettingsViewState extends State<SettingsView> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const LicensePage(
+                  builder: (context) => LicensePage(
                     applicationName: applicationName,
                     applicationVersion: applicationVersion,
+                    applicationIcon: Image.asset("assets/logo_no_padding.png"),
                   ),
                 ),
               ),
