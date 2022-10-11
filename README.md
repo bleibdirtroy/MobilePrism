@@ -1,11 +1,16 @@
 # MobilePrism - A Mobile App for PhotoPrism
 MobilePrism is designed to create an app similar to goole photos. PhotoPrism offers all the [features](https://photoprism.app/features) to implement such an app. There are still many things left on our to-do list, but we want to make MobilePrism available right now.   
 
-![Preview](https://user-images.githubusercontent.com/32508255/189530994-d4bae8d1-234d-44b1-96e0-3d51181941d4.png)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/32508255/195183666-56e6dc3c-155a-4120-97a2-623512fbcdd6.png" />
+</p>
 
 Our goal is to stay comaptible with the latest version of PhotoPrism. Follow [this guide](https://docs.photoprism.app/getting-started/) to install PhotoPrism on your home computer or cloud.
 
 Currently only images can be displayed in this app. Support for videos, gifs and so on will be added in future versions.
+
+<img width="5100" alt="Preview" src="https://user-images.githubusercontent.com/32508255/195185451-beb74b3a-7ca2-49a7-ba8d-57e868e3e9a3.png">
+
 
 ## Features
 MobilePrism uses a local database to store loaded albums and photos. Therefore, it can be used offline.
