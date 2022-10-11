@@ -2,7 +2,7 @@
 MobilePrism is designed to create an app similar to goole photos. PhotoPrism offers all the [features](https://photoprism.app/features) to implement such an app. There are still many things left on our to-do list, but we want to make MobilePrism available right now.   
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/32508255/195183666-56e6dc3c-155a-4120-97a2-623512fbcdd6.png" />
+  <img width="1000" src="https://user-images.githubusercontent.com/32508255/195183666-56e6dc3c-155a-4120-97a2-623512fbcdd6.png" />
 </p>
 
 Our goal is to stay comaptible with the latest version of PhotoPrism. Follow [this guide](https://docs.photoprism.app/getting-started/) to install PhotoPrism on your home computer or cloud.
