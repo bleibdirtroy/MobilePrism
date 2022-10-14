@@ -11,16 +11,19 @@ Currently only images can be displayed in this app. Support for videos, gifs and
 
 <img width="5100" alt="Preview" src="https://user-images.githubusercontent.com/32508255/195185451-beb74b3a-7ca2-49a7-ba8d-57e868e3e9a3.png">
 
+## Installation
+Download the latest APK for Android under releases or [here](https://github.com/bleibdirtroy/MobilePrism/releases).
+
+Future releases will be available on f-droid, google playstore and apple appstore. Yes, iOS app will be available too.
 
 ## Features
 MobilePrism uses a local database to store loaded albums and photos. Therefore, it can be used offline.
 
-- <b>login</b> - Use your credentials or try a public instance
-- <b>timeline</b> - View your photoprism pictures in cronological order from today to the past
+- <b>login</b> - Use your credentials to log into your own PhotoPrism server or try a public instance
+- <b>timeline</b> - View your PhotoPrism pictures in chronological
 - <b>caching</b> - Pictures are cached on your device and can be viewed offline
-- <b>database</b> - Photoprism structure is saved in a local database and can be used offline
-- <b>albums</b> - View your photoprism albums 
-- <b>settings</b> - Preload your timeline or clear your cache
+- <b>albums</b> - View your PhotoPrism albums 
+- <b>settings</b> - Preload your timeline or clear the cache
 
 ## Ideas? Requests? Questions?
 We are extremly thankful for everyone using this app.
