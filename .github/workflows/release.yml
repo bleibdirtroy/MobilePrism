@@ -31,7 +31,7 @@ jobs:
     - run: flutter analyze
     - run: bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/main/install.sh)
     - run: flutter test
-    - run: flutter build apk --split-per-abi
+    - run: flutter build apk 
     - uses: actions/upload-artifact@v3
       with:
         name: MobilePrism
